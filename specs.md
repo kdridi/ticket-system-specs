@@ -66,9 +66,9 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 |-------|-------|---------------|--------------|---------|
 | `ticket-system-reader` | haiku | plan | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)` | `/ticket-system-analyze` |
 | `ticket-system-editor` | sonnet | acceptEdits | `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(find tickets/*)`, `Bash(cat *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
-| `ticket-system-planner` | opus | acceptEdits | Same as `ticket-system-reader` + `Bash(git log *)`, `Bash(git diff *)` | `/ticket-system-plan` |
+| `ticket-system-planner` | opus | acceptEdits | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
-| `ticket-system-verifier` | sonnet | plan | `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(cat *)`, `Bash(find *)` | `/ticket-system-verify` |
+| `ticket-system-verifier` | sonnet | plan | `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(cat *)`, `Bash(find *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-commit` |
 
 ### 2.4 Automatic vs Manual Invocation
@@ -190,7 +190,7 @@ backlog → planned → ongoing → completed
 
 - **Create** → `tickets/backlog/PREFIX-XXX.md`
 - **Schedule** → validate, refine, `git mv` to `planned/`, insert into `roadmap.md`
-- **Activate** → verify `ongoing/` is empty, verify dependencies, create `tickets/ongoing/PREFIX-XXX/`, move ticket inside
+- **Activate** → verify `ongoing/` is empty, verify dependencies, create git worktree, create `tickets/ongoing/PREFIX-XXX/` in worktree, move ticket inside
 - **Work** → all code changes scoped to the ticket
 - **Complete** → verify all criteria are `[x]`, move to `completed/`
 - **Reject** → document reason, move to `rejected/`
@@ -270,16 +270,16 @@ Which testing approach (unit, integration, both).
       ├── too large → /ticket-system-split   Decompose, put back in flow
       │
       ▼
-/ticket-system-plan             Generate implementation-plan.md + test-plan.md
+/ticket-system-plan             Activate + create worktree + generate plans
       │                    ↑
       │            [HUMAN APPROVAL GATE]
-      ▼
-/ticket-system-implement        Execute the plan (worktree, intermediate commits)
-      │
-      ▼
-/ticket-system-verify           Challenge implementation against test-plan
-      │
-      ├── pass → /ticket-system-commit   Merge worktree, final commit
+      ▼                                        ┐
+/ticket-system-implement        Execute the plan │ worktree
+      │                                        │ lifecycle
+      ▼                                        │
+/ticket-system-verify           Verify against test-plan │
+      │                                        │
+      ├── pass → /ticket-system-commit   Merge worktree → main ┘
       │
       └── fail → iterate on /ticket-system-implement or back to /ticket-system-plan
 ```
@@ -390,10 +390,16 @@ Which testing approach (unit, integration, both).
 **Phase 1 — Activation (if the ticket is not already in ongoing):**
 1. Verify `tickets/ongoing/` is empty.
 2. Verify all dependencies are in `completed/`.
-3. Create `tickets/ongoing/PREFIX-XXX/`.
-4. `git mv` the ticket inside.
-5. Remove its row from `roadmap.md`.
-6. Update frontmatter: `status: ongoing`, `updated: <now>`.
+3. Create a git worktree:
+   ```bash
+   git worktree add ../PREFIX-XXX-worktree -b ticket/PREFIX-XXX
+   ```
+4. Work in the worktree from this point forward.
+5. Create `tickets/ongoing/PREFIX-XXX/`.
+6. `git mv` the ticket inside.
+7. Remove its row from `roadmap.md`.
+8. Update frontmatter: `status: ongoing`, `updated: <now>`.
+9. Commit activation changes in the worktree.
 
 **Phase 2 — Codebase analysis:**
 - Read acceptance criteria, technical approach, context.
@@ -425,10 +431,7 @@ Which testing approach (unit, integration, both).
 **Behavior:**
 1. Read `.tickets/config.yml`.
 2. Read `implementation-plan.md`.
-3. Create a git worktree:
-   ```bash
-   git worktree add ../PREFIX-XXX-worktree -b ticket/PREFIX-XXX
-   ```
+3. Locate the existing worktree for the active ticket (use `git worktree list` to find `../PREFIX-XXX-worktree`).
 4. Work in the worktree directory.
 5. For each step in the plan, in order:
    a. **Tests first**: write the TDD tests specified in the step.
@@ -454,8 +457,10 @@ Which testing approach (unit, integration, both).
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Find the active ticket in `ongoing/`.
-3. Read `test-plan.md`.
+2. Locate the worktree for the active ticket (use `git worktree list` to find `../PREFIX-XXX-worktree`).
+3. Work in the worktree directory for all verification.
+4. Find the active ticket in `ongoing/`.
+5. Read `test-plan.md`.
 
 **Verification checklist:**
 - Run the full test suite (not just new tests).
@@ -618,7 +623,7 @@ ticket-system/
 |---|----------|-----------|
 | D-1 | Artifacts live in `tickets/ongoing/PREFIX-XXX/` | Co-location. When the ticket moves, artifacts move with it. |
 | D-2 | Human validation happens only at the `/ticket-system-plan` stage | Once the plan is approved, `/ticket-system-implement` runs autonomously. |
-| D-3 | `/ticket-system-implement` works in a git worktree | Isolation from main. If verification fails, main is untouched. |
+| D-3 | Worktree created at `/ticket-system-plan`, used through `/ticket-system-commit` | All ticket work (plans, implementation, verification) is isolated from main. Only merged on PASS. |
 | D-4 | Merge worktree on PASS, stay on branch on FAIL | Clean main branch. Failed work stays isolated. |
 | D-5 | System installed at user level (`$CLAUDE_DIR`, defaults to `~/.claude/`), not as a plugin | Need `permissionMode` on agents, which is impossible in plugins. Directory chosen interactively at install time. |
 | D-6 | No LangGraph or external tool dependency | The filesystem is the state. Git is the persistence. Slash commands are the nodes. |

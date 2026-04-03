@@ -93,7 +93,7 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - File-based system, no external dependencies (no SaaS, no databases)
 - 6 agents grouped by permission profile, not 1 per command
 - Permission elevation via `context: fork` + agent — main session stays in default mode
-- `/ticket-system-implement` runs in a git worktree for isolation
+- Git worktree created at `/ticket-system-plan`, used through `/ticket-system-commit` — all ticket work isolated from main
 - Human approval gate only at `/ticket-system-plan` stage
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 
