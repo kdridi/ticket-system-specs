@@ -22,7 +22,7 @@ Only these two files belong in this repo. Generated output should not be committ
 2. Feed the entire `specs.md` as input.
 3. Claude Code reads the spec and generates the full file tree.
 
-**Expected output:** 18 files total:
+**Expected output:**
 - `ARCHITECTURE.md` — reformatted spec as architecture doc
 - `install.sh` — prompts for install directory, then copies agents/skills to `$CLAUDE_DIR`
 - `init-project.sh` — initializes a new project with ticket structure
@@ -62,7 +62,7 @@ Use this for behavioral issues (runtime errors, agent interactions, edge cases i
 
 ### Smoke Test (after every generation)
 
-- [ ] File count: exactly 18 files generated
+- [ ] All required files present by name (see specs.md section 8 structural checklist)
 - [ ] Every agent has `skills: [ticket-system-conventions]` in frontmatter
 - [ ] Every skill has `context: fork` and `agent: <name>` in frontmatter
 - [ ] `ticket-system-conventions` has `user-invocable: false`
@@ -76,7 +76,7 @@ Refer to **specs.md section 8** for the full 39-point checklist covering:
 - Frontmatter correctness across all agents and skills
 - Permission model assignments (plan / acceptEdits / bypassPermissions)
 - Script functionality (install.sh with directory prompt, init-project.sh)
-- Command behavior gates (STOP in plan, NEVER modify in verify, prerequisites in implement/commit)
+- Command behavior gates (STOP in plan, NEVER modify code in verify, prerequisites in implement/merge)
 
 ## Rules for Working on This Repo
 
@@ -93,7 +93,8 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - File-based system, no external dependencies (no SaaS, no databases)
 - 6 agents grouped by permission profile, not 1 per command
 - Permission elevation via `context: fork` + agent — main session stays in default mode
-- Git worktree created at `/ticket-system-plan`, used through `/ticket-system-commit` — all ticket work isolated from main
+- Git worktree created at `/ticket-system-plan`, used through `/ticket-system-merge` — all ticket work isolated from main, `tickets/ongoing/` on main is always empty
+- Verify completes ticket on PASS (moves to `completed/` in worktree), merge just lands the branch
 - Human approval gate only at `/ticket-system-plan` stage
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 
