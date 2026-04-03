@@ -4,7 +4,7 @@
 
 This repository contains a **specification file** (`specs.md`) that, when fed to Claude Code (Opus 4.6), generates a complete **Ticket Workflow System** — a file-based, AI-native project management system that runs entirely inside git repos via Claude Code.
 
-**This is NOT the ticket system itself.** This is the generator spec. The generated output (agents, skills, scripts) gets installed into `~/.claude/` and used in other projects.
+**This is NOT the ticket system itself.** This is the generator spec. The generated output (agents, skills, scripts) gets installed into a user-chosen Claude Code configuration directory (`$CLAUDE_DIR`, defaults to `~/.claude/`) and used in other projects.
 
 ## Repository Structure
 
@@ -24,7 +24,7 @@ Only these two files belong in this repo. Generated output should not be committ
 
 **Expected output:** 18 files total:
 - `ARCHITECTURE.md` — reformatted spec as architecture doc
-- `install.sh` — copies agents/skills to `~/.claude/`
+- `install.sh` — prompts for install directory, then copies agents/skills to `$CLAUDE_DIR`
 - `init-project.sh` — initializes a new project with ticket structure
 - 6 agent files in `agents/` (reader, editor, planner, coder, verifier, ops)
 - 9 skill directories in `skills/` (conventions + 8 slash commands), each containing `SKILL.md`
@@ -44,7 +44,7 @@ Use this for structural and format issues (wrong frontmatter, missing fields, in
 ### Outer Loop — Functional Testing
 
 ```
-generate → install to ~/.claude/ → init test project → run slash commands → observe → update specs.md
+generate → install to $CLAUDE_DIR → init test project → run slash commands → observe → update specs.md
 ```
 
 Use this for behavioral issues (runtime errors, agent interactions, edge cases in the command pipeline).
@@ -68,18 +68,20 @@ Use this for behavioral issues (runtime errors, agent interactions, edge cases i
 - [ ] `ticket-system-conventions` has `user-invocable: false`
 - [ ] Both scripts have `#!/bin/bash` and are executable
 - [ ] No hardcoded ticket prefixes anywhere
+- [ ] No hardcoded `~/.claude/` paths — all use `$CLAUDE_DIR`
 
 ### Deep Validation
 
 Refer to **specs.md section 8** for the full 39-point checklist covering:
 - Frontmatter correctness across all agents and skills
 - Permission model assignments (plan / acceptEdits / bypassPermissions)
-- Script functionality (install.sh, init-project.sh)
+- Script functionality (install.sh with directory prompt, init-project.sh)
 - Command behavior gates (STOP in plan, NEVER modify in verify, prerequisites in implement/commit)
 
 ## Rules for Working on This Repo
 
 - **Only modify** `CLAUDE.md` and `specs.md` — no other files belong here.
+- **Keep `CLAUDE.md` in sync with `specs.md`** — whenever `specs.md` is modified, review `CLAUDE.md` and update it to reflect any changes that affect project guidance, workflow descriptions, or design decisions.
 - **Keep `specs.md` self-contained** — it must work as a single prompt with no external context.
 - **Preserve the 8-section structure** of `specs.md` (Vision, Architecture, Data Model, Commands, Generation Rules, Decisions, Future, Validation).
 - **Commit messages** should describe what aspect of the spec changed (e.g., "Refine agent permission model" not "Update specs.md").

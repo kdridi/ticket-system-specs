@@ -3,7 +3,7 @@
 > **This document is a self-contained prompt.** Feed it to Claude Code (Opus 4.6) and it will generate the entire system: agents, skills, install scripts, and documentation.
 >
 > **Instruction for Claude Code:**
-> Read this specification in its entirety. Then generate ALL described files in the indicated directory structure, ready to be installed into `~/.claude/`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
+> Read this specification in its entirety. Then generate ALL described files in the indicated directory structure, ready to be installed into `$CLAUDE_DIR`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
 
 ---
 
@@ -21,7 +21,15 @@ A **file-based, AI-native project management workflow** that runs entirely insid
 - **Each command is autonomous.** Any command can run independently.
 - **Artifacts are the contract.** Commands communicate through markdown files, not implicit state.
 
-### 1.3 Permission Philosophy
+### 1.3 Installation Directory Variable
+
+Throughout this specification, `$CLAUDE_DIR` refers to the root Claude Code configuration directory where agents and skills are installed.
+
+- **Default:** `~/.claude/`
+- **Determined at install time** by an interactive prompt in `install.sh` (see section 5.3).
+- All path references in this spec use `$CLAUDE_DIR` so the system is not tied to a single location.
+
+### 1.4 Permission Philosophy
 
 The main Claude Code session always stays in **`default` mode** (locked down). The `/ticket-system-*` slash commands elevate privileges in a targeted way by forking into specialized agents. The user never has to answer a permission prompt — either the agent has the right, or it doesn't. Permission prompts are a sign of misconfiguration, not a feature.
 
@@ -33,12 +41,12 @@ The main Claude Code session always stays in **`default` mode** (locked down). T
 
 The system relies on two types of Claude Code files that complement each other:
 
-**Skills** (`~/.claude/skills/ticket-system-*/SKILL.md`):
+**Skills** (`$CLAUDE_DIR/skills/ticket-system-*/SKILL.md`):
 - Provide the slash commands (`/ticket-system-create`, `/ticket-system-plan`, etc.)
 - Contain the detailed instructions for each command
 - Delegate execution to an agent via `context: fork` + `agent: <name>`
 
-**Agents** (`~/.claude/agents/ticket-system-*.md`):
+**Agents** (`$CLAUDE_DIR/agents/ticket-system-*.md`):
 - Define the execution profile: model, `permissionMode`, allowed tools
 - Load the shared skill `ticket-system-conventions` via `skills: [ticket-system-conventions]`
 - Are NOT directly invocable by the user
@@ -559,8 +567,25 @@ ticket-system/
 ### 5.3 Installation Script
 
 `install.sh` must:
-1. Copy `agents/*.md` to `~/.claude/agents/`
-2. Copy `skills/ticket-system-*/` to `~/.claude/skills/`
+
+**Step 0 — Prompt for installation directory:**
+1. Display a numbered menu:
+   ```
+   Where would you like to install the ticket system?
+     1) Home Claude directory (~/.claude/)  [default]
+     2) Current directory Claude config (./.claude/)
+     3) Custom path
+   Select [1-3]:
+   ```
+2. Read user input. If empty (user presses Enter), default to option 1.
+3. For option 3: prompt for a path. If the entered path is empty, abort with an error.
+4. Resolve the chosen path and set `CLAUDE_DIR` to it.
+5. If the directory does not exist, ask for confirmation before creating it. Abort if the user declines.
+6. Validate the directory is writable. Abort with an error if not.
+
+**Step 1 — Install:**
+1. Copy `agents/*.md` to `$CLAUDE_DIR/agents/`
+2. Copy `skills/ticket-system-*/` to `$CLAUDE_DIR/skills/`
 3. Display the list of available commands
 4. Remind to restart Claude Code or run `/reload-plugins`
 5. Provide instructions for initializing a new project (or suggest running `init-project.sh`)
@@ -595,7 +620,7 @@ ticket-system/
 | D-2 | Human validation happens only at the `/ticket-system-plan` stage | Once the plan is approved, `/ticket-system-implement` runs autonomously. |
 | D-3 | `/ticket-system-implement` works in a git worktree | Isolation from main. If verification fails, main is untouched. |
 | D-4 | Merge worktree on PASS, stay on branch on FAIL | Clean main branch. Failed work stays isolated. |
-| D-5 | System installed at user level (`~/.claude/`), not as a plugin | Need `permissionMode` on agents, which is impossible in plugins. |
+| D-5 | System installed at user level (`$CLAUDE_DIR`, defaults to `~/.claude/`), not as a plugin | Need `permissionMode` on agents, which is impossible in plugins. Directory chosen interactively at install time. |
 | D-6 | No LangGraph or external tool dependency | The filesystem is the state. Git is the persistence. Slash commands are the nodes. |
 | D-7 | `/ticket-system-analyze` always targets the first ticket on the roadmap | No manual selection needed for the happy path. The roadmap is the priority queue. |
 | D-8 | 6 agents grouped by permission profile, not 1 agent per command | Permission profile factorization. Fewer files, more consistency. |
@@ -631,7 +656,8 @@ After generation, verify:
 - [ ] No prefix is hardcoded — everything comes from `.tickets/config.yml`.
 - [ ] Read-only agents (`ticket-system-reader`, `ticket-system-verifier`) have `permissionMode: plan`.
 - [ ] Autonomous agents (`ticket-system-coder`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
-- [ ] `install.sh` is executable and copies everything to `~/.claude/`.
+- [ ] `install.sh` prompts for installation directory and copies everything to `$CLAUDE_DIR`.
+- [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
 - [ ] `/ticket-system-plan` contains an explicit STOP instruction after plan generation.
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify files.
