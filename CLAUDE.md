@@ -97,6 +97,10 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - Human approval gate only at `/ticket-system-plan` stage
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 
+## Timestamp Rule
+
+All ticket timestamps (`created`, `updated`, log entries) **must** be obtained by running the `date` command (e.g., `date '+%Y-%m-%d %H:%M:%S'`). Never rely on the model's internal knowledge of the current date — it can be wrong.
+
 ## Constraints
 
 - Uses Claude Code **Skills format** (not legacy `.claude/commands/`)
