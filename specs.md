@@ -471,17 +471,17 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-implement`
 
-**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** none (works on the ticket in `ongoing/`)
+**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** `<ticket-id>` (e.g., `PROJ-003`)
 
 **Prerequisites to verify:**
-1. Exactly one ticket exists in `tickets/ongoing/`.
+1. The ticket exists in `tickets/ongoing/PREFIX-XXX/` inside the worktree at `.worktrees/PREFIX-XXX-worktree`.
 2. `implementation-plan.md` exists in the ticket's directory.
 3. The plan has been approved (check the ticket's Log for a plan generation entry).
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Read `implementation-plan.md`.
-3. Locate the existing worktree for the active ticket (use `git worktree list` to find `.worktrees/PREFIX-XXX-worktree`).
+2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
+3. Read `implementation-plan.md` from `tickets/ongoing/<ticket-id>/` in the worktree.
 4. Work in the worktree directory.
 5. For each step in the plan, in order:
    a. **Tests first**: write the TDD tests specified in the step.
@@ -500,13 +500,13 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-verify`
 
-**Agent:** `ticket-system-verifier` | **Auto-invocation:** yes | **Argument:** none
+**Agent:** `ticket-system-verifier` | **Auto-invocation:** yes | **Argument:** `<ticket-id>` (e.g., `PROJ-003`)
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Locate the worktree for the active ticket (use `git worktree list` to find `.worktrees/PREFIX-XXX-worktree`).
+2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
 3. Work in the worktree directory for all verification.
-4. Find the active ticket in `ongoing/`.
+4. Find the active ticket in `tickets/ongoing/<ticket-id>/`.
 5. Read `test-plan.md`.
 
 **Verification checklist:**
@@ -530,13 +530,13 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-merge`
 
-**Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual) | **Argument:** none
+**Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual) | **Argument:** `<ticket-id>` (e.g., `PROJ-003`)
 
 **Prerequisite:** the ticket is in `tickets/completed/` in the worktree (placed there by `/ticket-system-verify` on VERDICT: PASS).
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Locate the worktree for the ticket (`git worktree list`).
+2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
 3. Verify the worktree is clean (no uncommitted changes).
 4. Verify the ticket is in `tickets/completed/` in the worktree (not in `ongoing/`).
 5. Switch to the main branch.
