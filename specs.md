@@ -299,35 +299,9 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-```
-/ticket-system-create           Create a ticket in backlog
-      │
-      ▼
-/ticket-system-schedule         Backlog → Planned + roadmap
-      │
-      ▼
-/ticket-system-analyze          Evaluate the 1st ticket on the roadmap
-      │
-      ├── too large → /ticket-system-split   Decompose, put back in flow
-      │
-      ▼
-/ticket-system-plan             Activate + create worktree + generate plans
-      │                    ↑
-      │            [HUMAN APPROVAL GATE]
-      ▼                                        ┐
-/ticket-system-implement        Execute the plan │ worktree
-      │                                        │ lifecycle
-      ▼                                        │
-/ticket-system-verify           Verify against test-plan │
-      │                                        │
-      ├── pass → complete ticket, then /ticket-system-merge   Merge worktree → main ┘
-      │
-      └── fail → iterate on /ticket-system-implement or back to /ticket-system-plan
-```
+Pipeline: **create** → **schedule** → **analyze** (→ **split** if too large) → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). The worktree lifecycle spans from plan through merge.
 
 ### 4.2 Detailed Command Specifications
-
----
 
 #### `/ticket-system-create`
 
@@ -346,8 +320,6 @@ Which testing approach (unit, integration, both).
 
 **Without arguments:** ask for the title, type, and priority.
 
----
-
 #### `/ticket-system-schedule`
 
 **Agent:** `ticket-system-editor` | **Auto-invocation:** yes
@@ -364,8 +336,6 @@ Which testing approach (unit, integration, both).
 8. Add log entry.
 9. Commit: `PREFIX-XXX: Schedule ticket — <title>`
 
----
-
 #### `/ticket-system-analyze`
 
 **Agent:** `ticket-system-reader` | **Auto-invocation:** yes
@@ -377,28 +347,13 @@ Which testing approach (unit, integration, both).
 3. Read the ticket file from `planned/`.
 4. Verify all dependencies are in `completed/`. If not, report which ones are blocking.
 
-**7-dimension complexity analysis** (each: Low / Medium / High):
-
-| Dimension | What to assess |
-|-----------|---------------|
-| Scope | How many files/functions need to change? |
-| Criteria | How many acceptance criteria? Are they testable? |
-| Cross-cutting | Does it span multiple layers (API, DB, UI)? |
-| Dependencies | Is foundational work required first? |
-| Risk | Are there unknowns or research needed? |
-| Estimated size | Rough lines of code / effort |
-| Independence | Can parts be built and tested separately? |
+**7-dimension complexity analysis** (each rated Low / Medium / High): Scope (files/functions), Criteria (count, testability), Cross-cutting (layers), Dependencies (foundational work), Risk (unknowns), Estimated size (effort), Independence (separate testability).
 
 **Verdict:**
-- **Ready** (all dimensions ≤ Medium, ≤3 criteria, ≤3 files, single concern): summary, effort estimate, key files, suggested approach. Suggest `/ticket-system-plan`.
-- **Needs split** (any dimension High, >3 criteria across concerns, >5 files): explain why it's too large, suggest splitting strategies. Suggest `/ticket-system-split`.
+- **Ready** (all ≤ Medium, ≤3 criteria, ≤3 files, single concern): suggest `/ticket-system-plan`.
+- **Needs split** (any High, >3 criteria across concerns, >5 files): suggest `/ticket-system-split`.
 
-**Readiness checks:**
-- Architecture alignment: does the approach follow the project's patterns?
-- TDD readiness: can tests be identified before writing code?
-- Documentation: is the technical approach detailed enough to plan from?
-
----
+**Readiness checks:** architecture alignment, TDD readiness, documentation sufficiency.
 
 #### `/ticket-system-split`
 
@@ -408,18 +363,11 @@ Which testing approach (unit, integration, both).
 **Behavior:**
 1. Read `.tickets/config.yml`.
 2. Read the target ticket.
-3. Propose **2-4 splitting strategies**:
-   - By layer (backend, frontend, database)
-   - By feature (independent features within scope)
-   - Incremental delivery (minimal version first, enhance later)
-   - By concern (infrastructure vs business logic)
-4. For each strategy: proposed sub-tickets with title, scope, complexity, dependency chain, pros/cons.
+3. Propose **2-4 splitting strategies** (by layer, by feature, incremental delivery, by concern). For each: proposed sub-tickets with title, scope, complexity, dependency chain, pros/cons.
 5. **Wait for the user's choice.** Do not proceed without approval.
 6. Once approved: assign sequential IDs, create in `backlog/`, set dependencies, reject the original with log entry, `git mv` to `rejected/`.
 7. Commit: `PREFIX-XXX: Split into sub-tickets`
 8. Suggest running `/ticket-system-schedule` on the new sub-tickets.
-
----
 
 #### `/ticket-system-plan`
 
@@ -457,8 +405,6 @@ Which testing approach (unit, integration, both).
 - **Do not proceed further.** Wait for explicit approval.
 - Commit: `PREFIX-XXX: Generate implementation and test plans`
 
----
-
 #### `/ticket-system-implement`
 
 **Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual)
@@ -489,8 +435,6 @@ Which testing approach (unit, integration, both).
 
 **Completion:** report what was done, suggest running `/ticket-system-verify`.
 
----
-
 #### `/ticket-system-verify`
 
 **Agent:** `ticket-system-verifier` | **Auto-invocation:** yes
@@ -510,26 +454,7 @@ Which testing approach (unit, integration, both).
 - Walk through each acceptance criterion and assess pass/fail with evidence.
 - Check for regressions.
 
-**Verdict:**
-
-```
-✅ VERDICT: PASS
-All N acceptance criteria met.
-All M test cases passing.
-No regressions detected.
-Ticket moved to completed/.
-→ Ready for /ticket-system-merge
-```
-
-```
-❌ VERDICT: FAIL
-Criteria passed: X/N
-Criteria failed:
-  - Criterion K: <reason>
-Test failures:
-  - TC-M: <error>
-Recommendation: [iterate on /ticket-system-implement | go back to /ticket-system-plan]
-```
+**Verdict:** Either `VERDICT: PASS` (all criteria met, all tests passing, no regressions) or `VERDICT: FAIL` (list failed criteria and test failures, recommend next action).
 
 **On VERDICT: PASS — complete the ticket (in the worktree):**
 1. `git mv tickets/ongoing/PREFIX-XXX tickets/completed/PREFIX-XXX`
@@ -540,8 +465,6 @@ Recommendation: [iterate on /ticket-system-implement | go back to /ticket-system
 **On VERDICT: FAIL** — do nothing. The ticket stays in `ongoing/`.
 
 **NEVER attempt to fix code.** The role is verification and ticket completion, not code modification.
-
----
 
 #### `/ticket-system-merge`
 
