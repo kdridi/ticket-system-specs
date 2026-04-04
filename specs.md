@@ -107,7 +107,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
 | `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
-| `ticket-system-verifier` | sonnet | plan | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
+| `ticket-system-verifier` | sonnet | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
 
 > **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
@@ -785,8 +785,8 @@ After generation, verify:
 - [ ] Manual-only skills have `disable-model-invocation: true`.
 - [ ] Auto-invocable skills have `disable-model-invocation: false`.
 - [ ] No prefix is hardcoded — everything comes from `.tickets/config.yml`.
-- [ ] Read-only agents (`ticket-system-reader`, `ticket-system-verifier`) have `permissionMode: plan`.
-- [ ] All other agents (`ticket-system-editor`, `ticket-system-planner`, `ticket-system-coder`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
+- [ ] Read-only agent (`ticket-system-reader`) has `permissionMode: plan`.
+- [ ] All other agents (`ticket-system-editor`, `ticket-system-planner`, `ticket-system-coder`, `ticket-system-verifier`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
 - [ ] `install.sh` prompts for installation directory and copies everything to `$CLAUDE_DIR`.
 - [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
