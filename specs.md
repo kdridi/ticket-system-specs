@@ -445,9 +445,15 @@ Dependencies resolved: ordering rationale
 1. `git mv` approved tickets from `backlog/` to `planned/`.
 2. `git mv` rejected tickets from `backlog/` to `rejected/`.
 3. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
-4. Read `roadmap.yml`, insert all scheduled tickets at correct positions (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier). Re-number positions.
-5. Add log entry to each ticket.
-6. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
+4. **Execute approved splits:** for each ticket where the user accepted the split:
+   a. Assign sequential IDs to sub-tickets (using the standard ID assignment rule).
+   b. Create sub-tickets directly in `planned/` (not backlog — they have already been evaluated).
+   c. Update the original ticket: add a `## Sub-tickets` section listing the new IDs, set `status: rejected`, add a log entry explaining the split, `git mv` to `rejected/`.
+   d. Insert sub-tickets into `roadmap.yml` with correct dependency ordering.
+   If the user rejected the split, the ticket schedules normally (moved to `planned/` as in step 1).
+5. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets from splits) at correct positions (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier). Re-number positions.
+6. Add log entry to each ticket.
+7. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 
 #### `/ticket-system-split`
 
