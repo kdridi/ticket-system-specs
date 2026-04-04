@@ -257,18 +257,33 @@ estimated_complexity: small | medium | large
 
 ### 3.4 Roadmap Format
 
-`tickets/planned/roadmap.md`:
+`tickets/planned/roadmap.yml`:
 
-```markdown
-# Roadmap
-
-| Position | Ticket | Title | Size | Priority | Dependencies | Rationale |
-|----------|--------|-------|------|----------|--------------|-----------|
-| 1 | PREFIX-005 | Title | medium | P0 | — | Reason |
-| 2 | PREFIX-008 | Title | medium | P0 | PREFIX-005 | Depends on auth |
+```yaml
+# roadmap.yml
+tickets:
+  - position: 1
+    id: PREFIX-005
+    title: "Title"
+    size: medium
+    priority: P0
+    dependencies: []
+    rationale: "Reason"
+  - position: 2
+    id: PREFIX-008
+    title: "Title"
+    size: medium
+    priority: P0
+    dependencies: [PREFIX-005]
+    rationale: "Depends on auth"
 ```
 
-When a ticket is activated, its row is removed from the roadmap.
+**Insertion ordering rules:**
+1. **Dependency ordering:** a ticket must appear after all of its dependencies in the list.
+2. **Priority sorting:** within the same dependency tier, sort by priority P0 > P1 > P2.
+3. **Position numbering:** positions are sequential integers starting at 1. After any insertion or removal, re-number all positions.
+
+**When a ticket is activated:** remove its entry from the `tickets` list and re-number the remaining positions.
 
 ### 3.5 Lifecycle (6 phases)
 
