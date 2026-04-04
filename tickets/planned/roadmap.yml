@@ -1,1 +1,8 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-025
+    title: "Merge /ticket-system-schedule and /ticket-system-analyze into unified schedule command"
+    size: medium
+    priority: P0
+    dependencies: [TS-011]
+    rationale: "TS-011 already completed. Unifies schedule+analyze into a single command, simplifying the pipeline."
