@@ -98,13 +98,13 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 
 ### 2.3 Agent Profiles (6 agents, 3 permission levels)
 
-| Agent | Model | permissionMode | Allowed Bash | Used by |
-|-------|-------|---------------|--------------|---------|
-| `ticket-system-reader` | haiku | plan | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)` | `/ticket-system-analyze`, `/ticket-system-help` |
-| `ticket-system-editor` | sonnet | acceptEdits | `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(find tickets/*)`, `Bash(cat *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
-| `ticket-system-planner` | opus | acceptEdits | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
+| Agent | Model | permissionMode | Allowed Tools | Used by |
+|-------|-------|---------------|---------------|---------|
+| `ticket-system-reader` | haiku | plan | `Read`, `Glob`, `Grep` | `/ticket-system-analyze`, `/ticket-system-help` |
+| `ticket-system-editor` | sonnet | acceptEdits | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
+| `ticket-system-planner` | opus | acceptEdits | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
-| `ticket-system-verifier` | sonnet | plan | `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(cat *)`, `Bash(find *)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
+| `ticket-system-verifier` | sonnet | plan | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
 
 ### 2.4 Automatic vs Manual Invocation
@@ -537,7 +537,7 @@ ticket-system/
 ### 5.2 File Formatting Rules
 
 **Each agent** (`agents/ticket-system-*.md`) must contain:
-- YAML frontmatter with: `name`, `description`, `model`, `permissionMode`, `tools` (with the fine-grained Bash patterns from section 2.3), `skills: [ticket-system-conventions]`
+- YAML frontmatter with: `name`, `description`, `model`, `permissionMode`, `tools` (with the dedicated tools and fine-grained Bash patterns from section 2.3), `skills: [ticket-system-conventions]`
 - A system prompt in the markdown body that:
   - Describes the agent's role in one sentence.
   - Reminds it to read `.tickets/config.yml` first.
@@ -596,6 +596,8 @@ ticket-system/
 - Skill descriptions must be < 250 characters to avoid truncation.
 - Use `$ARGUMENTS` in skills to capture user arguments.
 - No external dependencies (no npm, no pip). Only bash, git, and standard POSIX commands.
+- Agents MUST use Claude Code's dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for all file operations. NEVER use `Bash(cat)`, `Bash(grep)`, `Bash(sed)`, `Bash(head)`, `Bash(tail)`, `Bash(find)`, or `Bash(wc)` for tasks these tools handle. Reserve Bash exclusively for git commands, `date`, `mkdir`, and operations that genuinely require shell execution.
+- Agents MUST use `git -C <path>` instead of `cd <path> && git` to avoid compound commands that bypass permission patterns.
 
 ---
 
@@ -665,7 +667,9 @@ After generation, verify:
 
 - [ ] Every skill has `context: fork` and `agent: <name>` in its frontmatter.
 - [ ] Every agent has `skills: [ticket-system-conventions]` in its frontmatter.
-- [ ] Every agent has restrictive Bash patterns (except `ticket-system-coder`).
+- [ ] Every agent uses dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for file operations — no `Bash(cat/grep/find/head/tail/wc/sed)`.
+- [ ] Every agent has restrictive Bash patterns for git/date/mkdir only (except `ticket-system-coder`).
+- [ ] Agent system prompts instruct use of `git -C <path>` instead of `cd && git` compound commands.
 - [ ] `ticket-system-conventions` has `user-invocable: false`.
 - [ ] Manual-only skills have `disable-model-invocation: true`.
 - [ ] Auto-invocable skills have `disable-model-invocation: false`.
