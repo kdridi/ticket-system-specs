@@ -1,11 +1,11 @@
 ---
 id: TS-025
 title: "Merge /ticket-system-schedule and /ticket-system-analyze into unified schedule command"
-status: planned
+status: ongoing
 priority: P0
 type: refactor
 created: 2026-04-05 00:37:56
-updated: 2026-04-05 01:14:19
+updated: 2026-04-05 01:15:57
 dependencies:
   - TS-011
 assignee: unassigned
@@ -121,3 +121,4 @@ Dependencies resolved: ordering rationale
 ## Log
 - 2026-04-05 00:37:56: Ticket created — Phase A of TS-024 split. Merges schedule+analyze into unified command.
 - 2026-04-05 01:14:19: Scheduled — moved to planned/, inserted into roadmap.yml at position 1.
+- 2026-04-05 01:15:57: Activated — moved to ongoing/, worktree created at .worktrees/TS-025-worktree.
