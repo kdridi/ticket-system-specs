@@ -318,7 +318,9 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 7. Add log entry: `Ticket created.`
 8. Commit: `PREFIX-XXX: Create ticket — <title>`
 
-**Without arguments:** ask for the title, type, and priority.
+**Input classification:** If the argument is clear (recognizable title + type/priority cues), use the fast path above. If it is vague (fewer than 8 words, no type/priority keywords) or absent, enter dialogue mode.
+
+**Dialogue mode:** Ask targeted clarifying questions (1-2 at a time) to surface title, type, priority, objective, and acceptance criteria. Maintain a structured draft in-session only — no files written. Cap at 3 rounds. Present the full draft for user review; the user may confirm, adjust fields, or request another iteration. Only upon confirmation, execute steps 1-8 above.
 
 #### `/ticket-system-schedule`
 
