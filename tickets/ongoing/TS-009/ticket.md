@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-03 23:52:07
-updated: 2026-04-04 02:55:14
+updated: 2026-04-04 03:01:13
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -34,7 +34,8 @@ Create a new skill `ticket-system-help` following the conventions in `ticket-sys
 <!-- List ticket IDs that must be completed before this one. -->
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `specs.md` — Added /ticket-system-help command across sections 2.3, 2.4, 4.1, 4.2, 5.1, and 8
+- `CLAUDE.md` — Updated skill directory count from 9 to 10
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -46,3 +47,4 @@ The live status section should be contextually smart: it should surface the sing
 - 2026-04-03 23:52:07: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 4.
 - 2026-04-04 02:55:14: Ticket activated.
+- 2026-04-04 03:01:13: Implementation complete. All 8 plan steps executed, validate-spec.sh passes.
