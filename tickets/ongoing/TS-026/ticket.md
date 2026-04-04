@@ -1,11 +1,11 @@
 ---
 id: TS-026
 title: "Absorb /ticket-system-split into /ticket-system-schedule"
-status: planned
+status: ongoing
 priority: P0
 type: refactor
 created: 2026-04-05 00:37:56
-updated: 2026-04-05 01:35:18
+updated: 2026-04-05 01:38:04
 dependencies:
   - TS-025
 assignee: unassigned
@@ -99,3 +99,4 @@ PROPOSE REJECTION:
 ## Log
 - 2026-04-05 00:37:56: Ticket created — Phase B of TS-024 split. Absorbs /ticket-system-split into unified schedule command.
 - 2026-04-05 01:35:18: Scheduled — moved to planned/. Dependency TS-025 already completed. Added to roadmap at position 1.
+- 2026-04-05 01:38:04: Activated — moved to ongoing/. Worktree created at .worktrees/TS-026-worktree on branch ticket/TS-026.
