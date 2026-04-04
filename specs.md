@@ -426,8 +426,12 @@ SCHEDULING PLAN — N tickets evaluated
 READY TO SCHEDULE:
   1. PREFIX-XXX "title" — complexity, priority, deps → roadmap position
 
-NEEDS ATTENTION (too large):
-  2. PREFIX-YYY "title" — High on [dimensions]. Consider splitting before planning.
+NEEDS SPLIT:
+  2. PREFIX-YYY "title" — High on [dimensions]
+     Proposed sub-tickets:
+     a. PREFIX-AAA "sub-title A" — small, deps: none
+     b. PREFIX-BBB "sub-title B" — small, deps: PREFIX-AAA
+     Accept split? [accept / adjust / reject]
 
 PROPOSE REJECTION:
   3. PREFIX-ZZZ "title" — reason
