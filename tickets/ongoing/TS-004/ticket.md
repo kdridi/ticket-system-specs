@@ -1,11 +1,11 @@
 ---
 id: TS-004
 title: "Decouple smoke test file count from exact number of generated files"
-status: planned
+status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-04
+updated: 2026-04-04 02:12:18
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -48,3 +48,4 @@ The underlying goal of the check is to ensure that no files were accidentally om
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 1.
 - 2026-04-04: Cancelled and returned to planned — worktree lifecycle redesign needed.
+- 2026-04-04 02:12:18: Ticket activated.
