@@ -402,21 +402,9 @@ Accepts one or more ticket IDs (e.g., `/ticket-system-schedule TS-011 TS-012 TS-
 For each ticket in the batch:
 1. **Validate**: check frontmatter completeness, acceptance criteria quality, technical approach detail. If gaps exist, refine them. Show the user what changed.
 2. **Relevance check**: scan `completed/` and current codebase — is this ticket still needed? If obsolete, propose rejection with reason.
-3. **Atomicity analysis** (7-dimension complexity assessment, each rated Low / Medium / High):
-   - Scope (files/functions)
-   - Criteria (count, testability)
-   - Cross-cutting (layers)
-   - Dependencies (foundational work)
-   - Risk (unknowns)
-   - Estimated size (effort)
-   - Independence (separate testability)
-4. **Flag decision**: if any dimension is High, more than 3 acceptance criteria span multiple concerns, or more than 5 files are affected, flag the ticket as "needs split."
-5. **Split proposal** (for flagged tickets only): propose 2-4 sub-tickets. Each sub-ticket includes:
-   - Title and scope derived from the original ticket's acceptance criteria.
-   - Dependency chain between sub-tickets (ordering constraints).
-   - Individual complexity estimate (each must be small or medium).
-   - Rationale for the split boundary.
-   Sub-tickets inherit the parent ticket's priority and type.
+3. **Atomicity analysis** (7 dimensions, each rated Low / Medium / High): scope, criteria count, cross-cutting layers, dependencies, risk, estimated size, independence.
+4. **Flag decision**: if any dimension is High, >3 criteria span multiple concerns, or >5 files affected, flag as "needs split."
+5. **Split proposal** (flagged tickets only): propose 2-4 sub-tickets with title, scope (from acceptance criteria), dependency chain, complexity estimate (small or medium), and rationale. Sub-tickets inherit parent priority and type.
 
 **Phase 3 — Present unified scheduling plan:**
 ```
@@ -444,13 +432,8 @@ Dependencies resolved: ordering rationale
 1. `git mv` approved tickets from `backlog/` to `planned/`.
 2. `git mv` rejected tickets from `backlog/` to `rejected/`.
 3. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
-4. **Execute approved splits:** for each ticket where the user accepted the split:
-   a. Assign sequential IDs to sub-tickets (using the standard ID assignment rule).
-   b. Create sub-tickets directly in `planned/` (not backlog — they have already been evaluated).
-   c. Update the original ticket: add a `## Sub-tickets` section listing the new IDs, set `status: rejected`, add a log entry explaining the split, `git mv` to `rejected/`.
-   d. Insert sub-tickets into `roadmap.yml` with correct dependency ordering.
-   If the user rejected the split, the ticket schedules normally (moved to `planned/` as in step 1).
-5. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets from splits) at correct positions (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier). Re-number positions.
+4. **Execute approved splits:** assign sequential IDs to sub-tickets, create them directly in `planned/` (already evaluated). Update the original ticket: add `## Sub-tickets` listing new IDs, set `status: rejected`, add log entry, `git mv` to `rejected/`. If the user rejected the split, schedule the ticket normally (step 1).
+5. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets) at correct positions (dependency ordering, then priority P0 > P1 > P2). Re-number positions.
 6. Add log entry to each ticket.
 7. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 
@@ -512,12 +495,7 @@ Dependencies resolved: ordering rationale
 6. After all steps: update `## Files Modified` and `## Log` in the ticket.
 7. Commit ticket updates.
 
-**Error handling:**
-- If a test fails and the fix is within the step's scope: fix it.
-- If a step is fundamentally blocked: log it and continue with the next independent step.
-- If the entire plan is unworkable: STOP and report to the user.
-
-**Completion:** report what was done, suggest running `/ticket-system-verify`.
+**Error handling:** fix in-scope test failures, log and skip blocked steps, STOP if the entire plan is unworkable. On completion, suggest running `/ticket-system-verify`.
 
 #### `/ticket-system-verify`
 
@@ -530,12 +508,7 @@ Dependencies resolved: ordering rationale
 4. Find the active ticket in `tickets/ongoing/<ticket-id>/`.
 5. Read `test-plan.md`.
 
-**Verification checklist:**
-- Run the full test suite (not just new tests).
-- For each test case in `test-plan.md`: verify it exists and passes.
-- Check the coverage map: every acceptance criterion covered by at least one passing test.
-- Walk through each acceptance criterion and assess pass/fail with evidence.
-- Check for regressions.
+**Verification checklist:** Run the full test suite. Verify each test case in `test-plan.md` exists and passes. Check the coverage map (every criterion covered). Walk through each acceptance criterion with evidence. Check for regressions.
 
 **Verdict:** Either `VERDICT: PASS` (all criteria met, all tests passing, no regressions) or `VERDICT: FAIL` (list failed criteria and test failures, recommend next action).
 
