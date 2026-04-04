@@ -398,7 +398,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 4. If not refined enough: refine it (fill gaps, sharpen criteria). Show the user what changed.
 5. `git mv` to `planned/`.
 6. Update frontmatter: `status: planned`, `updated: <now>`.
-7. Read `roadmap.md`, insert the ticket at the correct position (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier).
+7. Read `roadmap.yml`, insert the ticket at the correct position (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier).
 8. Add log entry.
 9. Commit: `PREFIX-XXX: Schedule ticket — <title>`
 
