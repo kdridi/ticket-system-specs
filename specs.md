@@ -646,7 +646,7 @@ ticket-system/
 4. Create `.tickets/TEMPLATE.md` with the standard ticket template (using the given prefix as placeholder)
 5. Create `tickets/{backlog,planned,ongoing,completed,rejected}/` with `.gitkeep` files
 6. Create `tickets/planned/roadmap.md` with an empty table header
-7. Ensure `.worktrees/` is in the project's `.gitignore` (append if not present, create if no `.gitignore`)
+7. Ensure `.worktrees/` is in the project's `.gitignore`: check with `grep -qx '.worktrees/' .gitignore 2>/dev/null` first — only append if not already present, create `.gitignore` if it does not exist
 8. Display a summary of what was created
 
 ### 5.5 Technical Constraints
@@ -792,4 +792,4 @@ After generation, verify:
 - [ ] The hook works without `jq` (fallback to `grep`/`sed` parsing).
 - [ ] The hook does not hardcode any ticket prefix.
 - [ ] `install.sh` copies the hook to `$CLAUDE_DIR/hooks/` and merges PreToolUse config into `$CLAUDE_DIR/settings.json`.
-- [ ] `init-project.sh` adds `.worktrees/` to `.gitignore`.
+- [ ] `init-project.sh` adds `.worktrees/` to `.gitignore` only if not already present (idempotent).
