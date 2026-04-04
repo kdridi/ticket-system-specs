@@ -648,6 +648,7 @@ ticket-system/
 - No external dependencies (no npm, no pip). Only bash, git, and standard POSIX commands.
 - Agents MUST use Claude Code's dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for all file operations. NEVER use `Bash(cat)`, `Bash(grep)`, `Bash(sed)`, `Bash(head)`, `Bash(tail)`, `Bash(find)`, or `Bash(wc)` for tasks these tools handle. Reserve Bash exclusively for git commands, `date`, `mkdir`, and operations that genuinely require shell execution.
 - Agents MUST use `git -C <path>` instead of `cd <path> && git` to avoid compound commands. These `git -C` commands are validated and auto-approved by the PreToolUse hook (section 2.5), which verifies the path targets a valid ticket worktree.
+- Agents MUST use simple quoted multiline strings for `git commit` messages, NOT heredoc/cat syntax. Use `git commit -m "line1\nline2"` or `git commit -m "` followed by a closing `"` on a later line. Never use `git commit -m "$(cat <<'EOF' ... EOF)"`.
 
 ### 5.6 Hook Script Generation Rules
 
