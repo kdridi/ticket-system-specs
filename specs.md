@@ -741,6 +741,7 @@ ticket-system/
 | D-8 | 6 agents grouped by permission profile, not 1 agent per command | Permission profile factorization. Fewer files, more consistency. |
 | D-9 | Main session in `default` mode, privilege elevation via fork | Security by default. Permissions are in the design, not in user prompts. |
 | D-10 | Fine-grained Bash patterns + PreToolUse hook for worktree validation | Least privilege: patterns restrict plain git commands per agent, hook validates and auto-approves `git worktree`, `git -C`, and `mkdir` commands targeting valid ticket worktrees (section 2.5). |
+| D-11 | `/ticket-system-schedule` absorbs split functionality | Eliminates `/ticket-system-split` as a standalone command. Schedule evaluates atomicity (7 dimensions), proposes sub-tickets for oversized tickets, and executes splits on approval — all behind the existing human gate. Simplifies the pipeline to 6 commands: create, schedule, plan, implement, verify, merge. |
 
 ---
 
