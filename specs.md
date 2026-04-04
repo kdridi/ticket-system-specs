@@ -119,8 +119,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | Skill | `disable-model-invocation` | Reason |
 |-------|---------------------------|--------|
 | `ticket-system-create` | `false` (Claude can invoke) | Low risk — creates a markdown file in backlog |
-| `ticket-system-schedule` | `false` | Relatively safe — git mv + roadmap edit |
-| `ticket-system-analyze` | `false` | Read-only, zero risk |
+| `ticket-system-schedule` | `false` | Safe — human gate before any mutation |
 | `ticket-system-split` | `true` (manual only) | Interactive, creates/rejects tickets — keep control |
 | `ticket-system-plan` | `true` | Structural action — ticket activation + deep analysis |
 | `ticket-system-implement` | `true` | Full autonomy, bypass permissions — never automatic |
