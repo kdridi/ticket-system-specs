@@ -450,7 +450,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 4. Work in the worktree from this point forward.
 5. Create `tickets/ongoing/PREFIX-XXX/`.
 6. `git mv` the ticket inside.
-7. Remove its row from `roadmap.md`.
+7. Remove its entry from `roadmap.yml`.
 8. Update frontmatter: `status: ongoing`, `updated: <now>`.
 9. Commit activation changes in the worktree.
 
