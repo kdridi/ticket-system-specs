@@ -104,11 +104,11 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - File-based system, no external dependencies (no SaaS, no databases)
 - 6 agents grouped by permission profile, not 1 per command
 - Permission elevation via `context: fork` + agent — main session stays in default mode
-- Git worktree created at `/ticket-system-plan`, used through `/ticket-system-merge` — all ticket work isolated from main, `tickets/ongoing/` on main is always empty
+- Git worktree created inside `.worktrees/` (gitignored) at `/ticket-system-plan`, used through `/ticket-system-merge` — all ticket work isolated from main, `tickets/ongoing/` on main is always empty, worktrees inside the project so dedicated tools work without permission prompts
 - Verify completes ticket on PASS (moves to `completed/` in worktree), merge just lands the branch
 - Human approval gate only at `/ticket-system-plan` stage
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
-- Fine-grained Bash patterns for plain git + PreToolUse hook for `git -C` worktree validation
+- Fine-grained Bash patterns for plain git + PreToolUse hook for `git worktree`, `git -C`, and `mkdir` worktree validation
 
 ## Timestamp Rule
 

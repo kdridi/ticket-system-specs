@@ -130,16 +130,25 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 
 ### 2.5 PreToolUse Hook: Worktree Path Validation
 
-**Problem:** Fine-grained `Bash(git <subcommand> *)` patterns (section 2.3) match plain git commands but do NOT match `git -C <path> <subcommand> ...` because Claude Code's pattern matching is positional and literal. Since agents must use `git -C <path>` when operating in worktrees (to avoid compound `cd && git` commands), every worktree git operation would trigger a permission prompt.
+**Problem:** Fine-grained `Bash(git <subcommand> *)` patterns (section 2.3) match plain git commands but do NOT match `git -C <path> <subcommand> ...` or `git worktree add <path> ...` because Claude Code's pattern matching is positional and literal. Since agents must use `git -C <path>` when operating in worktrees and `git worktree add/remove` to manage them, these operations would trigger permission prompts. Similarly, `mkdir` commands targeting worktree paths need auto-approval.
 
-**Solution:** A `PreToolUse` hook on the `Bash` tool that intercepts `git -C` commands, validates the target path, and auto-approves commands targeting a valid ticket worktree.
+**Solution:** A `PreToolUse` hook on the `Bash` tool that intercepts `git worktree`, `git -C`, and `mkdir` commands, validates the target path, and auto-approves commands targeting a valid ticket worktree.
 
 **Validation logic:**
+
+**For `mkdir` commands:**
+1. Check if any path argument contains a `*-worktree` component.
+2. If yes → allow. If no → fall through to normal permissions.
+
+**For `git worktree` commands:**
+1. `git worktree list` → allow (read-only).
+2. `git worktree add <path>` → extract the path, validate basename matches `*-worktree`. Allow if valid, deny if not.
+3. `git worktree remove/prune` → allow (cleanup operations).
+
+**For `git -C <path>` commands:**
 1. Extract the `-C <path>` argument from the command.
-2. Resolve to absolute path (prepend `$CWD` if relative). Verify the basename matches `*-worktree`.
-3. Extract the ticket ID from the basename (strip `-worktree` suffix, e.g., `TS-010-worktree` → `TS-010`).
-4. Verify `<resolved-path>/tickets/ongoing/<ticket-id>/` exists inside the worktree.
-5. If valid → `permissionDecision: "allow"` with reason. If invalid → `permissionDecision: "deny"` with reason.
+2. Resolve to absolute path (prepend `$CWD` if relative). Validate the basename matches `*-worktree`.
+3. If valid → `permissionDecision: "allow"` with reason. If invalid → `permissionDecision: "deny"` with reason.
 
 **Hook file:** `$CLAUDE_DIR/hooks/validate-git-worktree.sh`
 
@@ -162,7 +171,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 }
 ```
 
-Plain `git` commands (without `-C`) are unaffected — they are handled by the existing fine-grained patterns in section 2.3.
+Plain `git` commands (without `-C` or `worktree`) and `mkdir` commands not targeting worktrees are unaffected — they fall through to the existing fine-grained patterns in section 2.3.
 
 ---
 
@@ -270,7 +279,7 @@ backlog → planned → ongoing → completed
 
 - **Create** → `tickets/backlog/PREFIX-XXX.md`
 - **Schedule** → validate, refine, `git mv` to `planned/`, insert into `roadmap.md`
-- **Activate** → verify `ongoing/` is empty, verify dependencies, create git worktree, create `tickets/ongoing/PREFIX-XXX/` in worktree, move ticket inside
+- **Activate** → verify `ongoing/` is empty, verify dependencies, create git worktree in `.worktrees/`, create `tickets/ongoing/PREFIX-XXX/` in worktree, move ticket inside
 - **Work** → all code changes scoped to the ticket (in worktree)
 - **Complete** → on VERDICT: PASS, verifier moves ticket to `completed/` in the worktree
 - **Reject** → document reason, move to `rejected/` in the worktree
@@ -418,9 +427,10 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 **Phase 1 — Activation (if the ticket is not already in ongoing):**
 1. Verify `tickets/ongoing/` is empty.
 2. Verify all dependencies are in `completed/`.
-3. Create a git worktree:
+3. Create a git worktree inside the project:
    ```bash
-   git worktree add ../PREFIX-XXX-worktree -b ticket/PREFIX-XXX
+   mkdir -p .worktrees
+   git worktree add .worktrees/PREFIX-XXX-worktree -b ticket/PREFIX-XXX
    ```
 4. Work in the worktree from this point forward.
 5. Create `tickets/ongoing/PREFIX-XXX/`.
@@ -456,7 +466,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 **Behavior:**
 1. Read `.tickets/config.yml`.
 2. Read `implementation-plan.md`.
-3. Locate the existing worktree for the active ticket (use `git worktree list` to find `../PREFIX-XXX-worktree`).
+3. Locate the existing worktree for the active ticket (use `git worktree list` to find `.worktrees/PREFIX-XXX-worktree`).
 4. Work in the worktree directory.
 5. For each step in the plan, in order:
    a. **Tests first**: write the TDD tests specified in the step.
@@ -479,7 +489,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Locate the worktree for the active ticket (use `git worktree list` to find `../PREFIX-XXX-worktree`).
+2. Locate the worktree for the active ticket (use `git worktree list` to find `.worktrees/PREFIX-XXX-worktree`).
 3. Work in the worktree directory for all verification.
 4. Find the active ticket in `ongoing/`.
 5. Read `test-plan.md`.
@@ -636,7 +646,8 @@ ticket-system/
 4. Create `.tickets/TEMPLATE.md` with the standard ticket template (using the given prefix as placeholder)
 5. Create `tickets/{backlog,planned,ongoing,completed,rejected}/` with `.gitkeep` files
 6. Create `tickets/planned/roadmap.md` with an empty table header
-7. Display a summary of what was created
+7. Ensure `.worktrees/` is in the project's `.gitignore` (append if not present, create if no `.gitignore`)
+8. Display a summary of what was created
 
 ### 5.5 Technical Constraints
 
@@ -657,16 +668,30 @@ ticket-system/
 - Start with `#!/bin/bash`.
 - Read JSON from stdin (the Claude Code hook input). Use `jq` if available on `$PATH`, otherwise fall back to `grep -o`/`sed` for extracting JSON fields.
 - Extract `tool_input.command` and `cwd` from the input.
-- If the command does not contain `git` followed by `-C`, exit 0 with no output (fall through to normal permission system).
+- Handle three command categories in order:
+
+**1. `mkdir` commands:**
+- If the command starts with `mkdir`, check if any path argument contains a `*-worktree` component (e.g., `.worktrees/TS-011-worktree/tickets/ongoing/TS-011`).
+- If yes → allow with reason. If no match → exit 0 (fall through).
+
+**2. `git worktree` commands:**
+- `git worktree list` → allow (read-only).
+- `git worktree add <path>` → validate basename of `<path>` matches `*-worktree`. Allow if valid, deny if not.
+- `git worktree remove/prune` → allow (cleanup).
+- Other `git worktree` subcommands → exit 0 (fall through).
+
+**3. `git -C <path>` commands:**
+- If the command does not contain `git` followed by `-C`, exit 0 (fall through).
 - Extract the `-C <path>` argument using bash regex: `[[ "$CMD" =~ git[[:space:]]+-C[[:space:]]+([^[:space:]]+) ]]`.
 - Resolve the path: if relative, prepend `$CWD`. Extract the basename.
-- Validate the basename matches `*-worktree`. If not → deny with reason.
-- Extract the ticket ID by stripping the `-worktree` suffix from the basename (e.g., `TS-010-worktree` → `TS-010`).
-- Validate that `<resolved-path>/tickets/ongoing/<ticket-id>/` exists as a directory inside the worktree. If not → deny with reason.
+- Validate the basename matches `*-worktree`. If valid → allow with reason. If not → deny with reason.
+- Note: the hook does NOT check for `tickets/ongoing/<id>/` existence — the planner needs to run git commands in the worktree before that directory is created.
+
+**Common rules:**
 - On success: output `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"allow","permissionDecisionReason":"<reason>"}}`.
 - On denial: output `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"<reason>"}}`.
 - On any internal error (parse failure, missing fields): exit 0 with no output — falls through to the normal permission system.
-- MUST NOT hardcode any ticket prefix — the hook validates structural conventions only.
+- MUST NOT hardcode any ticket prefix — the hook validates structural conventions only (basename `*-worktree`).
 
 ---
 
@@ -676,14 +701,14 @@ ticket-system/
 |---|----------|-----------|
 | D-1 | Artifacts live in `tickets/ongoing/PREFIX-XXX/` | Co-location. When the ticket moves, artifacts move with it. |
 | D-2 | Human validation happens only at the `/ticket-system-plan` stage | Once the plan is approved, `/ticket-system-implement` runs autonomously. |
-| D-3 | Worktree created at `/ticket-system-plan`, used through `/ticket-system-merge` | All ticket work (plans, implementation, verification, completion) is isolated from main. `tickets/ongoing/` on main is always empty. |
+| D-3 | Worktree created inside `.worktrees/` at `/ticket-system-plan`, used through `/ticket-system-merge` | All ticket work is isolated from main. `tickets/ongoing/` on main is always empty. Worktrees live inside the project (`.worktrees/`, gitignored) so Claude Code's dedicated tools (`Read`, `Write`, `Edit`, `Glob`, `Grep`) can access them without permission prompts. |
 | D-4 | Verify completes ticket on PASS, merge lands the branch | On PASS, verifier moves ticket to `completed/` in the worktree. Merge just integrates to main. On FAIL, ticket stays in `ongoing/` in the worktree. |
 | D-5 | System installed at user level (`$CLAUDE_DIR`, defaults to `~/.claude/`), not as a plugin | Need `permissionMode` on agents, which is impossible in plugins. Directory chosen interactively at install time. |
 | D-6 | No LangGraph or external tool dependency | The filesystem is the state. Git is the persistence. Slash commands are the nodes. |
 | D-7 | `/ticket-system-analyze` always targets the first ticket on the roadmap | No manual selection needed for the happy path. The roadmap is the priority queue. |
 | D-8 | 6 agents grouped by permission profile, not 1 agent per command | Permission profile factorization. Fewer files, more consistency. |
 | D-9 | Main session in `default` mode, privilege elevation via fork | Security by default. Permissions are in the design, not in user prompts. |
-| D-10 | Fine-grained Bash patterns + PreToolUse hook for worktree validation | Least privilege: patterns restrict plain git commands per agent, hook validates and auto-approves `git -C` commands targeting valid ticket worktrees (section 2.5). |
+| D-10 | Fine-grained Bash patterns + PreToolUse hook for worktree validation | Least privilege: patterns restrict plain git commands per agent, hook validates and auto-approves `git worktree`, `git -C`, and `mkdir` commands targeting valid ticket worktrees (section 2.5). |
 
 ---
 
@@ -759,10 +784,12 @@ After generation, verify:
 
 - [ ] `hooks/validate-git-worktree.sh` exists and is executable.
 - [ ] The hook reads `tool_input.command` and `cwd` from stdin JSON.
-- [ ] The hook extracts the `-C <path>` argument and resolves it to an absolute path.
-- [ ] The hook validates the basename matches `*-worktree`.
-- [ ] The hook extracts the ticket ID and checks `tickets/ongoing/<id>/` exists in the worktree.
+- [ ] The hook handles `mkdir` commands: allows when path contains `*-worktree`, falls through otherwise.
+- [ ] The hook handles `git worktree list` (allow), `git worktree add` (validate `*-worktree` basename), `git worktree remove/prune` (allow).
+- [ ] The hook handles `git -C <path>`: extracts path, resolves to absolute, validates basename matches `*-worktree`.
+- [ ] The hook does NOT check `tickets/ongoing/<id>/` existence (worktree may be freshly created).
 - [ ] The hook outputs `permissionDecision: "allow"` for valid paths, `"deny"` for invalid.
 - [ ] The hook works without `jq` (fallback to `grep`/`sed` parsing).
 - [ ] The hook does not hardcode any ticket prefix.
 - [ ] `install.sh` copies the hook to `$CLAUDE_DIR/hooks/` and merges PreToolUse config into `$CLAUDE_DIR/settings.json`.
+- [ ] `init-project.sh` adds `.worktrees/` to `.gitignore`.
