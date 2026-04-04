@@ -783,7 +783,6 @@ After generation, verify:
 - [ ] `ticket-system-create/`
 - [ ] `ticket-system-help/`
 - [ ] `ticket-system-schedule/`
-- [ ] `ticket-system-analyze/`
 - [ ] `ticket-system-split/`
 - [ ] `ticket-system-plan/`
 - [ ] `ticket-system-implement/`
