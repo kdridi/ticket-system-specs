@@ -1,11 +1,11 @@
 ---
 id: TS-010
 title: "Improve specs.md maintainability without splitting"
-status: planned
+status: ongoing
 priority: P1
 type: infrastructure
 created: 2026-04-03 23:57:53
-updated: 2026-04-04 00:12:40
+updated: 2026-04-04 02:26:18
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -64,3 +64,4 @@ None.
 ## Log
 - 2026-04-03 23:57:53: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 2.
+- 2026-04-04 02:26:18: Ticket activated.
