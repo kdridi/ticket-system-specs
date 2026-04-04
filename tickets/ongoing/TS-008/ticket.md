@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-03 23:49:43
-updated: 2026-04-04 02:44:23
+updated: 2026-04-04 02:48:19
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -38,7 +38,7 @@ The existing create command works well when the user has a clear idea of what th
 <!-- List ticket IDs that must be completed before this one. -->
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `specs.md` — Extended `/ticket-system-create` block in section 4.2 with input classification and dialogue mode specification.
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -52,3 +52,4 @@ The existing create command works well when the user has a clear idea of what th
 - 2026-04-03 23:49:43: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 3.
 - 2026-04-04 02:44:23: Ticket activated.
+- 2026-04-04 02:48:19: Implementation complete. Extended /ticket-system-create in specs.md with dialogue mode (input classification, clarifying questions, draft confirmation gate). Section 4 at 193 lines (within 200-line budget). validate-spec.sh passes.
