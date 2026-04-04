@@ -607,8 +607,6 @@ ticket-system/
     │   └── SKILL.md
     ├── ticket-system-schedule/
     │   └── SKILL.md
-    ├── ticket-system-analyze/
-    │   └── SKILL.md
     ├── ticket-system-split/
     │   └── SKILL.md
     ├── ticket-system-plan/
