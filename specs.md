@@ -562,7 +562,7 @@ Dependencies resolved: ordering rationale
 6. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
 7. If merge conflict: report the conflict and **STOP** — let the user resolve.
 8. Remove the worktree and delete the branch.
-9. Suggest running `/ticket-system-analyze` to evaluate the next ticket.
+9. Suggest checking the roadmap for the next ticket to plan.
 
 #### `/ticket-system-help`
 
