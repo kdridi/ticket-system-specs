@@ -1,11 +1,11 @@
 ---
 id: TS-008
 title: "Implement an interactive ticket creation command with guided scaffolding"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-03 23:49:43
-updated: 2026-04-04 00:12:40
+updated: 2026-04-04 02:44:23
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -51,3 +51,4 @@ The existing create command works well when the user has a clear idea of what th
 ## Log
 - 2026-04-03 23:49:43: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 3.
+- 2026-04-04 02:44:23: Ticket activated.
