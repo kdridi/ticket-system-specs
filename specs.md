@@ -643,7 +643,7 @@ ticket-system/
 1. Accept the ticket prefix as an argument (e.g., `bash init-project.sh MYPROJ`)
 2. Accept an optional digits argument (default: 3)
 3. Create `.tickets/config.yml` with the given prefix
-4. Create `.tickets/TEMPLATE.md` with the standard ticket template (using the given prefix as placeholder)
+4. Create `.tickets/TEMPLATE.md` using the exact ticket format from section 3.3 — enum fields must show all valid options with pipe separators (e.g., `priority: P0 | P1 | P2`, not a single default value)
 5. Create `tickets/{backlog,planned,ongoing,completed,rejected}/` with `.gitkeep` files
 6. Create `tickets/planned/roadmap.md` with an empty table header
 7. Ensure `.worktrees/` is in the project's `.gitignore`: check with `grep -qx '.worktrees/' .gitignore 2>/dev/null` first — only append if not already present, create `.gitignore` if it does not exist
@@ -775,6 +775,7 @@ After generation, verify:
 - [ ] `install.sh` prompts for installation directory and copies everything to `$CLAUDE_DIR`.
 - [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
+- [ ] `init-project.sh` generates `TEMPLATE.md` with pipe-separated enum options (e.g., `priority: P0 | P1 | P2`), not single default values.
 - [ ] `/ticket-system-plan` contains an explicit STOP instruction after plan generation.
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
