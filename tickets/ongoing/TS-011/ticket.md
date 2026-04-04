@@ -1,11 +1,11 @@
 ---
 id: TS-011
 title: "Migrate roadmap from markdown table to YAML format"
-status: planned
+status: ongoing
 priority: P0
 type: refactor
 created: 2026-04-04 12:00:00
-updated: 2026-04-04 21:12:15
+updated: 2026-04-04 23:28:20
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -75,3 +75,4 @@ Update `init-project.sh` to create `roadmap.yml` with `tickets: []`.
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W1).
 - 2026-04-04 21:12:15: Ticket scheduled — moved to planned.
+- 2026-04-04 23:28:20: Ticket activated — moved to ongoing.
