@@ -5,7 +5,7 @@ status: ongoing
 priority: P0
 type: refactor
 created: 2026-04-05 00:37:56
-updated: 2026-04-05 01:38:04
+updated: 2026-04-05 01:47:07
 dependencies:
   - TS-025
 assignee: unassigned
@@ -86,10 +86,12 @@ PROPOSE REJECTION:
 - TS-025 (schedule+analyze merge must be complete first)
 
 ## Files Modified
-- `specs.md` (sections 2.3, 2.4, 4.1, 4.2 — add split to schedule, remove split command)
+- `specs.md` — sections 2.3 (editor Used by), 2.4 (invocation table), 4.1 (pipeline overview), 4.2 (schedule Phases 2-4, removed split command, help verbs), 5.1 (file tree), 6 (D-11 decision), 8 (validation checklist)
+- `CLAUDE.md` — updated skill directory count from 9 to 8
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Retained `ticket-system-reader` agent because `/ticket-system-help` still uses it.
+- Condensed section 4 prose (implement error handling, verify checklist, schedule phases) to stay within the 200-line section budget after adding split proposal content.
 
 ## Notes
 - Sub-tickets created during split go directly to `planned/` because they've already been evaluated for atomicity during the split proposal.
@@ -100,3 +102,4 @@ PROPOSE REJECTION:
 - 2026-04-05 00:37:56: Ticket created — Phase B of TS-024 split. Absorbs /ticket-system-split into unified schedule command.
 - 2026-04-05 01:35:18: Scheduled — moved to planned/. Dependency TS-025 already completed. Added to roadmap at position 1.
 - 2026-04-05 01:38:04: Activated — moved to ongoing/. Worktree created at .worktrees/TS-026-worktree on branch ticket/TS-026.
+- 2026-04-05 01:47:07: Implementation complete — all 10 plan steps executed. Split proposal added to schedule Phases 2-4, /ticket-system-split removed from all sections, CLAUDE.md synced, D-11 decision added. All validation and tests pass.
