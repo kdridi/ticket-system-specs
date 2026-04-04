@@ -58,6 +58,15 @@ Use this for behavioral issues (runtime errors, agent interactions, edge cases i
 5. **Record** — Note what failed or needs improvement.
 6. **Iterate** — Return to step 1 with findings.
 
+### Parallel Spec Work
+
+When multiple spec changes are in flight simultaneously:
+
+- **Use feature branches** for concurrent spec changes to avoid conflicts on `specs.md`.
+- **Scope changes to specific sections** to minimize merge conflicts. Each section is self-contained enough that two people can work on different sections in parallel.
+- **Run `validate-spec.sh` before merging** to catch cross-reference drift (e.g., a command referencing an agent that was renamed in another branch).
+- **Coordinate on section 4 (Command Pipeline)** — this is the most interconnected section and the most likely source of merge conflicts.
+
 ## Validation Quick Reference
 
 ### Smoke Test (after every generation)
