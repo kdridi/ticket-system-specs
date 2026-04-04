@@ -1,11 +1,11 @@
 ---
 id: TS-004
 title: "Decouple smoke test file count from exact number of generated files"
-status: ongoing
+status: completed
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-04 02:18:25
+updated: 2026-04-04 02:19:53
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -50,3 +50,4 @@ The underlying goal of the check is to ensure that no files were accidentally om
 - 2026-04-04: Cancelled and returned to planned — worktree lifecycle redesign needed.
 - 2026-04-04 02:12:18: Ticket activated.
 - 2026-04-04 02:18:25: Implementation complete. CLAUDE.md updated; specs.md verified clean.
+- 2026-04-04 02:19:53: VERDICT: PASS — Ticket completed.
