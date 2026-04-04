@@ -84,7 +84,7 @@ When multiple spec changes are in flight simultaneously:
 
 Refer to **specs.md section 8** for the full validation checklist covering:
 - Frontmatter correctness across all agents and skills
-- Permission model assignments (plan / acceptEdits / bypassPermissions)
+- Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
 - Command behavior gates (STOP in plan, NEVER modify code in verify, prerequisites in implement/merge)

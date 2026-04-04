@@ -99,13 +99,13 @@ The system relies on two types of Claude Code files that complement each other:
 
 An invisible skill (`user-invocable: false`) containing all system conventions: ticket format, directory structure, lifecycle, roadmap format, commit convention. Every agent loads it automatically at startup via `skills: [ticket-system-conventions]`.
 
-### 2.3 Agent Profiles (6 agents, 3 permission levels)
+### 2.3 Agent Profiles (6 agents, 2 permission levels)
 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
 | `ticket-system-reader` | haiku | plan | `Read`, `Glob`, `Grep` | `/ticket-system-analyze`, `/ticket-system-help` |
-| `ticket-system-editor` | sonnet | acceptEdits | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
-| `ticket-system-planner` | opus | acceptEdits | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
+| `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
+| `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
 | `ticket-system-verifier` | sonnet | plan | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
@@ -786,7 +786,7 @@ After generation, verify:
 - [ ] Auto-invocable skills have `disable-model-invocation: false`.
 - [ ] No prefix is hardcoded — everything comes from `.tickets/config.yml`.
 - [ ] Read-only agents (`ticket-system-reader`, `ticket-system-verifier`) have `permissionMode: plan`.
-- [ ] Autonomous agents (`ticket-system-coder`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
+- [ ] All other agents (`ticket-system-editor`, `ticket-system-planner`, `ticket-system-coder`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
 - [ ] `install.sh` prompts for installation directory and copies everything to `$CLAUDE_DIR`.
 - [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
