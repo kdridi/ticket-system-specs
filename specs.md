@@ -404,11 +404,11 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-analyze`
 
-**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none (always picks the first ticket from `roadmap.md`)
+**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none (always picks the first ticket from `roadmap.yml`)
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Read `roadmap.md`, identify the first ticket (position 1).
+2. Read `roadmap.yml`, identify the first ticket (position 1).
 3. Read the ticket file from `planned/`.
 4. Verify all dependencies are in `completed/`. If not, report which ones are blocking.
 
