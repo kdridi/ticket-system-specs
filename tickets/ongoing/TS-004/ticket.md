@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-04 02:12:18
+updated: 2026-04-04 02:18:25
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -36,10 +36,10 @@ The underlying goal of the check is to ensure that no files were accidentally om
 <!-- None -->
 
 ## Files Modified
-<!-- To be filled during implementation. -->
+- `CLAUDE.md` — replaced "39-point checklist" with count-agnostic "full validation checklist"
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Used count-agnostic phrasing ("full validation checklist") rather than updating to "37-point", since the count will change as the spec evolves.
 
 ## Notes
 - This is a low-risk editorial change to the spec. No generated behavior changes.
@@ -49,3 +49,4 @@ The underlying goal of the check is to ensure that no files were accidentally om
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 1.
 - 2026-04-04: Cancelled and returned to planned — worktree lifecycle redesign needed.
 - 2026-04-04 02:12:18: Ticket activated.
+- 2026-04-04 02:18:25: Implementation complete. CLAUDE.md updated; specs.md verified clean.
