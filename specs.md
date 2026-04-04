@@ -577,7 +577,7 @@ Dependencies resolved: ordering rationale
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, split, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 ---
@@ -608,8 +608,6 @@ ticket-system/
     ├── ticket-system-help/
     │   └── SKILL.md
     ├── ticket-system-schedule/
-    │   └── SKILL.md
-    ├── ticket-system-split/
     │   └── SKILL.md
     ├── ticket-system-plan/
     │   └── SKILL.md
@@ -785,7 +783,6 @@ After generation, verify:
 - [ ] `ticket-system-create/`
 - [ ] `ticket-system-help/`
 - [ ] `ticket-system-schedule/`
-- [ ] `ticket-system-split/`
 - [ ] `ticket-system-plan/`
 - [ ] `ticket-system-implement/`
 - [ ] `ticket-system-verify/`
