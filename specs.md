@@ -660,7 +660,7 @@ ticket-system/
 3. Create `.tickets/config.yml` with the given prefix
 4. Create `.tickets/TEMPLATE.md` using the exact ticket format from section 3.3 — enum fields must show all valid options with pipe separators (e.g., `priority: P0 | P1 | P2`, not a single default value)
 5. Create `tickets/{backlog,planned,ongoing,completed,rejected}/` with `.gitkeep` files
-6. Create `tickets/planned/roadmap.md` with an empty table header
+6. Create `tickets/planned/roadmap.yml` with `tickets: []` (an empty YAML list)
 7. Ensure `.worktrees/` is in the project's `.gitignore`: check with `grep -qx '.worktrees/' .gitignore 2>/dev/null` first — only append if not already present, create `.gitignore` if it does not exist
 8. Display a summary of what was created
 
