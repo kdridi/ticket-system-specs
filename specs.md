@@ -365,7 +365,7 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** → **analyze** (→ **split** if too large) → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
+Pipeline: **create** → **schedule** (→ **split** if too large) → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
 
 ### 4.2 Detailed Command Specifications
 
