@@ -195,7 +195,7 @@ tickets_dir: "tickets"   # Root directory for tickets
 tickets/
 ├── backlog/           # Rough ideas, not yet refined
 ├── planned/           # Refined, ready to activate
-│   └── roadmap.md     # Authoritative execution order
+│   └── roadmap.yml    # Authoritative execution order
 ├── ongoing/           # The active ticket (max 1) — stored as subdirectory
 │   └── PREFIX-XXX/    # Contains ticket.md + plan artifacts
 ├── completed/         # Successfully finished tickets
