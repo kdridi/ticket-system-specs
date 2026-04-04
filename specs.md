@@ -575,7 +575,7 @@ Dependencies resolved: ordering rationale
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, analyze, split, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
+1. If the verb matches a known command (create, schedule, split, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 ---
