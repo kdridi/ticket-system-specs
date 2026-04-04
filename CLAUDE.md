@@ -72,7 +72,7 @@ Use this for behavioral issues (runtime errors, agent interactions, edge cases i
 
 ### Deep Validation
 
-Refer to **specs.md section 8** for the full 39-point checklist covering:
+Refer to **specs.md section 8** for the full validation checklist covering:
 - Frontmatter correctness across all agents and skills
 - Permission model assignments (plan / acceptEdits / bypassPermissions)
 - Script functionality (install.sh with directory prompt, init-project.sh)
