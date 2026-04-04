@@ -389,18 +389,56 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-schedule`
 
-**Agent:** `ticket-system-editor` | **Auto-invocation:** yes | **Argument:** `[ticket-id or description]`
+**Agent:** `ticket-system-editor` | **Auto-invocation:** yes | **Argument:** `[ticket-id(s) or description]`
 
-**Behavior:**
+Accepts one or more ticket IDs (e.g., `/ticket-system-schedule TS-011 TS-012 TS-013`) OR a description to fuzzy-match a single ticket in backlog (backward-compatible).
+
+**Phase 1 — Collect and resolve:**
 1. Read `.tickets/config.yml`.
-2. Locate the target ticket in `backlog/`. If a description is given instead of an ID, search backlog tickets for the best match and confirm with the user.
-3. **Validate** the ticket: all frontmatter fields complete, acceptance criteria concrete and testable, technical approach sufficiently detailed.
-4. If not refined enough: refine it (fill gaps, sharpen criteria). Show the user what changed.
-5. `git mv` to `planned/`.
-6. Update frontmatter: `status: planned`, `updated: <now>`.
-7. Read `roadmap.yml`, insert the ticket at the correct position (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier).
-8. Add log entry.
-9. Commit: `PREFIX-XXX: Schedule ticket — <title>`
+2. Parse arguments: extract ticket IDs or fuzzy-match description against backlog (confirm with user).
+3. For each ticket ID: read the ticket from `backlog/`, collect its dependencies.
+4. Recursively resolve dependencies: if a dependency is also in backlog, include it in the batch.
+5. Build a dependency graph of all tickets in scope.
+
+**Phase 2 — Evaluate each ticket:**
+For each ticket in the batch:
+1. **Validate**: check frontmatter completeness, acceptance criteria quality, technical approach detail. If gaps exist, refine them. Show the user what changed.
+2. **Relevance check**: scan `completed/` and current codebase — is this ticket still needed? If obsolete, propose rejection with reason.
+3. **Atomicity analysis** (7-dimension complexity assessment, each rated Low / Medium / High):
+   - Scope (files/functions)
+   - Criteria (count, testability)
+   - Cross-cutting (layers)
+   - Dependencies (foundational work)
+   - Risk (unknowns)
+   - Estimated size (effort)
+   - Independence (separate testability)
+4. **Flag decision**: if any dimension is High or overall complexity is large, flag as "needs attention" (reported to user, but no auto-split).
+
+**Phase 3 — Present unified scheduling plan:**
+```
+SCHEDULING PLAN — N tickets evaluated
+
+READY TO SCHEDULE:
+  1. PREFIX-XXX "title" — complexity, priority, deps → roadmap position
+
+NEEDS ATTENTION (too large):
+  2. PREFIX-YYY "title" — High on [dimensions]. Consider splitting before planning.
+
+PROPOSE REJECTION:
+  3. PREFIX-ZZZ "title" — reason
+
+Dependencies resolved: ordering rationale
+```
+
+**STOP. Wait for user approval.** The user may approve, adjust, or reject individual entries.
+
+**Phase 4 — Execute on approval:**
+1. `git mv` approved tickets from `backlog/` to `planned/`.
+2. `git mv` rejected tickets from `backlog/` to `rejected/`.
+3. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
+4. Read `roadmap.yml`, insert all scheduled tickets at correct positions (respect dependency ordering, then sort by priority P0 > P1 > P2 within the same dependency tier). Re-number positions.
+5. Add log entry to each ticket.
+6. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 
 #### `/ticket-system-analyze`
 
