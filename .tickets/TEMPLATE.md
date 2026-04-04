@@ -1,17 +1,17 @@
 ---
-id: __ID__
-title: "__TITLE__"
-status: __STATUS__
-priority: __PRIORITY__
-type: __TYPE__
-created: __CREATED__
-updated: __UPDATED__
+id: PREFIX-XXX
+title: "<concise title>"
+status: backlog
+priority: P0 | P1 | P2
+type: feature | bugfix | refactor | docs | research | infrastructure
+created: YYYY-MM-DD HH:MM:SS
+updated: YYYY-MM-DD HH:MM:SS
 dependencies: []
-assignee: unassigned
-estimated_complexity: __COMPLEXITY__
+assignee: human | ai | unassigned
+estimated_complexity: small | medium | large
 ---
 
-# __ID__: __TITLE__
+# PREFIX-XXX: <title>
 
 ## Objective
 <!-- One paragraph: what does this ticket accomplish? -->
@@ -41,3 +41,4 @@ estimated_complexity: __COMPLEXITY__
 
 ## Log
 <!-- Append-only log of significant events. -->
+- YYYY-MM-DD HH:MM:SS: Ticket created.
