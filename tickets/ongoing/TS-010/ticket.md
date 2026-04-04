@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: infrastructure
 created: 2026-04-03 23:57:53
-updated: 2026-04-04 02:26:18
+updated: 2026-04-04 02:38:31
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -50,7 +50,10 @@ Key factors in the decision:
 None.
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `specs.md` — Added clickable TOC (36 lines), refactored section 4 from 267 to 190 lines
+- `validate-spec.sh` — New file: cross-reference integrity checker
+- `test-validate-spec.sh` — New file: test suite for validate-spec.sh (9 test cases)
+- `CLAUDE.md` — Added "Parallel Spec Work" subsection
 
 ## Decisions
 
@@ -65,3 +68,4 @@ None.
 - 2026-04-03 23:57:53: Ticket created.
 - 2026-04-04 00:12:40: Ticket scheduled and added to roadmap at position 2.
 - 2026-04-04 02:26:18: Ticket activated.
+- 2026-04-04 02:38:31: Implementation complete. All 5 steps executed, all 9 test cases passing.
