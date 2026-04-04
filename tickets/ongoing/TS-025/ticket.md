@@ -5,7 +5,7 @@ status: ongoing
 priority: P0
 type: refactor
 created: 2026-04-05 00:37:56
-updated: 2026-04-05 01:15:57
+updated: 2026-04-05 01:23:03
 dependencies:
   - TS-011
 assignee: unassigned
@@ -109,7 +109,8 @@ Dependencies resolved: ordering rationale
 - TS-011 (roadmap YAML — schedule writes to roadmap.yml) ✓ completed
 
 ## Files Modified
-- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1 — rewrite schedule, remove analyze)
+- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1, 6, 7, 8 — rewrite schedule, remove analyze, update all cross-references)
+- `CLAUDE.md` (skill directory count updated from 10 to 9)
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -122,3 +123,4 @@ Dependencies resolved: ordering rationale
 - 2026-04-05 00:37:56: Ticket created — Phase A of TS-024 split. Merges schedule+analyze into unified command.
 - 2026-04-05 01:14:19: Scheduled — moved to planned/, inserted into roadmap.yml at position 1.
 - 2026-04-05 01:15:57: Activated — moved to ongoing/, worktree created at .worktrees/TS-025-worktree.
+- 2026-04-05 01:23:03: Implementation complete — all 12 plan steps executed across specs.md and CLAUDE.md. /ticket-system-analyze removed, /ticket-system-schedule rewritten with 4-phase multi-ticket specification.
