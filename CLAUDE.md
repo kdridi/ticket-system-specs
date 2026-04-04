@@ -76,6 +76,7 @@ When multiple spec changes are in flight simultaneously:
 - [ ] Every skill has `context: fork` and `agent: <name>` in frontmatter
 - [ ] `ticket-system-conventions` has `user-invocable: false`
 - [ ] Both scripts have `#!/bin/bash` and are executable
+- [ ] `hooks/validate-git-worktree.sh` exists and is executable
 - [ ] No hardcoded ticket prefixes anywhere
 - [ ] No hardcoded `~/.claude/` paths — all use `$CLAUDE_DIR`
 
@@ -84,7 +85,8 @@ When multiple spec changes are in flight simultaneously:
 Refer to **specs.md section 8** for the full validation checklist covering:
 - Frontmatter correctness across all agents and skills
 - Permission model assignments (plan / acceptEdits / bypassPermissions)
-- Script functionality (install.sh with directory prompt, init-project.sh)
+- Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
+- Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
 - Command behavior gates (STOP in plan, NEVER modify code in verify, prerequisites in implement/merge)
 
 ## Rules for Working on This Repo
@@ -106,6 +108,7 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - Verify completes ticket on PASS (moves to `completed/` in worktree), merge just lands the branch
 - Human approval gate only at `/ticket-system-plan` stage
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
+- Fine-grained Bash patterns for plain git + PreToolUse hook for `git -C` worktree validation
 
 ## Timestamp Rule
 

@@ -17,6 +17,7 @@
   - [2.2 Shared Skill: ticket-system-conventions](#22-shared-skill-ticket-system-conventions)
   - [2.3 Agent Profiles (6 agents, 3 permission levels)](#23-agent-profiles-6-agents-3-permission-levels)
   - [2.4 Automatic vs Manual Invocation](#24-automatic-vs-manual-invocation)
+  - [2.5 PreToolUse Hook: Worktree Path Validation](#25-pretooluse-hook-worktree-path-validation)
 - [3. Data Model](#3-data-model)
   - [3.1 Project Configuration](#31-project-configuration)
   - [3.2 Directory Structure](#32-directory-structure)
@@ -35,11 +36,13 @@
   - [5.3 Installation Script](#53-installation-script)
   - [5.4 Project Initialization Script](#54-project-initialization-script)
   - [5.5 Technical Constraints](#55-technical-constraints)
+  - [5.6 Hook Script Generation Rules](#56-hook-script-generation-rules)
 - [6. Decisions Already Made](#6-decisions-already-made-do-not-revisit)
 - [7. Future Extensions](#7-future-extensions-do-not-implement-now)
 - [8. Validation Checklist](#8-validation-checklist)
   - [Structural completeness](#structural-completeness--all-required-files-present)
   - [Frontmatter and permissions](#frontmatter-and-permissions)
+  - [Hooks](#hooks)
 
 ---
 
@@ -107,6 +110,8 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | `ticket-system-verifier` | sonnet | plan | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
 
+> **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
+
 ### 2.4 Automatic vs Manual Invocation
 
 Each skill has a `disable-model-invocation` flag. Here is the strategy:
@@ -122,6 +127,42 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `true` | Irreversible merge — always explicit |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
+
+### 2.5 PreToolUse Hook: Worktree Path Validation
+
+**Problem:** Fine-grained `Bash(git <subcommand> *)` patterns (section 2.3) match plain git commands but do NOT match `git -C <path> <subcommand> ...` because Claude Code's pattern matching is positional and literal. Since agents must use `git -C <path>` when operating in worktrees (to avoid compound `cd && git` commands), every worktree git operation would trigger a permission prompt.
+
+**Solution:** A `PreToolUse` hook on the `Bash` tool that intercepts `git -C` commands, validates the target path, and auto-approves commands targeting a valid ticket worktree.
+
+**Validation logic:**
+1. Extract the `-C <path>` argument from the command.
+2. Resolve to absolute path (prepend `$CWD` if relative). Verify the basename matches `*-worktree`.
+3. Extract the ticket ID from the basename (strip `-worktree` suffix, e.g., `TS-010-worktree` → `TS-010`).
+4. Verify `<resolved-path>/tickets/ongoing/<ticket-id>/` exists inside the worktree.
+5. If valid → `permissionDecision: "allow"` with reason. If invalid → `permissionDecision: "deny"` with reason.
+
+**Hook file:** `$CLAUDE_DIR/hooks/validate-git-worktree.sh`
+
+**Configuration:** Injected into `$CLAUDE_DIR/settings.json` by `install.sh`:
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_DIR/hooks/validate-git-worktree.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Plain `git` commands (without `-C`) are unaffected — they are handled by the existing fine-grained patterns in section 2.3.
 
 ---
 
@@ -504,6 +545,8 @@ ticket-system/
 ├── ARCHITECTURE.md                # This spec reformatted as architecture doc
 ├── install.sh                     # Installation script (see 5.3)
 ├── init-project.sh                # Project initialization script (see 5.4)
+├── hooks/
+│   └── validate-git-worktree.sh   # PreToolUse hook (see 2.5, 5.6)
 ├── agents/
 │   ├── ticket-system-reader.md
 │   ├── ticket-system-editor.md
@@ -570,7 +613,14 @@ ticket-system/
 5. If the directory does not exist, ask for confirmation before creating it. Abort if the user declines.
 6. Validate the directory is writable. Abort with an error if not.
 
-**Step 1 — Install:**
+**Step 1 — Install hooks:**
+1. Create `$CLAUDE_DIR/hooks/` if it doesn't exist.
+2. Copy `hooks/validate-git-worktree.sh` to `$CLAUDE_DIR/hooks/`. Make it executable (`chmod +x`).
+3. If `$CLAUDE_DIR/settings.json` doesn't exist, create it with the hook configuration from section 2.5 (replacing `$CLAUDE_DIR` with the resolved path).
+4. If it exists but has no `hooks.PreToolUse` key, inject the hook configuration.
+5. If it already has `PreToolUse` entries, append the hook entry and warn the user to verify the merged result.
+
+**Step 2 — Install agents and skills:**
 1. Copy `agents/*.md` to `$CLAUDE_DIR/agents/`
 2. Copy `skills/ticket-system-*/` to `$CLAUDE_DIR/skills/`
 3. Display the list of available commands
@@ -597,7 +647,25 @@ ticket-system/
 - Use `$ARGUMENTS` in skills to capture user arguments.
 - No external dependencies (no npm, no pip). Only bash, git, and standard POSIX commands.
 - Agents MUST use Claude Code's dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for all file operations. NEVER use `Bash(cat)`, `Bash(grep)`, `Bash(sed)`, `Bash(head)`, `Bash(tail)`, `Bash(find)`, or `Bash(wc)` for tasks these tools handle. Reserve Bash exclusively for git commands, `date`, `mkdir`, and operations that genuinely require shell execution.
-- Agents MUST use `git -C <path>` instead of `cd <path> && git` to avoid compound commands that bypass permission patterns.
+- Agents MUST use `git -C <path>` instead of `cd <path> && git` to avoid compound commands. These `git -C` commands are validated and auto-approved by the PreToolUse hook (section 2.5), which verifies the path targets a valid ticket worktree.
+
+### 5.6 Hook Script Generation Rules
+
+`hooks/validate-git-worktree.sh` must:
+
+- Start with `#!/bin/bash`.
+- Read JSON from stdin (the Claude Code hook input). Use `jq` if available on `$PATH`, otherwise fall back to `grep -o`/`sed` for extracting JSON fields.
+- Extract `tool_input.command` and `cwd` from the input.
+- If the command does not contain `git` followed by `-C`, exit 0 with no output (fall through to normal permission system).
+- Extract the `-C <path>` argument using bash regex: `[[ "$CMD" =~ git[[:space:]]+-C[[:space:]]+([^[:space:]]+) ]]`.
+- Resolve the path: if relative, prepend `$CWD`. Extract the basename.
+- Validate the basename matches `*-worktree`. If not → deny with reason.
+- Extract the ticket ID by stripping the `-worktree` suffix from the basename (e.g., `TS-010-worktree` → `TS-010`).
+- Validate that `<resolved-path>/tickets/ongoing/<ticket-id>/` exists as a directory inside the worktree. If not → deny with reason.
+- On success: output `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"allow","permissionDecisionReason":"<reason>"}}`.
+- On denial: output `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"<reason>"}}`.
+- On any internal error (parse failure, missing fields): exit 0 with no output — falls through to the normal permission system.
+- MUST NOT hardcode any ticket prefix — the hook validates structural conventions only.
 
 ---
 
@@ -614,7 +682,7 @@ ticket-system/
 | D-7 | `/ticket-system-analyze` always targets the first ticket on the roadmap | No manual selection needed for the happy path. The roadmap is the priority queue. |
 | D-8 | 6 agents grouped by permission profile, not 1 agent per command | Permission profile factorization. Fewer files, more consistency. |
 | D-9 | Main session in `default` mode, privilege elevation via fork | Security by default. Permissions are in the design, not in user prompts. |
-| D-10 | Fine-grained Bash restrictions per agent via wildcard patterns | Least privilege principle. Each agent can only run commands necessary for its mission. |
+| D-10 | Fine-grained Bash patterns + PreToolUse hook for worktree validation | Least privilege: patterns restrict plain git commands per agent, hook validates and auto-approves `git -C` commands targeting valid ticket worktrees (section 2.5). |
 
 ---
 
@@ -643,6 +711,9 @@ After generation, verify:
 - [ ] `install.sh`
 - [ ] `init-project.sh`
 
+**Hooks** (`hooks/`):
+- [ ] `validate-git-worktree.sh`
+
 **Agents** (`agents/`):
 - [ ] `ticket-system-reader.md`
 - [ ] `ticket-system-editor.md`
@@ -669,7 +740,6 @@ After generation, verify:
 - [ ] Every agent has `skills: [ticket-system-conventions]` in its frontmatter.
 - [ ] Every agent uses dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for file operations — no `Bash(cat/grep/find/head/tail/wc/sed)`.
 - [ ] Every agent has restrictive Bash patterns for git/date/mkdir only (except `ticket-system-coder`).
-- [ ] Agent system prompts instruct use of `git -C <path>` instead of `cd && git` compound commands.
 - [ ] `ticket-system-conventions` has `user-invocable: false`.
 - [ ] Manual-only skills have `disable-model-invocation: true`.
 - [ ] Auto-invocable skills have `disable-model-invocation: false`.
@@ -683,3 +753,15 @@ After generation, verify:
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
 - [ ] `/ticket-system-merge` verifies ticket is in `completed/` before merging.
+
+### Hooks
+
+- [ ] `hooks/validate-git-worktree.sh` exists and is executable.
+- [ ] The hook reads `tool_input.command` and `cwd` from stdin JSON.
+- [ ] The hook extracts the `-C <path>` argument and resolves it to an absolute path.
+- [ ] The hook validates the basename matches `*-worktree`.
+- [ ] The hook extracts the ticket ID and checks `tickets/ongoing/<id>/` exists in the worktree.
+- [ ] The hook outputs `permissionDecision: "allow"` for valid paths, `"deny"` for invalid.
+- [ ] The hook works without `jq` (fallback to `grep`/`sed` parsing).
+- [ ] The hook does not hardcode any ticket prefix.
+- [ ] `install.sh` copies the hook to `$CLAUDE_DIR/hooks/` and merges PreToolUse config into `$CLAUDE_DIR/settings.json`.
