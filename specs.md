@@ -293,7 +293,7 @@ backlog → planned → ongoing → completed
 ```
 
 - **Create** → `tickets/backlog/PREFIX-XXX.md`
-- **Schedule** → validate, refine, `git mv` to `planned/`, insert into `roadmap.md`
+- **Schedule** → validate, refine, `git mv` to `planned/`, insert into `roadmap.yml`
 - **Activate** → verify `ongoing/` is empty, verify dependencies, create git worktree in `.worktrees/`, create `tickets/ongoing/PREFIX-XXX/` in worktree, move ticket inside
 - **Work** → all code changes scoped to the ticket (in worktree)
 - **Complete** → on VERDICT: PASS, verifier moves ticket to `completed/` in the worktree
