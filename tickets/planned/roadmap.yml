@@ -1,1 +1,9 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-026
+    title: "Absorb /ticket-system-split into /ticket-system-schedule"
+    size: small
+    priority: P0
+    dependencies:
+      - TS-025
+    rationale: "Phase B of TS-024 split. TS-025 (Phase A) is complete. Absorbs split proposals into the unified schedule command and removes /ticket-system-split."
