@@ -100,7 +100,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 
 | Agent | Model | permissionMode | Allowed Bash | Used by |
 |-------|-------|---------------|--------------|---------|
-| `ticket-system-reader` | haiku | plan | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)` | `/ticket-system-analyze` |
+| `ticket-system-reader` | haiku | plan | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)` | `/ticket-system-analyze`, `/ticket-system-help` |
 | `ticket-system-editor` | sonnet | acceptEdits | `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(find tickets/*)`, `Bash(cat *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
 | `ticket-system-planner` | opus | acceptEdits | `Bash(cat *)`, `Bash(find *)`, `Bash(wc *)`, `Bash(grep *)`, `Bash(head *)`, `Bash(tail *)`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
@@ -121,6 +121,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-implement` | `true` | Full autonomy, bypass permissions — never automatic |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `true` | Irreversible merge — always explicit |
+| `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
 
 ---
 
@@ -299,14 +300,13 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** → **analyze** (→ **split** if too large) → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). The worktree lifecycle spans from plan through merge.
+Pipeline: **create** → **schedule** → **analyze** (→ **split** if too large) → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
 
 ### 4.2 Detailed Command Specifications
 
 #### `/ticket-system-create`
 
-**Agent:** `ticket-system-editor` | **Auto-invocation:** yes
-**Argument:** `[title or description]`
+**Agent:** `ticket-system-editor` | **Auto-invocation:** yes | **Argument:** `[title or description]`
 
 **Behavior:**
 1. Read `.tickets/config.yml` (prefix, digits, tickets_dir).
@@ -324,8 +324,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-schedule`
 
-**Agent:** `ticket-system-editor` | **Auto-invocation:** yes
-**Argument:** `[ticket-id or description]`
+**Agent:** `ticket-system-editor` | **Auto-invocation:** yes | **Argument:** `[ticket-id or description]`
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
@@ -340,8 +339,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-analyze`
 
-**Agent:** `ticket-system-reader` | **Auto-invocation:** yes
-**Argument:** none (always picks the first ticket from `roadmap.md`)
+**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none (always picks the first ticket from `roadmap.md`)
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
@@ -359,8 +357,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-split`
 
-**Agent:** `ticket-system-editor` | **Auto-invocation:** no (manual)
-**Argument:** `[ticket-id]`
+**Agent:** `ticket-system-editor` | **Auto-invocation:** no (manual) | **Argument:** `[ticket-id]`
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
@@ -373,8 +370,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-plan`
 
-**Agent:** `ticket-system-planner` | **Auto-invocation:** no (manual)
-**Argument:** `[ticket-id]` (optional — if empty, checks `ongoing/` or takes the first from roadmap)
+**Agent:** `ticket-system-planner` | **Auto-invocation:** no (manual) | **Argument:** `[ticket-id]` (optional — if empty, checks `ongoing/` or takes the first from roadmap)
 
 **Behavior:**
 
@@ -409,8 +405,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-implement`
 
-**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual)
-**Argument:** none (works on the ticket in `ongoing/`)
+**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** none (works on the ticket in `ongoing/`)
 
 **Prerequisites to verify:**
 1. Exactly one ticket exists in `tickets/ongoing/`.
@@ -439,8 +434,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-verify`
 
-**Agent:** `ticket-system-verifier` | **Auto-invocation:** yes
-**Argument:** none
+**Agent:** `ticket-system-verifier` | **Auto-invocation:** yes | **Argument:** none
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
@@ -470,8 +464,7 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 
 #### `/ticket-system-merge`
 
-**Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual)
-**Argument:** none
+**Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual) | **Argument:** none
 
 **Prerequisite:** the ticket is in `tickets/completed/` in the worktree (placed there by `/ticket-system-verify` on VERDICT: PASS).
 
@@ -485,6 +478,20 @@ Pipeline: **create** → **schedule** → **analyze** (→ **split** if too larg
 7. If merge conflict: report the conflict and **STOP** — let the user resolve.
 8. Remove the worktree and delete the branch.
 9. Suggest running `/ticket-system-analyze` to evaluate the next ticket.
+
+#### `/ticket-system-help`
+
+**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** `[verb]` (optional command name)
+
+**Behavior (no argument):**
+1. Read `.tickets/config.yml`.
+2. Print all ticket-system commands with one-line descriptions.
+3. Scan `tickets/` subdirectories (backlog, planned, ongoing, completed, rejected), count tickets in each.
+4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
+
+**Behavior (with verb argument):**
+1. If the verb matches a known command (create, schedule, analyze, split, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
+2. If the verb is unknown, print an error listing all available verbs.
 
 ---
 
@@ -508,6 +515,8 @@ ticket-system/
     ├── ticket-system-conventions/
     │   └── SKILL.md
     ├── ticket-system-create/
+    │   └── SKILL.md
+    ├── ticket-system-help/
     │   └── SKILL.md
     ├── ticket-system-schedule/
     │   └── SKILL.md
@@ -643,6 +652,7 @@ After generation, verify:
 **Skills** (`skills/`), each containing `SKILL.md`:
 - [ ] `ticket-system-conventions/`
 - [ ] `ticket-system-create/`
+- [ ] `ticket-system-help/`
 - [ ] `ticket-system-schedule/`
 - [ ] `ticket-system-analyze/`
 - [ ] `ticket-system-split/`
