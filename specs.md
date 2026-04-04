@@ -455,19 +455,6 @@ Dependencies resolved: ordering rationale
 6. Add log entry to each ticket.
 7. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 
-#### `/ticket-system-split`
-
-**Agent:** `ticket-system-editor` | **Auto-invocation:** no (manual) | **Argument:** `[ticket-id]`
-
-**Behavior:**
-1. Read `.tickets/config.yml`.
-2. Read the target ticket.
-3. Propose **2-4 splitting strategies** (by layer, by feature, incremental delivery, by concern). For each: proposed sub-tickets with title, scope, complexity, dependency chain, pros/cons.
-5. **Wait for the user's choice.** Do not proceed without approval.
-6. Once approved: assign sequential IDs, create in `backlog/`, set dependencies, reject the original with log entry, `git mv` to `rejected/`.
-7. Commit: `PREFIX-XXX: Split into sub-tickets`
-8. Suggest running `/ticket-system-schedule` on the new sub-tickets.
-
 #### `/ticket-system-plan`
 
 **Agent:** `ticket-system-planner` | **Auto-invocation:** no (manual) | **Argument:** `[ticket-id]` (optional — if empty, checks `ongoing/` or takes the first from roadmap)
