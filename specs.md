@@ -5,6 +5,42 @@
 > **Instruction for Claude Code:**
 > Read this specification in its entirety. Then generate ALL described files in the indicated directory structure, ready to be installed into `$CLAUDE_DIR`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
 
+## Table of Contents
+
+- [1. Vision and Philosophy](#1-vision-and-philosophy)
+  - [1.1 What We're Building](#11-what-were-building)
+  - [1.2 Core Principles](#12-core-principles)
+  - [1.3 Installation Directory Variable](#13-installation-directory-variable)
+  - [1.4 Permission Philosophy](#14-permission-philosophy)
+- [2. Technical Architecture](#2-technical-architecture)
+  - [2.1 Two Complementary Layers: Skills + Agents](#21-two-complementary-layers-skills--agents)
+  - [2.2 Shared Skill: ticket-system-conventions](#22-shared-skill-ticket-system-conventions)
+  - [2.3 Agent Profiles (6 agents, 3 permission levels)](#23-agent-profiles-6-agents-3-permission-levels)
+  - [2.4 Automatic vs Manual Invocation](#24-automatic-vs-manual-invocation)
+- [3. Data Model](#3-data-model)
+  - [3.1 Project Configuration](#31-project-configuration)
+  - [3.2 Directory Structure](#32-directory-structure)
+  - [3.3 Ticket Format](#33-ticket-format)
+  - [3.4 Roadmap Format](#34-roadmap-format)
+  - [3.5 Lifecycle (6 phases)](#35-lifecycle-6-phases)
+  - [3.6 ID Assignment](#36-id-assignment)
+  - [3.7 Commit Convention](#37-commit-convention)
+  - [3.8 Plan Artifacts](#38-plan-artifacts)
+- [4. Command Pipeline](#4-command-pipeline)
+  - [4.1 Overview](#41-overview)
+  - [4.2 Detailed Command Specifications](#42-detailed-command-specifications)
+- [5. Generation Rules](#5-generation-rules)
+  - [5.1 File Tree to Generate](#51-file-tree-to-generate)
+  - [5.2 File Formatting Rules](#52-file-formatting-rules)
+  - [5.3 Installation Script](#53-installation-script)
+  - [5.4 Project Initialization Script](#54-project-initialization-script)
+  - [5.5 Technical Constraints](#55-technical-constraints)
+- [6. Decisions Already Made](#6-decisions-already-made-do-not-revisit)
+- [7. Future Extensions](#7-future-extensions-do-not-implement-now)
+- [8. Validation Checklist](#8-validation-checklist)
+  - [Structural completeness](#structural-completeness--all-required-files-present)
+  - [Frontmatter and permissions](#frontmatter-and-permissions)
+
 ---
 
 ## 1. VISION AND PHILOSOPHY
