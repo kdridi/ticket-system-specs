@@ -748,11 +748,9 @@ ticket-system/
 
 These items are documented for reference. Do NOT generate them in the current version.
 
-- `/ticket-system-schedule-batch`: schedule multiple tickets at once with topological sorting.
 - Makefile with `verify-ticket` target: duplicate checks, max 1 ongoing, status/directory consistency.
 - Claude Code Stop hook `verify-ticket-completion.sh`: detect orphaned files after moves, check consistency.
 - Pre-commit hooks: linting, YAML/TOML validation.
-- Dedicated `ticket-analyzer` agent: standalone sub-agent for complexity analysis (currently embedded in `/ticket-system-analyze`).
 - Mermaid state diagram of command transitions.
 - `uninstall.sh` script.
 
