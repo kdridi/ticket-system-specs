@@ -411,7 +411,13 @@ For each ticket in the batch:
    - Risk (unknowns)
    - Estimated size (effort)
    - Independence (separate testability)
-4. **Flag decision**: if any dimension is High or overall complexity is large, flag as "needs attention" (reported to user, but no auto-split).
+4. **Flag decision**: if any dimension is High, more than 3 acceptance criteria span multiple concerns, or more than 5 files are affected, flag the ticket as "needs split."
+5. **Split proposal** (for flagged tickets only): propose 2-4 sub-tickets. Each sub-ticket includes:
+   - Title and scope derived from the original ticket's acceptance criteria.
+   - Dependency chain between sub-tickets (ordering constraints).
+   - Individual complexity estimate (each must be small or medium).
+   - Rationale for the split boundary.
+   Sub-tickets inherit the parent ticket's priority and type.
 
 **Phase 3 — Present unified scheduling plan:**
 ```
