@@ -440,24 +440,6 @@ Dependencies resolved: ordering rationale
 5. Add log entry to each ticket.
 6. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 
-#### `/ticket-system-analyze`
-
-**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none (always picks the first ticket from `roadmap.yml`)
-
-**Behavior:**
-1. Read `.tickets/config.yml`.
-2. Read `roadmap.yml`, identify the first ticket (position 1).
-3. Read the ticket file from `planned/`.
-4. Verify all dependencies are in `completed/`. If not, report which ones are blocking.
-
-**7-dimension complexity analysis** (each rated Low / Medium / High): Scope (files/functions), Criteria (count, testability), Cross-cutting (layers), Dependencies (foundational work), Risk (unknowns), Estimated size (effort), Independence (separate testability).
-
-**Verdict:**
-- **Ready** (all ≤ Medium, ≤3 criteria, ≤3 files, single concern): suggest `/ticket-system-plan`.
-- **Needs split** (any High, >3 criteria across concerns, >5 files): suggest `/ticket-system-split`.
-
-**Readiness checks:** architecture alignment, TDD readiness, documentation sufficiency.
-
 #### `/ticket-system-split`
 
 **Agent:** `ticket-system-editor` | **Auto-invocation:** no (manual) | **Argument:** `[ticket-id]`
