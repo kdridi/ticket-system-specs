@@ -146,8 +146,8 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 3. `git worktree remove/prune` → allow (cleanup operations).
 
 **For `git -C <path>` commands:**
-1. Extract the `-C <path>` argument from the command.
-2. Resolve to absolute path (prepend `$CWD` if relative). Validate the basename matches `*-worktree`.
+1. Only match if the command starts with `git -C` (anchored match to avoid false positives on `-C` inside commit messages or other quoted arguments).
+2. Extract the `-C <path>` argument. Resolve to absolute path (prepend `$CWD` if relative). Validate the basename matches `*-worktree`.
 3. If valid → `permissionDecision: "allow"` with reason. If invalid → `permissionDecision: "deny"` with reason.
 
 **Hook file:** `$CLAUDE_DIR/hooks/validate-git-worktree.sh`
@@ -681,7 +681,7 @@ ticket-system/
 - Other `git worktree` subcommands → exit 0 (fall through).
 
 **3. `git -C <path>` commands:**
-- If the command does not contain `git` followed by `-C`, exit 0 (fall through).
+- If the command does not start with `git -C` (anchored match: `^git\s+-C\s+`), exit 0 (fall through). This avoids false matches on `-C` appearing inside quoted arguments such as commit messages.
 - Extract the `-C <path>` argument using bash regex: `[[ "$CMD" =~ git[[:space:]]+-C[[:space:]]+([^[:space:]]+) ]]`.
 - Resolve the path: if relative, prepend `$CWD`. Extract the basename.
 - Validate the basename matches `*-worktree`. If valid → allow with reason. If not → deny with reason.
