@@ -104,7 +104,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
 | `ticket-system-reader` | haiku | plan | `Read`, `Glob`, `Grep` | `/ticket-system-help` |
-| `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-split` |
+| `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
 | `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
 | `ticket-system-verifier` | sonnet | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
