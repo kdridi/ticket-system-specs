@@ -1,11 +1,11 @@
 ---
 id: TS-016
 title: "Add /ticket-system-next command for automatic next-action detection"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 14:51:07
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -77,3 +77,4 @@ None. TS-024 dependency removed — TS-024's pipeline simplification was complet
 - 2026-04-04 12:00:00: Ticket created from external audit (M2).
 - 2026-04-04 13:00:00: Updated — detection logic adapted to post-TS-024 pipeline (analyze removed, schedule accepts IDs). Added TS-024 as dependency. Added .pending detection for doctor integration.
 - 2026-04-05 04:34:28: Removed TS-024 dependency — TS-024 was rejected; its pipeline simplification objectives were completed via TS-025/TS-026.
+- 2026-04-05 14:51:07: Ticket activated — moved to ongoing, worktree created.

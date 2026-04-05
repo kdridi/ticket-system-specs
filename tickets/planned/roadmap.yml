@@ -1,9 +1,4 @@
 tickets:
-  - id: TS-016
-    title: "Add /ticket-system-next command for automatic next-action detection"
-    priority: P1
-    dependencies: []
-
   - id: TS-007
     title: "Establish a conventions skill size budget and split strategy"
     priority: P1
