@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 15:13:10
+updated: 2026-04-05 15:17:08
 dependencies:
   - TS-015
 assignee: unassigned
@@ -41,7 +41,8 @@ The counting mechanism is simple: `grep -c "VERDICT: FAIL" ticket.md`.
 - TS-015 (MAX_RETRY variable definition)
 
 ## Files Modified
-- `specs.md` (sections 0, 4.2)
+- `specs.md` (sections 4.2, 8) — verify FAIL attempt counting, implement retry limit prerequisite, run retry limit handling, validation checklist
+- `CLAUDE.md` — deep validation reference updated to mention retry counter
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -53,3 +54,4 @@ The counting mechanism is simple: `grep -c "VERDICT: FAIL" ticket.md`.
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W14 + M1).
 - 2026-04-05 15:13:10: Ticket activated, moved to ongoing.
+- 2026-04-05 15:17:08: Implementation complete. Updated specs.md (verify FAIL counting, implement retry gate, run retry handling, validation checklist) and CLAUDE.md.
