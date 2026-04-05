@@ -1,11 +1,11 @@
 ---
 id: TS-020
 title: "Add anti-drift guard to /ticket-system-implement"
-status: ongoing
+status: completed
 priority: P2
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 15:40:50
+updated: 2026-04-05 15:42:56
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -22,10 +22,10 @@ The coder agent runs with `bypassPermissions` because the plan has been human-ap
 Both audit reviews identified this as a risk. Rather than changing the permission model (which would add friction to the happy path), this ticket adds a lightweight verification instruction.
 
 ## Acceptance Criteria
-- [ ] The implement skill includes an explicit instruction: "Before each commit, verify that ALL modified files are listed in implementation-plan.md. If a file not in the plan was modified, add a log entry explaining why and flag it for user review."
-- [ ] The "Files Modified" section of the ticket is updated after implementation with the actual list of modified files
-- [ ] Any unplanned file modification is highlighted in the ticket log with prefix "[DRIFT]"
-- [ ] The verify skill checks for [DRIFT] entries and includes them in its report
+- [x] The implement skill includes an explicit instruction: "Before each commit, verify that ALL modified files are listed in implementation-plan.md. If a file not in the plan was modified, add a log entry explaining why and flag it for user review."
+- [x] The "Files Modified" section of the ticket is updated after implementation with the actual list of modified files
+- [x] Any unplanned file modification is highlighted in the ticket log with prefix "[DRIFT]"
+- [x] The verify skill checks for [DRIFT] entries and includes them in its report
 
 ## Technical Approach
 Update specs.md section 4.2 `/ticket-system-implement`:
@@ -54,3 +54,4 @@ Update specs.md section 4.2 `/ticket-system-verify`:
 - 2026-04-04 12:00:00: Ticket created from audit review (W4 + C3).
 - 2026-04-05 15:37:18: Ticket activated, moved to ongoing.
 - 2026-04-05 15:40:50: Implementation complete. All 4 steps executed: drift detection in implement, drift reporting in verify, validation checklist updates, CLAUDE.md sync.
+- 2026-04-05 15:42:56: VERDICT: PASS — Ticket completed.
