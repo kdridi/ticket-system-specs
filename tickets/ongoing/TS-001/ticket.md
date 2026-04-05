@@ -1,11 +1,11 @@
 ---
 id: TS-001
 title: "Add root README explaining the ticket system for developers and users"
-status: planned
+status: ongoing
 priority: P1
 type: docs
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 14:09:40
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -55,3 +55,4 @@ Write `README.md` with the following sections:
 ## Log
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-04 12:00:00: Updated scope — added worktree explanation, new commands, limitations section.
+- 2026-04-05 14:09:40: Ticket activated, moved to ongoing.

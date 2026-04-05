@@ -1,9 +1,4 @@
 tickets:
-  - id: TS-001
-    title: "Add root README explaining the ticket system for developers and users"
-    priority: P1
-    dependencies: []
-
   - id: TS-002
     title: "Add automated validation script for generated output"
     priority: P1
