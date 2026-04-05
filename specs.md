@@ -618,7 +618,9 @@ ticket-system/
     │   └── SKILL.md
     ├── ticket-system-verify/
     │   └── SKILL.md
-    └── ticket-system-merge/
+    ├── ticket-system-merge/
+    │   └── SKILL.md
+    └── ticket-system-abort/
         └── SKILL.md
 ```
 
