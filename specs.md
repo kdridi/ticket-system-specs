@@ -698,6 +698,7 @@ Dependencies resolved: ordering rationale
 6. Switch to the main branch.
 7. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
 8. If merge conflict: report the conflict and **STOP** — let the user resolve.
+   - **Manual conflict resolution:** The user resolves conflicts using standard git tools (`git diff`, `git add`). After resolution, the user commits the merge (`git commit`) and re-runs `/ticket-system-merge` which will detect the completed merge and proceed to worktree cleanup.
 9. Remove the worktree and delete the branch.
 10. Delete `.tickets/.pending`.
 11. Suggest checking the roadmap for the next ticket to plan.
