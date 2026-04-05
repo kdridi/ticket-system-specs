@@ -792,6 +792,7 @@ ticket-system/
 
 **The `ticket-system-conventions` skill** (`skills/ticket-system-conventions/SKILL.md`) must contain:
 - Frontmatter with `user-invocable: false`
+- Immediately after the frontmatter closing `---`, before any markdown heading, a line-count comment: `<!-- Lines: N/500 -->` where N is the total line count of the file. This gives generators and reviewers immediate visibility into budget usage.
 - The entire data model from section 3: config, directory structure, ticket format, roadmap format, lifecycle, ID assignment, commit convention, plan artifact formats.
 
 ### 5.3 Installation Script
