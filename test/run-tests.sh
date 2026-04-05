@@ -3,6 +3,9 @@
 # Provisions isolated repos, runs structural checks, and tears down.
 # Usage: bash test/run-tests.sh
 #        GENERATED_OUTPUT_DIR=/path/to/output bash test/run-tests.sh
+#        MANUAL_TEST_DIR=/path/to/repo MANUAL_TEST_TICKET_ID=PROJ-001 \
+#          MANUAL_TEST_SCHEDULED_ID=PROJ-002 MANUAL_TEST_PLANNED_ID=PROJ-003 \
+#          bash test/run-tests.sh
 
 set -euo pipefail
 
@@ -386,5 +389,10 @@ test_validate_sh
 test_validate_spec_sh
 test_validate_tests
 test_init_project_structure
+
+# Command coverage tests (require MANUAL_TEST_DIR)
+test_create_command
+test_schedule_command
+test_plan_command
 
 print_summary
