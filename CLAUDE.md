@@ -118,7 +118,7 @@ All ticket timestamps (`created`, `updated`, log entries) **must** be obtained b
 ## Constraints
 
 - Uses Claude Code **Skills format** (not legacy `.claude/commands/`)
-- `ticket-system-conventions` skill must not exceed **500 lines**. When nearing the limit (400+ lines), plan artifact formats (`implementation-plan.md`, `test-plan.md` templates) can be extracted into `ticket-system-conventions-extended`. See specs.md section 6 D-13 for the full split strategy.
+- `ticket-system-conventions` skill must not exceed **500 lines**. When nearing the limit (400+ lines), plan artifact formats (`implementation-plan.md`, `test-plan.md`, `research-plan.md`, `validation-criteria.md` templates) can be extracted into `ticket-system-conventions-extended`. See specs.md section 6 D-13 for the full split strategy.
 - Skill descriptions must be under **250 characters**
 - All files in **English**
 - **POSIX-only** dependencies (bash, git, standard utils) — no npm, no pip
