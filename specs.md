@@ -546,7 +546,7 @@ Dependencies resolved: ordering rationale
 4. Find the active ticket in `tickets/ongoing/<ticket-id>/`.
 5. Read `test-plan.md`.
 
-**Verification checklist:** Run the full test suite. Verify each test case in `test-plan.md` exists and passes. Check the coverage map (every criterion covered). Walk through each acceptance criterion with evidence. Check for regressions.
+**Verification checklist:** First, read `test_command` from `.tickets/config.yml`. If `test_command` is set, run the test suite via `bash -c "<test_command>"` in the worktree directory. If `test_command` is not set, fall back to auto-detection: try `npm test`, `pytest`, or `make test` based on what is available in the project. Then verify each test case in `test-plan.md` exists and passes. Check the coverage map (every criterion covered). Walk through each acceptance criterion with evidence. Check for regressions.
 
 **Verdict:** Either `VERDICT: PASS` (all criteria met, all tests passing, no regressions) or `VERDICT: FAIL` (list failed criteria and test failures, recommend next action).
 
