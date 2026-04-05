@@ -110,6 +110,8 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - Human approval gates at `/ticket-system-schedule` and `/ticket-system-plan` stages, using AskUserQuestion inside forked agents (elevated permissions preserved); agents self-evaluate before engaging user; bypassable with yes/--yes
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 - Fine-grained Bash patterns for plain git + PreToolUse hook for `git worktree`, `git -C`, and `mkdir` worktree validation
+- Single-developer workflow by design — multi-developer usage on the same repository is not supported
+- Forked agent contexts do not inherit parent conversation history — include relevant context in command arguments
 
 ## Timestamp Rule
 
