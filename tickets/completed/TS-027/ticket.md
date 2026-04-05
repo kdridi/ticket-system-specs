@@ -1,11 +1,11 @@
 ---
 id: TS-027
 title: "Add /ticket-system-doctor diagnostic skill (read-only checks)"
-status: ongoing
+status: completed
 priority: P0
 type: feature
 created: 2026-04-05 02:50:01
-updated: 2026-04-05 03:41:01
+updated: 2026-04-05 03:43:06
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -22,15 +22,15 @@ The ticket system performs multi-step operations (git mv + frontmatter update + 
 Split from TS-012 (original medium-complexity ticket). TS-028 adds the `.pending` transaction log to mutative commands, extending this ticket's checks.
 
 ## Acceptance Criteria
-- [ ] A new skill `/ticket-system-doctor` exists with its own SKILL.md
-- [ ] The command uses the `ticket-system-reader` agent (read-only diagnostics)
-- [ ] The command checks: frontmatter `status` matches the directory the ticket is in (backlog/planned/ongoing/completed/rejected)
-- [ ] The command checks: orphaned git worktrees (worktree exists but no corresponding ticket in ongoing/)
-- [ ] The command checks: stale roadmap entries (ticket referenced in roadmap but not in planned/)
-- [ ] The command checks: multiple tickets in ongoing/ (should be max 1)
-- [ ] Each issue is reported with a clear description and a suggested fix command
-- [ ] The command does NOT auto-fix — it reports and suggests. User decides.
-- [ ] `disable-model-invocation: false` (safe to auto-invoke, read-only)
+- [x] A new skill `/ticket-system-doctor` exists with its own SKILL.md
+- [x] The command uses the `ticket-system-reader` agent (read-only diagnostics)
+- [x] The command checks: frontmatter `status` matches the directory the ticket is in (backlog/planned/ongoing/completed/rejected)
+- [x] The command checks: orphaned git worktrees (worktree exists but no corresponding ticket in ongoing/)
+- [x] The command checks: stale roadmap entries (ticket referenced in roadmap but not in planned/)
+- [x] The command checks: multiple tickets in ongoing/ (should be max 1)
+- [x] Each issue is reported with a clear description and a suggested fix command
+- [x] The command does NOT auto-fix — it reports and suggests. User decides.
+- [x] `disable-model-invocation: false` (safe to auto-invoke, read-only)
 
 ## Technical Approach
 Add to specs.md:
@@ -63,3 +63,4 @@ Add to specs.md:
 - 2026-04-05 02:50:01: Ticket created as sub-ticket A of TS-012 split. Scheduled to planned (position 2).
 - 2026-04-05 03:35:53: Ticket activated. Moved to ongoing.
 - 2026-04-05 03:41:01: Implementation complete. All 8 plan steps executed across 7 commits (step 8 was already covered by step 3).
+- 2026-04-05 03:43:06: VERDICT: PASS — Ticket completed.
