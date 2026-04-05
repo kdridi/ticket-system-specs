@@ -1,11 +1,11 @@
 ---
 id: TS-023
 title: "Add documentation clarifications and known limitations from audit reviews"
-status: planned
+status: ongoing
 priority: P3
 type: docs
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 16:24:21
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -48,3 +48,4 @@ Add the following to specs.md:
 
 ## Log
 - 2026-04-04 12:00:00: Ticket created — groups minor documentation items from audit reviews (M5, M9, M10, mono-dev clarification).
+- 2026-04-05 16:24:21: Ticket activated — moved to ongoing, worktree created.
