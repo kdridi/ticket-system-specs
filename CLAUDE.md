@@ -95,7 +95,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - **Only modify** `CLAUDE.md`, `README.md`, and `specs.md` — no other files belong here.
 - **Keep `CLAUDE.md` in sync with `specs.md`** — whenever `specs.md` is modified, review `CLAUDE.md` and update it to reflect any changes that affect project guidance, workflow descriptions, or design decisions.
 - **Keep `specs.md` self-contained** — it must work as a single prompt with no external context.
-- **Preserve the 8-section structure** of `specs.md` (Vision, Architecture, Data Model, Commands, Generation Rules, Decisions, Future, Validation).
+- **Preserve the 9-section structure** of `specs.md` (Configuration Variables, Vision, Architecture, Data Model, Commands, Generation Rules, Decisions, Future, Validation). Section 0 (Configuration Variables) is the only section users should customize before generation.
 - **Commit messages** should describe what aspect of the spec changed (e.g., "Refine agent permission model" not "Update specs.md").
 
 ## Key Design Decisions
