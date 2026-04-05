@@ -36,6 +36,63 @@ record_skip() {
   echo "  [SKIP] $name — $reason"
 }
 
+# --- Assertion helpers for command coverage tests ---
+
+assert_file_exists() {
+  local file_path="$1"
+  local label="$2"
+  if [ -e "$file_path" ]; then
+    record_pass "$label"
+  else
+    record_fail "$label (file not found: $file_path)"
+  fi
+}
+
+assert_file_not_exists() {
+  local file_path="$1"
+  local label="$2"
+  if [ ! -e "$file_path" ]; then
+    record_pass "$label"
+  else
+    record_fail "$label (file unexpectedly exists: $file_path)"
+  fi
+}
+
+assert_frontmatter_field() {
+  local file_path="$1"
+  local field="$2"
+  local expected="$3"
+  local label="$4"
+  if [ ! -f "$file_path" ]; then
+    record_fail "$label (file not found: $file_path)"
+    return
+  fi
+  # Extract frontmatter value: find line matching "^field: value" between --- delimiters
+  # Handles both quoted and unquoted values
+  local actual
+  actual=$(sed -n '/^---$/,/^---$/{ /^'"$field"':/{ s/^'"$field"': *//; s/^"//; s/"$//; s/^ *//; p; } }' "$file_path" | head -1)
+  if [ "$actual" = "$expected" ]; then
+    record_pass "$label"
+  else
+    record_fail "$label (expected '$expected', got '$actual')"
+  fi
+}
+
+assert_file_contains() {
+  local file_path="$1"
+  local pattern="$2"
+  local label="$3"
+  if [ ! -f "$file_path" ]; then
+    record_fail "$label (file not found: $file_path)"
+    return
+  fi
+  if grep -q "$pattern" "$file_path" 2>/dev/null; then
+    record_pass "$label"
+  else
+    record_fail "$label (pattern not found: $pattern)"
+  fi
+}
+
 # --- Setup and teardown ---
 
 TEST_ENV_DIR=""
