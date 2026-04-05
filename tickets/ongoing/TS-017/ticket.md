@@ -1,11 +1,11 @@
 ---
 id: TS-017
 title: "Add retry counter for implement-verify loop with forced re-plan"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 15:13:10
 dependencies:
   - TS-015
 assignee: unassigned
@@ -52,3 +52,4 @@ The counting mechanism is simple: `grep -c "VERDICT: FAIL" ticket.md`.
 
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W14 + M1).
+- 2026-04-05 15:13:10: Ticket activated, moved to ongoing.
