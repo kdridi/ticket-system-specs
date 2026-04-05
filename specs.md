@@ -985,6 +985,10 @@ After generation, verify:
 - [ ] `/ticket-system-plan` contains a human gate (via `AskUserQuestion`) with self-evaluation after plan generation — agent stays forked.
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
+- [ ] `/ticket-system-implement` checks FAIL count in the ticket log against `$MAX_RETRY` before starting. If count >= `$MAX_RETRY`, refuses to run and outputs a re-plan message.
+- [ ] `/ticket-system-verify` appends attempt count to FAIL log entries (format: "VERDICT: FAIL (attempt N/$MAX_RETRY)").
+- [ ] The forced re-plan message in `/ticket-system-implement` includes "The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan."
+- [ ] `/ticket-system-run` handles retry-limit-blocked implement step and stops with a re-plan suggestion.
 - [ ] `/ticket-system-merge` verifies ticket is in `completed/` before merging.
 - [ ] `/ticket-system-abort` has `disable-model-invocation: true`.
 - [ ] `/ticket-system-abort` uses `AskUserQuestion` confirmation gate (destructive action), bypassable with `yes`/`--yes`.
