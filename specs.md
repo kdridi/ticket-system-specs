@@ -547,8 +547,9 @@ Dependencies resolved: ordering rationale
    a. **Tests first**: write the TDD tests specified in the step.
    b. **Implement**: write the code to make the tests pass.
    c. **Verify**: run tests (new + existing, no regressions).
-   d. **Commit**: `PREFIX-XXX: <step description>`
-6. After all steps: update `## Files Modified` and `## Log` in the ticket.
+   d. **Drift check**: run `git diff --name-only` to get the list of modified files. Compare each modified file against the files listed in `implementation-plan.md` for the current step. For any file not listed in the plan, add a `[DRIFT]` log entry to the ticket's `## Log`: `[DRIFT] Modified <file> — reason: <explanation>`. Continue with the commit regardless (drift is logged, not blocked).
+   e. **Commit**: `PREFIX-XXX: <step description>`
+6. After all steps: update `## Files Modified` in the ticket with the actual list of all files created or changed during implementation (comparing plan vs reality). Update `## Log` with a completion entry.
 7. Commit ticket updates.
 
 **Error handling:** fix in-scope test failures, log and skip blocked steps, STOP if the entire plan is unworkable. On completion, suggest running `/ticket-system-verify`.
