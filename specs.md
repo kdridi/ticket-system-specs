@@ -340,7 +340,7 @@ backlog → planned → ongoing → completed
 - **Reject** → document reason, move to `rejected/` in the worktree
 - **Merge** → worktree branch merged to main, worktree removed
 
-Note: `tickets/ongoing/` on main is always empty. Tickets are moved to `ongoing/` only inside worktrees.
+Note: `tickets/ongoing/` on main is always empty because active tickets live in worktrees. This allows planning and scheduling to continue on main while implementation runs in parallel in a worktree. Tickets are moved to `ongoing/` only inside worktrees.
 
 ### 3.6 ID Assignment
 
