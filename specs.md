@@ -106,7 +106,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | `ticket-system-reader` | haiku | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)` | `/ticket-system-help`, `/ticket-system-doctor` |
 | `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
 | `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
-| `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
+| `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run` |
 | `ticket-system-verifier` | sonnet | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)`, `Bash(date *)` | `/ticket-system-merge`, `/ticket-system-abort` |
 
@@ -126,6 +126,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-implement` | `false` | Runs in isolated worktree — safe to chain |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `false` | Requires completed status — safe to chain |
+| `ticket-system-run` | `false` | Chains safe-to-chain skills; plan has its own human gate |
 | `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
 | `ticket-system-doctor` | `false` | Read-only diagnostics, zero risk |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
@@ -367,7 +368,7 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status. `/ticket-system-doctor` is a read-only diagnostic tool that checks the ticket system for consistency issues (status/directory mismatches, orphaned worktrees, stale roadmap entries) and reports findings with suggested fixes. `/ticket-system-abort` is an escape hatch available at any point after plan (when a worktree exists) — it cleanly abandons the active ticket, moves it to `rejected/`, and removes the worktree and branch.
+Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. For end-to-end execution, `/ticket-system-run <ticket-id>` chains plan → implement → verify → merge in sequence, stopping on failure at any step (the user can then `/ticket-system-abort` to clean up). Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status. `/ticket-system-doctor` is a read-only diagnostic tool that checks the ticket system for consistency issues (status/directory mismatches, orphaned worktrees, stale roadmap entries) and reports findings with suggested fixes. `/ticket-system-abort` is an escape hatch available at any point after plan (when a worktree exists) — it cleanly abandons the active ticket, moves it to `rejected/`, and removes the worktree and branch.
 
 ### 4.2 Detailed Command Specifications
 
@@ -553,6 +554,31 @@ Dependencies resolved: ordering rationale
 8. Remove the worktree and delete the branch.
 9. Suggest checking the roadmap for the next ticket to plan.
 
+#### `/ticket-system-run`
+
+**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** `<ticket-id>` (e.g., `PROJ-003`)
+
+This is an orchestration command that chains four sub-skills in sequence: plan → implement → verify → merge. It stops immediately if any step fails, letting the user inspect and either fix the issue or `/ticket-system-abort`.
+
+**Behavior:**
+1. Read `.tickets/config.yml` to get the prefix and configuration.
+2. Validate the ticket-id argument is provided. The ticket must exist in `tickets/planned/` (not yet activated) or `tickets/ongoing/` (already activated by a prior `/ticket-system-plan` that was interrupted). If `$ARGUMENTS` contains `yes` or `--yes`, note it for forwarding to the plan step.
+3. **Step 1 — Plan:** Invoke `/ticket-system-plan <ticket-id>` via the Skill tool (forward `--yes` if present).
+   - After return, verify success: check that `.worktrees/<ticket-id>-worktree` exists and contains `tickets/ongoing/<ticket-id>/implementation-plan.md` and `test-plan.md`.
+   - If verification fails → report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
+4. **Step 2 — Implement:** Invoke `/ticket-system-implement <ticket-id>` via the Skill tool.
+   - After return, verify success: check for implementation commits in the worktree beyond the plan commits.
+   - If the sub-skill reported failure or no implementation commits exist → report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
+5. **Step 3 — Verify:** Invoke `/ticket-system-verify <ticket-id>` via the Skill tool.
+   - After return, check for `VERDICT: PASS` in the output, or verify `tickets/completed/<ticket-id>/` exists in the worktree.
+   - If VERDICT: FAIL → report "STOPPED at verify step — VERDICT: FAIL" with failure details. Suggest re-running `/ticket-system-implement` to fix issues, then `/ticket-system-verify`, or `/ticket-system-abort` to abandon. **STOP.**
+6. **Step 4 — Merge:** Invoke `/ticket-system-merge <ticket-id>` via the Skill tool.
+   - After return, verify the worktree has been removed and the branch deleted.
+   - If merge conflict → report "STOPPED at merge step — merge conflict" and let the user resolve. **STOP.**
+7. On full success, report: "Ticket <ticket-id> completed: planned, implemented, verified, and merged."
+
+**Note on human gates:** The plan sub-skill contains its own `AskUserQuestion` human gate. The user will still be prompted for plan approval unless `--yes` was forwarded. This preserves the human-in-the-loop design.
+
 #### `/ticket-system-abort`
 
 **Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual) | **Argument:** none (finds the active ticket automatically)
@@ -581,7 +607,7 @@ Dependencies resolved: ordering rationale
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, abort, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, run, abort, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 #### `/ticket-system-doctor`
@@ -657,6 +683,8 @@ ticket-system/
     ├── ticket-system-verify/
     │   └── SKILL.md
     ├── ticket-system-merge/
+    │   └── SKILL.md
+    ├── ticket-system-run/
     │   └── SKILL.md
     ├── ticket-system-abort/
     │   └── SKILL.md
@@ -834,6 +862,7 @@ After generation, verify:
 - [ ] `ticket-system-implement/`
 - [ ] `ticket-system-verify/`
 - [ ] `ticket-system-merge/`
+- [ ] `ticket-system-run/`
 - [ ] `ticket-system-abort/`
 - [ ] `ticket-system-doctor/`
 
@@ -862,6 +891,11 @@ After generation, verify:
 - [ ] `/ticket-system-abort` has `disable-model-invocation: true`.
 - [ ] `/ticket-system-abort` uses `AskUserQuestion` confirmation gate (destructive action), bypassable with `yes`/`--yes`.
 - [ ] `/ticket-system-abort` uses the `ticket-system-ops` agent.
+- [ ] `/ticket-system-run` uses the `ticket-system-coder` agent (needs unrestricted tool access for Skill invocation).
+- [ ] `/ticket-system-run` has `disable-model-invocation: false`.
+- [ ] `/ticket-system-run` verifies filesystem state after each sub-skill invocation before proceeding.
+- [ ] `/ticket-system-run` stops and reports on failure at any step.
+- [ ] `/ticket-system-run` forwards `--yes` to the plan sub-skill when present.
 - [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
 - [ ] `/ticket-system-doctor` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` performs NO file modifications — reports and suggests only.

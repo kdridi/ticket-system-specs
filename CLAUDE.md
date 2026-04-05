@@ -27,7 +27,7 @@ Only these two files belong in this repo. Generated output should not be committ
 - `install.sh` — prompts for install directory, then copies agents/skills to `$CLAUDE_DIR`
 - `init-project.sh` — initializes a new project with ticket structure
 - 6 agent files in `agents/` (reader, editor, planner, coder, verifier, ops)
-- 10 skill directories in `skills/` (conventions + 9 slash commands), each containing `SKILL.md`
+- 11 skill directories in `skills/` (conventions + 10 slash commands), each containing `SKILL.md`
 
 ## Iterative Workflow
 
@@ -87,7 +87,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code in verify, prerequisites in implement/merge)
+- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure)
 
 ## Rules for Working on This Repo
 
