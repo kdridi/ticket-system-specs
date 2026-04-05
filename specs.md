@@ -356,7 +356,14 @@ One ticket may span multiple commits.
 
 ### 3.8 Plan Artifacts
 
-Two files live in `tickets/ongoing/PREFIX-XXX/`:
+Plan artifacts live in `tickets/ongoing/PREFIX-XXX/`. There are two sets of artifacts depending on ticket type:
+
+- **Standard artifacts** (`implementation-plan.md` + `test-plan.md`) — for code tickets (`feature`, `bugfix`, `refactor`, `docs`, `infrastructure`).
+- **Research artifacts** (`research-plan.md` + `validation-criteria.md`) — for tickets with `type: research`.
+
+#### Standard Plan Artifacts
+
+Two files for code tickets:
 
 **`implementation-plan.md`:**
 ```markdown
@@ -395,6 +402,46 @@ Which testing approach (unit, integration, both).
 | Acceptance Criterion | Test Cases |
 |---------------------|------------|
 | Criterion 1         | TC-1, TC-3 |
+```
+
+#### Research Plan Artifacts
+
+Two files for research tickets (`type: research`):
+
+**`research-plan.md`:**
+```markdown
+# Research Plan — PREFIX-XXX
+
+## Questions to Answer
+1. Question 1
+2. Question 2
+
+## Sources to Investigate
+- Source category 1
+- Source category 2
+
+## Findings Document Structure
+- Section 1: ...
+- Section 2: ...
+
+## Decision Framework
+How the findings should inform a decision.
+```
+
+**`validation-criteria.md`:**
+```markdown
+# Validation Criteria — PREFIX-XXX
+
+## Completeness Criteria
+- All research questions answered with evidence
+- ...
+
+## Evidence Requirements
+- Sources cited for each finding
+- ...
+
+## Deliverable Format
+Expected structure of findings.md
 ```
 
 ---
