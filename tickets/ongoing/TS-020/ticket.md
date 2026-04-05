@@ -1,11 +1,11 @@
 ---
 id: TS-020
 title: "Add anti-drift guard to /ticket-system-implement"
-status: planned
+status: ongoing
 priority: P2
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 15:37:18
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -50,3 +50,4 @@ Update specs.md section 4.2 `/ticket-system-verify`:
 
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W4 + C3).
+- 2026-04-05 15:37:18: Ticket activated, moved to ongoing.
