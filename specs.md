@@ -913,6 +913,8 @@ After generation, verify:
 - [ ] Only `ticket-system-abort` has `disable-model-invocation: true` (destructive).
 - [ ] All other skills have `disable-model-invocation: false`.
 - [ ] No prefix is hardcoded — everything comes from `.tickets/config.yml`.
+- [ ] `ticket-system-verifier` agent includes `Bash(bash -c *)` in its allowed tools (for configurable test command execution).
+- [ ] `init-project.sh` generates a `.tickets/config.yml` that includes a commented-out `# test_command: "npm test"` line.
 - [ ] Read-only agent (`ticket-system-reader`) has `permissionMode: plan`.
 - [ ] All other agents (`ticket-system-editor`, `ticket-system-planner`, `ticket-system-coder`, `ticket-system-verifier`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
 - [ ] `install.sh` prompts for installation directory and copies everything to `$CLAUDE_DIR`.
