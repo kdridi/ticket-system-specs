@@ -188,7 +188,10 @@ Every project using this system has a `.tickets/config.yml`:
 prefix: "PROJ"           # Ticket ID prefix (PROJ-001, PROJ-002, ...)
 digits: 3                # Zero-padding width
 tickets_dir: "tickets"   # Root directory for tickets
+# test_command: "npm test"  # Optional: custom test runner command
 ```
+
+**`test_command`** is optional. When set, the verifier uses this command instead of auto-detecting the test runner. When omitted, the verifier falls back to auto-detection (`npm test`, `pytest`, `make test`).
 
 **Absolute rule:** all commands, templates, and scripts read this file first. No hardcoded prefixes.
 
