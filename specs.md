@@ -3,7 +3,7 @@
 > **This document is a self-contained prompt.** Feed it to Claude Code (Opus 4.6) and it will generate the entire system: agents, skills, install scripts, and documentation.
 >
 > **Instruction for Claude Code:**
-> Read this specification in its entirety. Then generate ALL described files in the indicated directory structure, ready to be installed into `$CLAUDE_DIR`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
+> Read this specification in its entirety. Before generating any files, resolve all `$VARIABLE` references (e.g., `$WEAK_MODEL`, `$MID_MODEL`, `$STRONG_MODEL`, `$MAX_RETRY`) using the defaults from section 0. Then generate ALL described files in the indicated directory structure, ready to be installed into `$CLAUDE_DIR`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
 
 ---
 
