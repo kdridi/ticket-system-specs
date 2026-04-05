@@ -639,14 +639,24 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
 
 **Behavior:**
 1. Read `.tickets/config.yml` (prefix, digits, tickets_dir).
-2. **Status/directory mismatch check:** Scan all ticket files across all subdirectories (`backlog/`, `planned/`, `ongoing/`, `completed/`, `rejected/`). For each ticket, read frontmatter `status` and verify it matches the parent directory name. Report mismatches.
-3. **Orphaned worktree check:** Run `git worktree list` and parse the output. For each worktree whose basename matches `*-worktree`, check that a corresponding ticket exists in `tickets/ongoing/` (either on main or inside that worktree). Report orphaned worktrees (worktree exists but no matching ongoing ticket).
-4. **Stale roadmap entries check:** Read `tickets/planned/roadmap.yml`. For each ticket ID referenced in the roadmap, verify that a corresponding ticket file exists in `tickets/planned/`. Report stale entries (referenced in roadmap but missing from `planned/`).
-5. **Multiple ongoing tickets check:** Count the number of ticket subdirectories in `tickets/ongoing/`. Report if more than 1 is found (the system enforces max 1 active ticket).
-6. **Report findings** as a structured checklist:
+2. **Incomplete transaction check:** Check if `.tickets/.pending` exists. If present, read the YAML contents (`operation`, `ticket`, `started`, `description`). Report as `[ISSUE]` with the operation name, ticket ID, start time, and description. Suggest recovery based on operation type:
+   - `schedule`: "Re-run `/ticket-system-schedule` to retry, or manually complete the scheduling."
+   - `plan`: "Re-run `/ticket-system-plan` to retry, or `/ticket-system-abort` to clean up."
+   - `merge`: "Re-run `/ticket-system-merge` to retry, or manually complete the merge."
+   - `abort`: "Re-run `/ticket-system-abort` to retry cleanup."
+3. **Status/directory mismatch check:** Scan all ticket files across all subdirectories (`backlog/`, `planned/`, `ongoing/`, `completed/`, `rejected/`). For each ticket, read frontmatter `status` and verify it matches the parent directory name. Report mismatches.
+4. **Orphaned worktree check:** Run `git worktree list` and parse the output. For each worktree whose basename matches `*-worktree`, check that a corresponding ticket exists in `tickets/ongoing/` (either on main or inside that worktree). Report orphaned worktrees (worktree exists but no matching ongoing ticket).
+5. **Stale roadmap entries check:** Read `tickets/planned/roadmap.yml`. For each ticket ID referenced in the roadmap, verify that a corresponding ticket file exists in `tickets/planned/`. Report stale entries (referenced in roadmap but missing from `planned/`).
+6. **Multiple ongoing tickets check:** Count the number of ticket subdirectories in `tickets/ongoing/`. Report if more than 1 is found (the system enforces max 1 active ticket).
+7. **Report findings** as a structured checklist:
 
 ```
 TICKET SYSTEM DIAGNOSTIC REPORT
+
+[OK]   No incomplete transactions
+[ISSUE] Incomplete transaction — operation "plan" on PREFIX-XXX started at 2026-04-05 02:50:01
+        Description: Activating ticket — creating worktree and moving to ongoing
+        Fix: Re-run /ticket-system-plan to retry, or /ticket-system-abort to clean up
 
 [OK]   Status/directory consistency — all N tickets match
 [ISSUE] Status/directory mismatch — PREFIX-XXX has status "planned" but is in completed/
