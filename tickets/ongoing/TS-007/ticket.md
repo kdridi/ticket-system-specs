@@ -1,11 +1,11 @@
 ---
 id: TS-007
 title: "Establish a conventions skill size budget and split strategy"
-status: planned
+status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 15:02:29
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -49,3 +49,4 @@ The constraint exists because very large skills degrade Claude Code's context ef
 
 ## Log
 - 2026-04-03 23:41:51: Ticket created.
+- 2026-04-05 15:02:29: Ticket activated, moved to ongoing.

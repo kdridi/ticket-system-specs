@@ -1,9 +1,4 @@
 tickets:
-  - id: TS-007
-    title: "Establish a conventions skill size budget and split strategy"
-    priority: P1
-    dependencies: [TS-002]
-
   - id: TS-017
     title: "Add retry counter for implement-verify loop with forced re-plan"
     priority: P1
