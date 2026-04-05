@@ -536,6 +536,7 @@ Dependencies resolved: ordering rationale
 1. The ticket exists in `tickets/ongoing/PREFIX-XXX/` inside the worktree at `.worktrees/PREFIX-XXX-worktree`.
 2. `implementation-plan.md` exists in the ticket's directory.
 3. The plan has been approved (check the ticket's Log for a plan generation entry).
+4. **Retry limit check:** Count FAIL entries in the ticket's `## Log` section (entries matching "VERDICT: FAIL (attempt"). If count >= `$MAX_RETRY`, STOP and output: "Implementation blocked: `$MAX_RETRY` consecutive verification failures reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." Do NOT proceed with implementation.
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
