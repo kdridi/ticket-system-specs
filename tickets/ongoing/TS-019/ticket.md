@@ -1,11 +1,11 @@
 ---
 id: TS-019
 title: "Tighten bash wildcard patterns per agent"
-status: planned
+status: ongoing
 priority: P2
 type: refactor
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 15:27:39
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -63,3 +63,4 @@ None. TS-024 dependency removed — TS-024's pipeline simplification was complet
 - 2026-04-04 12:00:00: Ticket created from external audit (M7).
 - 2026-04-04 13:00:00: Updated — adapted to post-TS-024 agent landscape (analyze/split removed, reader scope reduced).
 - 2026-04-05 04:34:28: Removed TS-024 dependency — TS-024 was rejected; its pipeline simplification objectives were completed via TS-025/TS-026.
+- 2026-04-05 15:27:39: Ticket activated — moved to ongoing, worktree created at .worktrees/TS-019-worktree.
