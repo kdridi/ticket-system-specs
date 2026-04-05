@@ -70,7 +70,7 @@ A **file-based, AI-native project management workflow** that runs entirely insid
 
 ### 1.2 Core Principles
 
-- **One active ticket at a time.** Focus over multitasking.
+- **One active ticket at a time.** Focus over multitasking. This constraint applies per `.tickets/` directory (per project), not per machine or per user. A developer working on multiple projects has independent ticket systems.
 - **No code changes without a ticket.** Even a one-line fix. The discipline is the product.
 - **The filesystem is the database.** Git is the audit trail.
 - **Each command is autonomous.** Any command can run independently.
