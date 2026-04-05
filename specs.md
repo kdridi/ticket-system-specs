@@ -108,7 +108,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement` |
 | `ticket-system-verifier` | sonnet | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
-| `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
+| `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)`, `Bash(date *)` | `/ticket-system-merge`, `/ticket-system-abort` |
 
 > **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
 >
@@ -126,6 +126,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-implement` | `true` | Full autonomy, bypass permissions — never automatic |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `true` | Irreversible merge — always explicit |
+| `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
 
 ### 2.5 PreToolUse Hook: Worktree Path Validation
