@@ -835,6 +835,7 @@ After generation, verify:
 - [ ] `ticket-system-verify/`
 - [ ] `ticket-system-merge/`
 - [ ] `ticket-system-abort/`
+- [ ] `ticket-system-doctor/`
 
 ### Frontmatter and permissions
 
@@ -861,6 +862,9 @@ After generation, verify:
 - [ ] `/ticket-system-abort` has `disable-model-invocation: true`.
 - [ ] `/ticket-system-abort` uses `AskUserQuestion` confirmation gate (destructive action), bypassable with `yes`/`--yes`.
 - [ ] `/ticket-system-abort` uses the `ticket-system-ops` agent.
+- [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
+- [ ] `/ticket-system-doctor` has `disable-model-invocation: false` (safe, read-only).
+- [ ] `/ticket-system-doctor` performs NO file modifications — reports and suggests only.
 
 ### Hooks
 
