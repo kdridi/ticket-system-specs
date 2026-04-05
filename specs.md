@@ -195,6 +195,10 @@ tickets_dir: "tickets"   # Root directory for tickets
 ### 3.2 Directory Structure
 
 ```
+.tickets/
+├── config.yml         # Project configuration (prefix, digits, tickets_dir)
+└── .pending           # Transient sentinel file — present only during multi-step operations
+
 tickets/
 ├── backlog/           # Rough ideas, not yet refined
 ├── planned/           # Refined, ready to activate
@@ -203,6 +207,17 @@ tickets/
 │   └── PREFIX-XXX/    # Contains ticket.md + plan artifacts
 ├── completed/         # Successfully finished tickets
 └── rejected/          # Cancelled or invalid tickets
+```
+
+**`.tickets/.pending` file format:**
+
+A YAML sentinel file written by mutative commands before starting multi-step operations and deleted on successful completion. Its presence indicates an interrupted transaction.
+
+```yaml
+operation: plan          # One of: schedule, plan, merge, abort
+ticket: PREFIX-XXX       # The ticket ID being operated on
+started: YYYY-MM-DD HH:MM:SS   # When the operation began
+description: "Activating ticket — creating worktree and moving to ongoing"
 ```
 
 ### 3.3 Ticket Format
