@@ -712,12 +712,12 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
 1. Read `.tickets/config.yml` to get the prefix and configuration.
 2. Validate the ticket-id argument is provided. The ticket must exist in `tickets/planned/` (not yet activated) or `tickets/ongoing/` (already activated by a prior `/ticket-system-plan` that was interrupted). If `$ARGUMENTS` contains `yes` or `--yes`, note it for forwarding to the plan step.
 3. **Step 1 — Plan:** Invoke `/ticket-system-plan <ticket-id>` via the Skill tool (forward `--yes` if present).
-   - After return, verify success: check that `.worktrees/<ticket-id>-worktree` exists and contains `tickets/ongoing/<ticket-id>/implementation-plan.md` and `test-plan.md`.
+   - After return, verify success: check that `.worktrees/<ticket-id>-worktree` exists and contains the expected plan artifacts in `tickets/ongoing/<ticket-id>/`. Read the ticket's `type` from frontmatter: if `type: research`, check for `research-plan.md` and `validation-criteria.md`; otherwise check for `implementation-plan.md` and `test-plan.md`.
    - If verification fails → report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
 4. **Step 2 — Implement:** Invoke `/ticket-system-implement <ticket-id>` via the Skill tool.
-   - After return, verify success: check for implementation commits in the worktree beyond the plan commits.
+   - After return, verify success: for research tickets, check that `findings.md` exists in `tickets/ongoing/<ticket-id>/`; for code tickets, check for implementation commits in the worktree beyond the plan commits.
    - If the sub-skill was blocked by the retry limit (`$MAX_RETRY` consecutive failures) → report "STOPPED at implement step — retry limit reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." **STOP.**
-   - If the sub-skill reported failure or no implementation commits exist → report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
+   - If the sub-skill reported failure or verification fails → report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
 5. **Step 3 — Verify:** Invoke `/ticket-system-verify <ticket-id>` via the Skill tool.
    - After return, check for `VERDICT: PASS` in the output, or verify `tickets/completed/<ticket-id>/` exists in the worktree.
    - If VERDICT: FAIL → report "STOPPED at verify step — VERDICT: FAIL" with failure details. Suggest re-running `/ticket-system-implement` to fix issues, then `/ticket-system-verify`, or `/ticket-system-abort` to abandon. **STOP.**
