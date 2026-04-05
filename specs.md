@@ -794,6 +794,7 @@ After generation, verify:
 - [ ] `ticket-system-implement/`
 - [ ] `ticket-system-verify/`
 - [ ] `ticket-system-merge/`
+- [ ] `ticket-system-abort/`
 
 ### Frontmatter and permissions
 
@@ -817,6 +818,9 @@ After generation, verify:
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
 - [ ] `/ticket-system-merge` verifies ticket is in `completed/` before merging.
+- [ ] `/ticket-system-abort` has `disable-model-invocation: true`.
+- [ ] `/ticket-system-abort` uses `AskUserQuestion` confirmation gate (destructive action), bypassable with `yes`/`--yes`.
+- [ ] `/ticket-system-abort` uses the `ticket-system-ops` agent.
 
 ### Hooks
 
