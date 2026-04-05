@@ -1,11 +1,11 @@
 ---
 id: TS-016
 title: "Add /ticket-system-next command for automatic next-action detection"
-status: ongoing
+status: completed
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 14:57:53
+updated: 2026-04-05 14:59:47
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -22,12 +22,12 @@ After TS-024, the pipeline is simplified to 7 commands: create, schedule, plan, 
 Identified as the most valuable UX improvement in the external audit review.
 
 ## Acceptance Criteria
-- [ ] A new skill `/ticket-system-next` exists with its own SKILL.md
-- [ ] The command uses the `ticket-system-reader` agent (read-only state inspection)
-- [ ] The command detects the current system state and suggests the appropriate next action
-- [ ] The command covers all pipeline states (see detection logic below)
-- [ ] The output includes: what it detected, what it recommends, and the exact command to run
-- [ ] `disable-model-invocation: false` (safe, read-only)
+- [x] A new skill `/ticket-system-next` exists with its own SKILL.md
+- [x] The command uses the `ticket-system-reader` agent (read-only state inspection)
+- [x] The command detects the current system state and suggests the appropriate next action
+- [x] The command covers all pipeline states (see detection logic below)
+- [x] The output includes: what it detected, what it recommends, and the exact command to run
+- [x] `disable-model-invocation: false` (safe, read-only)
 
 ## Technical Approach
 Add to specs.md:
@@ -80,3 +80,4 @@ None. TS-024 dependency removed — TS-024's pipeline simplification was complet
 - 2026-04-05 04:34:28: Removed TS-024 dependency — TS-024 was rejected; its pipeline simplification objectives were completed via TS-025/TS-026.
 - 2026-04-05 14:51:07: Ticket activated — moved to ongoing, worktree created.
 - 2026-04-05 14:57:53: Implementation complete — added /ticket-system-next command spec to specs.md (sections 2.3, 2.4, 4.1, 4.2, 5.1, 8) and updated CLAUDE.md skill count.
+- 2026-04-05 14:59:47: VERDICT: PASS — Ticket completed.
