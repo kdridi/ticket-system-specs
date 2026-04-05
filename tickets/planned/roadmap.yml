@@ -1,19 +1,12 @@
 tickets:
   - position: 1
-    id: TS-013
-    title: "Add /ticket-system-abort command to abandon ongoing tickets"
-    size: small
-    priority: P0
-    dependencies: []
-    rationale: "P0 blocker — no clean exit path when a ticket fails mid-implementation"
-  - position: 2
     id: TS-027
     title: "Add /ticket-system-doctor diagnostic skill (read-only checks)"
     size: small
     priority: P0
     dependencies: []
     rationale: "P0 — diagnostic read-only foundation required before .pending instrumentation in TS-028"
-  - position: 3
+  - position: 2
     id: TS-028
     title: "Add .pending transaction log to all mutative commands"
     size: small
