@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 14:42:32
+updated: 2026-04-05 14:47:13
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -56,10 +56,13 @@ Add to the generation preamble: "Resolve all $VARIABLE references using the defa
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (add section 0, update section 2.3)
+- `specs.md` — added section 0 (Configuration Variables), updated ToC, replaced hardcoded model names in section 2.3 with `$VARIABLE` references, added variable resolution instruction to preamble
+- `CLAUDE.md` — updated section structure reference from 8 to 9 sections, noted section 0 as user-customizable
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Variables use `$VARIABLE` syntax (dollar-sign prefix) for clarity in the spec context. These are resolved by Claude Code at generation time, not by bash.
+- `MAX_RETRY` is defined now but not yet referenced in the spec body; TS-017 will add the usage.
+- Section 0 is placed before the ToC with horizontal rule separators for visual clarity.
 
 ## Notes
 - The variable system is resolved at generation time, not at runtime. The generated files contain the resolved values.
@@ -69,3 +72,4 @@ Add to the generation preamble: "Resolve all $VARIABLE references using the defa
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W16).
 - 2026-04-05 14:42:32: Ticket activated, moved to ongoing.
+- 2026-04-05 14:47:13: Implementation complete. Added section 0 with 4 variables, replaced model names in 2.3, updated preamble and CLAUDE.md.
