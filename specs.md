@@ -639,6 +639,36 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
 11. Commit on main: `PREFIX-XXX: Abort ticket — <title>`.
 12. Delete `.tickets/.pending`.
 
+#### `/ticket-system-next`
+
+**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none
+
+**Behavior:**
+1. Read `.tickets/config.yml` (prefix, digits, tickets_dir).
+2. **Detection logic** — evaluate checks in priority order, stop at the first match:
+
+   **Check 1 — Incomplete transaction:** If `.tickets/.pending` exists, suggest `/ticket-system-doctor`.
+
+   **Check 2 — Active worktree exists:** Run `git worktree list` and look for a worktree matching `.worktrees/*-worktree`. If found, extract the ticket ID from the worktree directory name and inspect its state:
+   - **(a)** If the ticket is in `tickets/completed/` inside the worktree, suggest `/ticket-system-merge PREFIX-XXX`.
+   - **(b)** If `git -C <worktree> diff` shows uncommitted changes (code modified since last commit), suggest `/ticket-system-verify PREFIX-XXX`.
+   - **(c)** If `tickets/ongoing/PREFIX-XXX/implementation-plan.md` exists in the worktree, suggest `/ticket-system-implement PREFIX-XXX`.
+   - **(d)** Otherwise (ticket is ongoing but no plan yet), suggest `/ticket-system-plan PREFIX-XXX`.
+
+   **Check 3 — Planned tickets in roadmap:** Read `tickets/planned/roadmap.yml`. If it contains entries, read the first ticket (position 1) and suggest `/ticket-system-plan PREFIX-XXX`.
+
+   **Check 4 — Backlog tickets exist:** Scan `tickets/backlog/`. If tickets are found, list them and suggest `/ticket-system-schedule PREFIX-XXX [PREFIX-YYY ...]`.
+
+   **Check 5 — Empty system:** No tickets anywhere. Suggest `/ticket-system-create`.
+
+3. **Output format:**
+```
+Status: <what was detected — e.g., "Ticket PREFIX-XXX has been implemented in worktree, awaiting verification.">
+Next action: <exact command to run — e.g., "/ticket-system-verify PREFIX-XXX">
+```
+
+> **Note:** This command does not auto-invoke the suggested command. It only reports the detection and recommendation. The user decides whether to run it.
+
 #### `/ticket-system-help`
 
 **Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** `[verb]` (optional command name)
