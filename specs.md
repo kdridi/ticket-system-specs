@@ -444,6 +444,32 @@ How the findings should inform a decision.
 Expected structure of findings.md
 ```
 
+#### Research Output Artifact
+
+The implement phase for research tickets produces a single deliverable:
+
+**`findings.md`:**
+```markdown
+# Findings — PREFIX-XXX
+
+## Summary
+One-paragraph executive summary of the research results.
+
+## Findings by Question
+### Q1: <question from research-plan.md>
+<answer with evidence>
+
+### Q2: <question from research-plan.md>
+<answer with evidence>
+
+## Recommendation
+Decision or next step informed by the findings.
+
+## Sources
+- Source 1
+- Source 2
+```
+
 ---
 
 ## 4. COMMAND PIPELINE
