@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 14:51:07
+updated: 2026-04-05 14:57:53
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -62,7 +62,8 @@ Next action: /ticket-system-verify
 None. TS-024 dependency removed — TS-024's pipeline simplification was completed via TS-025/TS-026.
 
 ## Files Modified
-- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1)
+- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1, 8)
+- `CLAUDE.md` (skill count updated from 11 to 12)
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -78,3 +79,4 @@ None. TS-024 dependency removed — TS-024's pipeline simplification was complet
 - 2026-04-04 13:00:00: Updated — detection logic adapted to post-TS-024 pipeline (analyze removed, schedule accepts IDs). Added TS-024 as dependency. Added .pending detection for doctor integration.
 - 2026-04-05 04:34:28: Removed TS-024 dependency — TS-024 was rejected; its pipeline simplification objectives were completed via TS-025/TS-026.
 - 2026-04-05 14:51:07: Ticket activated — moved to ongoing, worktree created.
+- 2026-04-05 14:57:53: Implementation complete — added /ticket-system-next command spec to specs.md (sections 2.3, 2.4, 4.1, 4.2, 5.1, 8) and updated CLAUDE.md skill count.
