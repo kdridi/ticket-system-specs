@@ -680,7 +680,7 @@ Next action: <exact command to run — e.g., "/ticket-system-verify PREFIX-XXX">
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, run, abort, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, run, abort, next, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 #### `/ticket-system-doctor`
@@ -950,6 +950,7 @@ After generation, verify:
 - [ ] `ticket-system-run/`
 - [ ] `ticket-system-abort/`
 - [ ] `ticket-system-doctor/`
+- [ ] `ticket-system-next/`
 
 ### Frontmatter and permissions
 
@@ -983,6 +984,8 @@ After generation, verify:
 - [ ] `/ticket-system-run` verifies filesystem state after each sub-skill invocation before proceeding.
 - [ ] `/ticket-system-run` stops and reports on failure at any step.
 - [ ] `/ticket-system-run` forwards `--yes` to the plan sub-skill when present.
+- [ ] `/ticket-system-next` uses the `ticket-system-reader` agent (read-only state inspection).
+- [ ] `/ticket-system-next` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
 - [ ] `/ticket-system-doctor` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` performs NO file modifications — reports and suggests only.
