@@ -1,11 +1,11 @@
 ---
 id: TS-014
 title: "Add configurable test_command to project configuration"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 14:35:08
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -51,3 +51,4 @@ Update specs.md:
 
 ## Log
 - 2026-04-04 12:00:00: Ticket created from external audit (M8).
+- 2026-04-05 14:35:08: Ticket activated, moved to ongoing.
