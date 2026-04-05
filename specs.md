@@ -771,7 +771,9 @@ ticket-system/
     │   └── SKILL.md
     ├── ticket-system-abort/
     │   └── SKILL.md
-    └── ticket-system-doctor/
+    ├── ticket-system-doctor/
+    │   └── SKILL.md
+    └── ticket-system-next/
         └── SKILL.md
 ```
 
