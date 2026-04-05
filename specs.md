@@ -5,8 +5,24 @@
 > **Instruction for Claude Code:**
 > Read this specification in its entirety. Then generate ALL described files in the indicated directory structure, ready to be installed into `$CLAUDE_DIR`. Every file must be complete and functional. Do not skip any file. At the end, generate an `install.sh` script that copies everything to the right location, and an `init-project.sh` script that initializes a new project.
 
+---
+
+## 0. CONFIGURATION VARIABLES
+
+> **This is the only section you should customize before generation.** Modify the defaults below to control model selection, retry behavior, and other parameters across the entire generated system.
+
+| Variable | Default | Used in | Description |
+|----------|---------|---------|-------------|
+| `WEAK_MODEL` | haiku | reader agent (section 2.3) | Model for read-only operations |
+| `MID_MODEL` | sonnet | editor, verifier, ops agents (section 2.3) | Model for structured edits and verification |
+| `STRONG_MODEL` | opus | planner, coder agents (section 2.3) | Model for deep analysis and implementation |
+| `MAX_RETRY` | 3 | implement-verify loop (section 4) | Max verify failures before forced re-plan |
+
+---
+
 ## Table of Contents
 
+- [0. Configuration Variables](#0-configuration-variables)
 - [1. Vision and Philosophy](#1-vision-and-philosophy)
   - [1.1 What We're Building](#11-what-were-building)
   - [1.2 Core Principles](#12-core-principles)
@@ -103,12 +119,12 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
-| `ticket-system-reader` | haiku | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)` | `/ticket-system-help`, `/ticket-system-doctor` |
-| `ticket-system-editor` | sonnet | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
-| `ticket-system-planner` | opus | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
-| `ticket-system-coder` | opus | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run` |
-| `ticket-system-verifier` | sonnet | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(bash -c *)`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
-| `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)`, `Bash(date *)` | `/ticket-system-merge`, `/ticket-system-abort` |
+| `ticket-system-reader` | `$WEAK_MODEL` | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)` | `/ticket-system-help`, `/ticket-system-doctor` |
+| `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
+| `ticket-system-planner` | `$STRONG_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
+| `ticket-system-coder` | `$STRONG_MODEL` | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run` |
+| `ticket-system-verifier` | `$MID_MODEL` | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(bash -c *)`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
+| `ticket-system-ops` | `$MID_MODEL` | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)`, `Bash(date *)` | `/ticket-system-merge`, `/ticket-system-abort` |
 
 > **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
 >
