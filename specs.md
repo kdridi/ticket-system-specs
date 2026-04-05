@@ -120,7 +120,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
 | `ticket-system-reader` | `$WEAK_MODEL` | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)`, `Bash(git diff *)` | `/ticket-system-help`, `/ticket-system-doctor`, `/ticket-system-next` |
-| `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
+| `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv tickets/*)`, `Bash(git commit -m *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
 | `ticket-system-planner` | `$STRONG_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | `$STRONG_MODEL` | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run` |
 | `ticket-system-verifier` | `$MID_MODEL` | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(bash -c *)`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv *)`, `Bash(git add *)`, `Bash(git commit *)`, `Bash(date *)` | `/ticket-system-verify` |
