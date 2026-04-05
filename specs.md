@@ -455,13 +455,15 @@ Dependencies resolved: ordering rationale
 **Do not return to the main agent.** The forked agent handles the full question-and-answer loop and the subsequent execution so that elevated permissions remain active throughout.
 
 **Phase 4 — Execute on approval:**
-1. `git mv` approved tickets from `backlog/` to `planned/`.
-2. `git mv` rejected tickets from `backlog/` to `rejected/`.
-3. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
-4. **Execute approved splits:** assign sequential IDs to sub-tickets, create them directly in `planned/` (already evaluated). Update the original ticket: add `## Sub-tickets` listing new IDs, set `status: rejected`, add log entry, `git mv` to `rejected/`. If the user rejected the split, schedule the ticket normally (step 1).
-5. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets) at correct positions (dependency ordering, then priority P0 > P1 > P2). Re-number positions.
-6. Add log entry to each ticket.
-7. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
+1. Write `.tickets/.pending` with `operation: schedule`, `ticket:` listing all ticket IDs in scope, `started: <now>`, `description: "Scheduling tickets — moving to planned and updating roadmap"`.
+2. `git mv` approved tickets from `backlog/` to `planned/`.
+3. `git mv` rejected tickets from `backlog/` to `rejected/`.
+4. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
+5. **Execute approved splits:** assign sequential IDs to sub-tickets, create them directly in `planned/` (already evaluated). Update the original ticket: add `## Sub-tickets` listing new IDs, set `status: rejected`, add log entry, `git mv` to `rejected/`. If the user rejected the split, schedule the ticket normally (step 2).
+6. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets) at correct positions (dependency ordering, then priority P0 > P1 > P2). Re-number positions.
+7. Add log entry to each ticket.
+8. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
+9. Delete `.tickets/.pending`.
 
 #### `/ticket-system-plan`
 
