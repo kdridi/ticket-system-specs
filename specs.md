@@ -560,8 +560,9 @@ Dependencies resolved: ordering rationale
 - Understand patterns and conventions in the project.
 
 **Phase 3 — Plan generation:**
-- Write `implementation-plan.md` in the ticket directory (format described in section 3.8).
-- Write `test-plan.md` in the ticket directory (format described in section 3.8).
+- Check the ticket's frontmatter `type` field.
+- **If `type: research`:** Write `research-plan.md` and `validation-criteria.md` in the ticket directory (research artifact formats described in section 3.8).
+- **Otherwise (all other types):** Write `implementation-plan.md` and `test-plan.md` in the ticket directory (standard artifact formats described in section 3.8).
 
 **Phase 4 — Human gate.**
 - Commit: `PREFIX-XXX: Generate implementation and test plans`
