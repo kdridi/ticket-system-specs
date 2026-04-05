@@ -5,7 +5,7 @@ status: ongoing
 priority: P2
 type: feature
 created: 2026-04-05 04:34:35
-updated: 2026-04-05 15:54:10
+updated: 2026-04-05 15:58:53
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -71,7 +71,8 @@ Expected structure of findings.md
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (sections 3.8, 4.2)
+- `specs.md` (sections 3.8, 4.2, 5.2, 6 D-13)
+- `CLAUDE.md` (Constraints section)
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -83,3 +84,4 @@ Expected structure of findings.md
 ## Log
 - 2026-04-05 04:34:35: Ticket created as sub-ticket of TS-021 (split).
 - 2026-04-05 15:54:10: Ticket activated, moved to ongoing.
+- 2026-04-05 15:58:53: Implementation complete. All 4 steps done: section 3.8 research artifact formats, section 4.2 conditional plan logic, section 5.2 and D-13 references, CLAUDE.md sync.
