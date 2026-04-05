@@ -1,11 +1,11 @@
 ---
 id: TS-005b
 title: "Add command coverage tests to test harness"
-status: planned
+status: ongoing
 priority: P2
 type: infrastructure
 created: 2026-04-05 04:34:19
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 16:03:37
 dependencies: [TS-005a]
 assignee: unassigned
 estimated_complexity: small
@@ -45,3 +45,4 @@ Once the scaffold from TS-005a is in place, the harness needs actual test cases.
 
 ## Log
 - 2026-04-05 04:34:19: Ticket created as sub-ticket of TS-005 (split).
+- 2026-04-05 16:03:37: Ticket activated, moved to ongoing.
