@@ -83,10 +83,115 @@ print_summary() {
   fi
 }
 
+# --- Test: validate.sh against generated output ---
+
+test_validate_sh() {
+  echo "Test: validate.sh against generated output"
+  if [ -z "${GENERATED_OUTPUT_DIR:-}" ]; then
+    record_skip "validate.sh" "Set GENERATED_OUTPUT_DIR=/path/to/output to enable"
+    return
+  fi
+  if [ ! -d "$GENERATED_OUTPUT_DIR" ]; then
+    record_fail "validate.sh — GENERATED_OUTPUT_DIR does not exist: $GENERATED_OUTPUT_DIR"
+    return
+  fi
+  if bash "$PROJECT_ROOT/validate.sh" "$GENERATED_OUTPUT_DIR" > /dev/null 2>&1; then
+    record_pass "validate.sh"
+  else
+    record_fail "validate.sh"
+  fi
+}
+
+# --- Test: validate-spec.sh ---
+
+test_validate_spec_sh() {
+  echo "Test: validate-spec.sh"
+  if [ ! -f "$PROJECT_ROOT/validate-spec.sh" ]; then
+    record_skip "validate-spec.sh" "Script not found"
+    return
+  fi
+  if bash "$PROJECT_ROOT/validate-spec.sh" > /dev/null 2>&1; then
+    record_pass "validate-spec.sh"
+  else
+    record_fail "validate-spec.sh"
+  fi
+}
+
+# --- Test: test-validate.sh ---
+
+test_validate_tests() {
+  echo "Test: test-validate.sh"
+  if [ ! -f "$PROJECT_ROOT/test-validate.sh" ]; then
+    record_skip "test-validate.sh" "Script not found"
+    return
+  fi
+  if bash "$PROJECT_ROOT/test-validate.sh" > /dev/null 2>&1; then
+    record_pass "test-validate.sh"
+  else
+    record_fail "test-validate.sh"
+  fi
+}
+
+# --- Test: init-project.sh structural verification ---
+
+test_init_project_structure() {
+  echo "Test: init-project.sh structural verification"
+  if [ -z "${GENERATED_OUTPUT_DIR:-}" ] || [ ! -f "${GENERATED_OUTPUT_DIR}/init-project.sh" ]; then
+    record_skip "init-project.sh structure" "Set GENERATED_OUTPUT_DIR with init-project.sh to enable"
+    return
+  fi
+
+  setup_test_env
+
+  # Verify expected directories exist
+  local dirs=("tickets/backlog" "tickets/planned" "tickets/ongoing" "tickets/completed" "tickets/rejected")
+  for dir in "${dirs[@]}"; do
+    if [ -d "$TEST_ENV_DIR/$dir" ]; then
+      record_pass "init-project: $dir/ exists"
+    else
+      record_fail "init-project: $dir/ missing"
+    fi
+  done
+
+  # Verify .tickets/config.yml exists
+  if [ -f "$TEST_ENV_DIR/.tickets/config.yml" ]; then
+    record_pass "init-project: .tickets/config.yml exists"
+  else
+    record_skip "init-project: .tickets/config.yml" "init-project.sh may not create config"
+  fi
+
+  # Verify .gitignore contains .worktrees/
+  if [ -f "$TEST_ENV_DIR/.gitignore" ] && grep -q '\.worktrees/' "$TEST_ENV_DIR/.gitignore" 2>/dev/null; then
+    record_pass "init-project: .gitignore has .worktrees/"
+  else
+    record_fail "init-project: .gitignore missing .worktrees/ entry"
+  fi
+
+  # Verify .gitkeep files exist
+  local gitkeep_found=0
+  for dir in "${dirs[@]}"; do
+    if [ -f "$TEST_ENV_DIR/$dir/.gitkeep" ]; then
+      gitkeep_found=$((gitkeep_found + 1))
+    fi
+  done
+  if [ "$gitkeep_found" -eq "${#dirs[@]}" ]; then
+    record_pass "init-project: .gitkeep files in all ticket dirs"
+  else
+    record_fail "init-project: .gitkeep files missing ($gitkeep_found/${#dirs[@]} found)"
+  fi
+
+  teardown_test_env
+}
+
 # --- Main ---
 
 echo "ticket-system-specs test harness"
 echo "================================"
 echo ""
+
+test_validate_sh
+test_validate_spec_sh
+test_validate_tests
+test_init_project_structure
 
 print_summary
