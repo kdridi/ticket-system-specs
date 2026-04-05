@@ -472,19 +472,20 @@ Dependencies resolved: ordering rationale
 **Behavior:**
 
 **Phase 1 — Activation (if the ticket is not already in ongoing):**
-1. Verify `tickets/ongoing/` is empty.
-2. Verify all dependencies are in `completed/`.
-3. Create a git worktree inside the project:
+1. Write `.tickets/.pending` with `operation: plan`, `ticket: PREFIX-XXX`, `started: <now>`, `description: "Activating ticket — creating worktree and moving to ongoing"`.
+2. Verify `tickets/ongoing/` is empty.
+3. Verify all dependencies are in `completed/`.
+4. Create a git worktree inside the project:
    ```bash
    mkdir -p .worktrees
    git worktree add .worktrees/PREFIX-XXX-worktree -b ticket/PREFIX-XXX
    ```
-4. Work in the worktree from this point forward.
-5. Create `tickets/ongoing/PREFIX-XXX/`.
-6. `git mv` the ticket inside.
-7. Remove its entry from `roadmap.yml`.
-8. Update frontmatter: `status: ongoing`, `updated: <now>`.
-9. Commit activation changes in the worktree.
+5. Work in the worktree from this point forward.
+6. Create `tickets/ongoing/PREFIX-XXX/`.
+7. `git mv` the ticket inside.
+8. Remove its entry from `roadmap.yml`.
+9. Update frontmatter: `status: ongoing`, `updated: <now>`.
+10. Commit activation changes in the worktree.
 
 **Phase 2 — Codebase analysis:**
 - Read acceptance criteria, technical approach, context.
@@ -504,6 +505,8 @@ Dependencies resolved: ordering rationale
   3. **If issues detected:** The agent identifies specific concerns (e.g., "step 3 may conflict with existing module X", "test coverage is thin on error paths", "unclear whether we should use approach A or B for the parser"). It uses `AskUserQuestion` to collect the user's input on each concern, revises the plans accordingly, amends the commit, and loops back to step 1.
 
 **Do not return to the main agent.** The forked agent handles the full review loop so elevated permissions remain available for plan adjustments.
+
+- Delete `.tickets/.pending`.
 
 #### `/ticket-system-implement`
 
