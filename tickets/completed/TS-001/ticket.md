@@ -1,11 +1,11 @@
 ---
 id: TS-001
 title: "Add root README explaining the ticket system for developers and users"
-status: ongoing
+status: completed
 priority: P1
 type: docs
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 14:14:15
+updated: 2026-04-05 14:15:25
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -20,13 +20,13 @@ Create a `README.md` at the repository root that explains the ticket system from
 The repository currently has no README, making it hard for newcomers to understand the purpose of the project, how to generate the system from `specs.md`, and how to install and run the resulting ticket workflow system in their own projects.
 
 ## Acceptance Criteria
-- [ ] README exists at the repository root
-- [ ] README has a section explaining how the ticket system works (concepts, directory structure, agents, skills, slash commands)
-- [ ] README has a section explaining how to generate the system from `specs.md`
-- [ ] README has a section explaining how to install the generated system into a target project
-- [ ] README has a section explaining how to initialize and use the system in a new project
-- [ ] README includes a brief explanation of the worktree model (why ongoing/ on main stays empty, how planning continues while implementation runs in a worktree)
-- [ ] README is written in plain English, no emojis, clear and concise
+- [x] README exists at the repository root
+- [x] README has a section explaining how the ticket system works (concepts, directory structure, agents, skills, slash commands)
+- [x] README has a section explaining how to generate the system from `specs.md`
+- [x] README has a section explaining how to install the generated system into a target project
+- [x] README has a section explaining how to initialize and use the system in a new project
+- [x] README includes a brief explanation of the worktree model (why ongoing/ on main stays empty, how planning continues while implementation runs in a worktree)
+- [x] README is written in plain English, no emojis, clear and concise
 
 ## Technical Approach
 Write `README.md` with the following sections:
@@ -58,3 +58,4 @@ Write `README.md` with the following sections:
 - 2026-04-04 12:00:00: Updated scope — added worktree explanation, new commands, limitations section.
 - 2026-04-05 14:09:40: Ticket activated, moved to ongoing.
 - 2026-04-05 14:14:15: Implementation complete. Created README.md, updated CLAUDE.md.
+- 2026-04-05 14:15:25: VERDICT: PASS — Ticket completed.
