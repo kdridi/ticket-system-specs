@@ -994,6 +994,8 @@ After generation, verify:
 - [ ] `/ticket-system-doctor` checks `.tickets/.pending` as its FIRST diagnostic (step 2, immediately after reading config).
 - [ ] All mutative commands (`/ticket-system-schedule`, `/ticket-system-plan`, `/ticket-system-merge`, `/ticket-system-abort`) write `.tickets/.pending` before starting multi-step work.
 - [ ] All mutative commands delete `.tickets/.pending` on successful completion.
+- [ ] `ticket-system-conventions` SKILL.md does not exceed 500 lines.
+- [ ] `ticket-system-conventions` SKILL.md has a `<!-- Lines: N/500 -->` comment with correct count.
 
 ### Hooks
 
