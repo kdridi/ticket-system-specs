@@ -565,14 +565,16 @@ Dependencies resolved: ordering rationale
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
-2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
-3. Verify the worktree is clean (no uncommitted changes).
-4. Verify the ticket is in `tickets/completed/` in the worktree (not in `ongoing/`).
-5. Switch to the main branch.
-6. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
-7. If merge conflict: report the conflict and **STOP** — let the user resolve.
-8. Remove the worktree and delete the branch.
-9. Suggest checking the roadmap for the next ticket to plan.
+2. Write `.tickets/.pending` with `operation: merge`, `ticket: PREFIX-XXX`, `started: <now>`, `description: "Merging ticket branch into main and cleaning up worktree"`.
+3. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
+4. Verify the worktree is clean (no uncommitted changes).
+5. Verify the ticket is in `tickets/completed/` in the worktree (not in `ongoing/`).
+6. Switch to the main branch.
+7. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
+8. If merge conflict: report the conflict and **STOP** — let the user resolve.
+9. Remove the worktree and delete the branch.
+10. Delete `.tickets/.pending`.
+11. Suggest checking the roadmap for the next ticket to plan.
 
 #### `/ticket-system-run`
 
