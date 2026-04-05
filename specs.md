@@ -552,6 +552,23 @@ Dependencies resolved: ordering rationale
 8. Remove the worktree and delete the branch.
 9. Suggest checking the roadmap for the next ticket to plan.
 
+#### `/ticket-system-abort`
+
+**Agent:** `ticket-system-ops` | **Auto-invocation:** no (manual) | **Argument:** none (finds the active ticket automatically)
+
+**Behavior:**
+1. Read `.tickets/config.yml`.
+2. Detect the active ticket: scan `tickets/ongoing/` on main first. If empty, list worktrees with `git worktree list` and check each for a ticket in `tickets/ongoing/`.
+3. If no active ticket found, report "Nothing to abort" and exit.
+4. **Confirmation gate:** use `AskUserQuestion` to confirm: "This will destroy the worktree and all uncommitted changes. Abort PREFIX-XXX?" Bypassable with `yes` or `--yes` in arguments.
+5. Copy the ticket file from the worktree to `tickets/rejected/PREFIX-XXX.md` on main.
+6. Update frontmatter: `status: rejected`, `updated: <now>` (via `date` command).
+7. Add log entry: `Ticket aborted by user.`
+8. Remove worktree: `git worktree remove .worktrees/PREFIX-XXX-worktree --force`.
+9. Delete branch: `git branch -D ticket/PREFIX-XXX`.
+10. If `.tickets/.pending` exists, remove it.
+11. Commit on main: `PREFIX-XXX: Abort ticket — <title>`.
+
 #### `/ticket-system-help`
 
 **Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** `[verb]` (optional command name)
