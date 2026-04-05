@@ -1,11 +1,11 @@
 ---
 id: TS-021a
 title: "Add research artifacts to plan phase for research-type tickets"
-status: planned
+status: ongoing
 priority: P2
 type: feature
 created: 2026-04-05 04:34:35
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 15:54:10
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -82,3 +82,4 @@ Expected structure of findings.md
 
 ## Log
 - 2026-04-05 04:34:35: Ticket created as sub-ticket of TS-021 (split).
+- 2026-04-05 15:54:10: Ticket activated, moved to ongoing.

@@ -1,23 +1,17 @@
 tickets:
   - position: 1
-    id: TS-021a
-    title: "Add research artifacts to plan phase for research-type tickets"
-    priority: P2
-    dependencies: []
-
-  - position: 2
     id: TS-005b
     title: "Add command coverage tests to test harness"
     priority: P2
     dependencies: [TS-005a]
 
-  - position: 3
+  - position: 2
     id: TS-021b
     title: "Add research implement/verify variant with findings and validation"
     priority: P2
     dependencies: [TS-021a]
 
-  - position: 4
+  - position: 3
     id: TS-023
     title: "Add documentation clarifications and known limitations from audit reviews"
     priority: P3
