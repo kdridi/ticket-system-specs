@@ -1,11 +1,11 @@
 ---
 id: TS-007
 title: "Establish a conventions skill size budget and split strategy"
-status: ongoing
+status: completed
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 15:08:21
+updated: 2026-04-05 15:10:45
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -22,10 +22,10 @@ The `ticket-system-conventions` skill is loaded by every agent and must remain u
 The constraint exists because very large skills degrade Claude Code's context efficiency. The limit is architectural, not arbitrary.
 
 ## Acceptance Criteria
-- [ ] `specs.md` section 6 (Decisions) documents the 500-line budget and how it should be managed
-- [ ] A split strategy is defined: which sections can be extracted into a separate `ticket-system-conventions-extended` skill if needed
-- [ ] The generated `ticket-system-conventions` skill tracks its current line count in a comment at the top
-- [ ] `validate.sh` (TS-002) checks that the skill does not exceed 500 lines
+- [x] `specs.md` section 6 (Decisions) documents the 500-line budget and how it should be managed
+- [x] A split strategy is defined: which sections can be extracted into a separate `ticket-system-conventions-extended` skill if needed
+- [x] The generated `ticket-system-conventions` skill tracks its current line count in a comment at the top
+- [x] `validate.sh` (TS-002) checks that the skill does not exceed 500 lines
 
 ## Technical Approach
 - Add a decision entry in `specs.md` section 6 describing the budget and split strategy
@@ -52,3 +52,4 @@ The constraint exists because very large skills degrade Claude Code's context ef
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-05 15:02:29: Ticket activated, moved to ongoing.
 - 2026-04-05 15:08:21: Implementation complete. Added D-13 decision, generation rule for line-count comment, validate.sh checks, validation checklist items, and CLAUDE.md update.
+- 2026-04-05 15:10:45: VERDICT: PASS — Ticket completed.
