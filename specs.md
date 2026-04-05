@@ -119,7 +119,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
-| `ticket-system-reader` | `$WEAK_MODEL` | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)` | `/ticket-system-help`, `/ticket-system-doctor` |
+| `ticket-system-reader` | `$WEAK_MODEL` | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)`, `Bash(git diff *)` | `/ticket-system-help`, `/ticket-system-doctor`, `/ticket-system-next` |
 | `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
 | `ticket-system-planner` | `$STRONG_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | `$STRONG_MODEL` | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run` |
@@ -145,6 +145,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-run` | `false` | Chains safe-to-chain skills; plan has its own human gate |
 | `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
 | `ticket-system-doctor` | `false` | Read-only diagnostics, zero risk |
+| `ticket-system-next` | `false` | Read-only state inspection, zero risk |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
 
 ### 2.5 PreToolUse Hook: Worktree Path Validation
