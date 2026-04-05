@@ -111,6 +111,8 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | `ticket-system-ops` | sonnet | bypassPermissions | `Bash(git merge *)`, `Bash(git worktree *)`, `Bash(git branch *)`, `Bash(git mv *)`, `Bash(git commit *)`, `Bash(git add *)`, `Bash(git checkout *)`, `Bash(git status)` | `/ticket-system-merge` |
 
 > **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
+>
+> **Note:** `AskUserQuestion` does not need to be listed in the `Allowed Tools` column. Unlike tools that act on the system (`Read`, `Write`, `Bash`, etc.), asking the user a question requires no permission gate — requesting permission to ask a question would be circular. Claude Code passes it through automatically for all foreground subagents (which includes `context: fork` skills). It is used by human gates in `/ticket-system-schedule` and `/ticket-system-plan` to keep the approval loop inside the forked agent context.
 
 ### 2.4 Automatic vs Manual Invocation
 
@@ -363,7 +365,7 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
+Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
 
 ### 4.2 Detailed Command Specifications
 
@@ -426,7 +428,13 @@ PROPOSE REJECTION:
 Dependencies resolved: ordering rationale
 ```
 
-**STOP. Wait for user approval.** The user may approve, adjust, or reject individual entries.
+**Human gate:** If the user's original arguments contain `yes` or `--yes`, skip this gate and proceed directly to Phase 4. Otherwise, the agent self-evaluates the plan before engaging the user:
+
+1. **Self-assessment:** The agent reviews its own scheduling plan for quality — are the evaluations well-reasoned? Are split proposals balanced? Are rejection reasons solid? Does the dependency ordering make sense?
+2. **If confident:** Present the plan and use `AskUserQuestion` to ask: "The plan looks good — approve, or would you like to adjust anything?"
+3. **If issues detected:** The agent identifies specific concerns (e.g., "TS-012's split may be too granular", "unsure if TS-015 is still relevant given recent changes"). It builds a list of targeted questions and uses `AskUserQuestion` to collect the user's input on each concern. After incorporating the answers, it revises the plan and loops back to step 1.
+
+**Do not return to the main agent.** The forked agent handles the full question-and-answer loop and the subsequent execution so that elevated permissions remain active throughout.
 
 **Phase 4 — Execute on approval:**
 1. `git mv` approved tickets from `backlog/` to `planned/`.
@@ -467,11 +475,15 @@ Dependencies resolved: ordering rationale
 - Write `implementation-plan.md` in the ticket directory (format described in section 3.8).
 - Write `test-plan.md` in the ticket directory (format described in section 3.8).
 
-**Phase 4 — STOP. Human gate.**
-- Present both plans.
-- Explain key decisions and tradeoffs.
-- **Do not proceed further.** Wait for explicit approval.
+**Phase 4 — Human gate.**
 - Commit: `PREFIX-XXX: Generate implementation and test plans`
+- If the user's original arguments contain `yes` or `--yes`, present a summary and end (the user will invoke `/ticket-system-implement` next).
+- Otherwise, the agent self-evaluates before engaging the user:
+  1. **Self-assessment:** Review both plans for quality — is the implementation order logical? Are edge cases covered? Does the test plan have gaps? Are there risky steps that need clarification?
+  2. **If confident:** Present both plans with key decisions and tradeoffs, then use `AskUserQuestion` to ask: "The plans look solid — approve, or would you like to adjust anything?"
+  3. **If issues detected:** The agent identifies specific concerns (e.g., "step 3 may conflict with existing module X", "test coverage is thin on error paths", "unclear whether we should use approach A or B for the parser"). It uses `AskUserQuestion` to collect the user's input on each concern, revises the plans accordingly, amends the commit, and loops back to step 1.
+
+**Do not return to the main agent.** The forked agent handles the full review loop so elevated permissions remain available for plan adjustments.
 
 #### `/ticket-system-implement`
 
@@ -550,7 +562,7 @@ Dependencies resolved: ordering rationale
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, help), print detailed documentation: what it does, which agent runs it, arguments, and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 ---
@@ -705,7 +717,7 @@ ticket-system/
 | # | Decision | Rationale |
 |---|----------|-----------|
 | D-1 | Artifacts live in `tickets/ongoing/PREFIX-XXX/` | Co-location. When the ticket moves, artifacts move with it. |
-| D-2 | Human validation happens only at the `/ticket-system-plan` stage | Once the plan is approved, `/ticket-system-implement` runs autonomously. |
+| D-2 | Human validation at `/ticket-system-schedule` and `/ticket-system-plan` stages | Schedule gate covers batch decisions (splits, rejections, ordering). Plan gate covers implementation strategy. Once the plan is approved, `/ticket-system-implement` runs autonomously. |
 | D-3 | Worktree created inside `.worktrees/` at `/ticket-system-plan`, used through `/ticket-system-merge` | All ticket work is isolated from main. `tickets/ongoing/` on main is always empty. Worktrees live inside the project (`.worktrees/`, gitignored) so Claude Code's dedicated tools (`Read`, `Write`, `Edit`, `Glob`, `Grep`) can access them without permission prompts. |
 | D-4 | Verify completes ticket on PASS, merge lands the branch | On PASS, verifier moves ticket to `completed/` in the worktree. Merge just integrates to main. On FAIL, ticket stays in `ongoing/` in the worktree. |
 | D-5 | System installed at user level (`$CLAUDE_DIR`, defaults to `~/.claude/`), not as a plugin | Need `permissionMode` on agents, which is impossible in plugins. Directory chosen interactively at install time. |
@@ -715,6 +727,7 @@ ticket-system/
 | D-9 | Main session in `default` mode, privilege elevation via fork | Security by default. Permissions are in the design, not in user prompts. |
 | D-10 | Fine-grained Bash patterns + PreToolUse hook for worktree validation | Least privilege: patterns restrict plain git commands per agent, hook validates and auto-approves `git worktree`, `git -C`, and `mkdir` commands targeting valid ticket worktrees (section 2.5). |
 | D-11 | `/ticket-system-schedule` absorbs split functionality | Eliminates `/ticket-system-split` as a standalone command. Schedule evaluates atomicity (7 dimensions), proposes sub-tickets for oversized tickets, and executes splits on approval — all behind the existing human gate. Simplifies the pipeline to 6 commands: create, schedule, plan, implement, verify, merge. |
+| D-12 | Human gates use `AskUserQuestion` inside forks, not STOP | Approval gates stay inside the forked agent context so elevated permissions remain active through execution. Avoids the main agent inheriting mutation work without the right permission profile. The agent self-evaluates before engaging the user: if confident, asks for simple approval; if issues detected, asks targeted questions, revises, and re-evaluates. Gates are bypassable with `yes` or `--yes` in arguments for power-user workflows. |
 
 ---
 
@@ -778,7 +791,8 @@ After generation, verify:
 - [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
 - [ ] `init-project.sh` generates `TEMPLATE.md` with pipe-separated enum options (e.g., `priority: P0 | P1 | P2`), not single default values.
-- [ ] `/ticket-system-plan` contains an explicit STOP instruction after plan generation.
+- [ ] `/ticket-system-schedule` contains a human gate (via `AskUserQuestion`) with self-evaluation inside the fork — agent stays forked through Phase 4 execution.
+- [ ] `/ticket-system-plan` contains a human gate (via `AskUserQuestion`) with self-evaluation after plan generation — agent stays forked.
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
 - [ ] `/ticket-system-merge` verifies ticket is in `completed/` before merging.

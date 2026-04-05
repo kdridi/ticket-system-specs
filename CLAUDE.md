@@ -87,7 +87,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior gates (STOP in plan, NEVER modify code in verify, prerequisites in implement/merge)
+- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code in verify, prerequisites in implement/merge)
 
 ## Rules for Working on This Repo
 
@@ -106,7 +106,7 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - Permission elevation via `context: fork` + agent — main session stays in default mode
 - Git worktree created inside `.worktrees/` (gitignored) at `/ticket-system-plan`, used through `/ticket-system-merge` — all ticket work isolated from main, `tickets/ongoing/` on main is always empty, worktrees inside the project so dedicated tools work without permission prompts
 - Verify completes ticket on PASS (moves to `completed/` in worktree), merge just lands the branch
-- Human approval gate only at `/ticket-system-plan` stage
+- Human approval gates at `/ticket-system-schedule` and `/ticket-system-plan` stages, using AskUserQuestion inside forked agents (elevated permissions preserved); agents self-evaluate before engaging user; bypassable with yes/--yes
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 - Fine-grained Bash patterns for plain git + PreToolUse hook for `git worktree`, `git -C`, and `mkdir` worktree validation
 
