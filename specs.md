@@ -111,6 +111,8 @@ The system relies on two types of Claude Code files that complement each other:
 - Agents have `permissionMode` and `model` but are NOT slash commands.
 - The combination `context: fork` + `agent: <name>` in the skill gives both.
 
+> **Context isolation:** Each slash command forks into a separate agent context. The forked agent does not see the parent conversation history. Include relevant context in the command arguments.
+
 ### 2.2 Shared Skill: `ticket-system-conventions`
 
 An invisible skill (`user-invocable: false`) containing all system conventions: ticket format, directory structure, lifecycle, roadmap format, commit convention. Every agent loads it automatically at startup via `skills: [ticket-system-conventions]`.
