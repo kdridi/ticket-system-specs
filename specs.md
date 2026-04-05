@@ -932,6 +932,9 @@ After generation, verify:
 - [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
 - [ ] `/ticket-system-doctor` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` performs NO file modifications — reports and suggests only.
+- [ ] `/ticket-system-doctor` checks `.tickets/.pending` as its FIRST diagnostic (step 2, immediately after reading config).
+- [ ] All mutative commands (`/ticket-system-schedule`, `/ticket-system-plan`, `/ticket-system-merge`, `/ticket-system-abort`) write `.tickets/.pending` before starting multi-step work.
+- [ ] All mutative commands delete `.tickets/.pending` on successful completion.
 
 ### Hooks
 
