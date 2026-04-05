@@ -5,7 +5,7 @@ status: ongoing
 priority: P3
 type: docs
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 16:24:21
+updated: 2026-04-05 16:28:41
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -37,7 +37,8 @@ Add the following to specs.md:
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (sections 1.2, 2.1, 4.2, 6)
+- `specs.md` (sections 1.2, 2.1, 3.5, 4.2, 6)
+- `CLAUDE.md` (Key Design Decisions section)
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -49,3 +50,4 @@ Add the following to specs.md:
 ## Log
 - 2026-04-04 12:00:00: Ticket created — groups minor documentation items from audit reviews (M5, M9, M10, mono-dev clarification).
 - 2026-04-05 16:24:21: Ticket activated — moved to ongoing, worktree created.
+- 2026-04-05 16:28:41: Implementation complete — 6 documentation clarifications added across specs.md and CLAUDE.md in 6 commits.
