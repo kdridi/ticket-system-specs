@@ -1,1 +1,70 @@
-tickets: []
+tickets:
+  - id: TS-001
+    title: "Add root README explaining the ticket system for developers and users"
+    priority: P1
+    dependencies: []
+
+  - id: TS-002
+    title: "Add automated validation script for generated output"
+    priority: P1
+    dependencies: []
+
+  - id: TS-014
+    title: "Add configurable test_command to project configuration"
+    priority: P1
+    dependencies: []
+
+  - id: TS-015
+    title: "Add configuration variables system to specs.md"
+    priority: P1
+    dependencies: []
+
+  - id: TS-016
+    title: "Add /ticket-system-next command for automatic next-action detection"
+    priority: P1
+    dependencies: []
+
+  - id: TS-007
+    title: "Establish a conventions skill size budget and split strategy"
+    priority: P1
+    dependencies: [TS-002]
+
+  - id: TS-017
+    title: "Add retry counter for implement-verify loop with forced re-plan"
+    priority: P1
+    dependencies: [TS-015]
+
+  - id: TS-019
+    title: "Tighten bash wildcard patterns per agent"
+    priority: P2
+    dependencies: []
+
+  - id: TS-020
+    title: "Add anti-drift guard to /ticket-system-implement"
+    priority: P2
+    dependencies: []
+
+  - id: TS-005a
+    title: "Add test harness scaffold with setup/teardown and validate.sh integration"
+    priority: P2
+    dependencies: [TS-002]
+
+  - id: TS-021a
+    title: "Add research artifacts to plan phase for research-type tickets"
+    priority: P2
+    dependencies: []
+
+  - id: TS-005b
+    title: "Add command coverage tests to test harness"
+    priority: P2
+    dependencies: [TS-005a]
+
+  - id: TS-021b
+    title: "Add research implement/verify variant with findings and validation"
+    priority: P2
+    dependencies: [TS-021a]
+
+  - id: TS-023
+    title: "Add documentation clarifications and known limitations from audit reviews"
+    priority: P3
+    dependencies: []
