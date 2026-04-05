@@ -5,7 +5,7 @@ status: ongoing
 priority: P0
 type: feature
 created: 2026-04-05 02:50:01
-updated: 2026-04-05 04:18:13
+updated: 2026-04-05 04:24:33
 dependencies: [TS-027]
 assignee: unassigned
 estimated_complexity: small
@@ -45,10 +45,17 @@ Changes required in specs.md:
 - TS-027 (doctor skill must exist before it can be extended)
 
 ## Files Modified
-- `specs.md` (sections 4.1, 4.2, 4.3, 4.4, 4.5 — one per mutative command + doctor extension)
+- `specs.md` — section 3.2 (directory structure: added .pending format documentation)
+- `specs.md` — section 4.2 `/ticket-system-schedule` Phase 4 (added .pending write/delete)
+- `specs.md` — section 4.2 `/ticket-system-plan` Phase 1 and Phase 4 (added .pending write/delete)
+- `specs.md` — section 4.2 `/ticket-system-merge` (added .pending write/delete)
+- `specs.md` — section 4.2 `/ticket-system-abort` (added own .pending write/delete, replaces pre-existing)
+- `specs.md` — section 4.2 `/ticket-system-doctor` (added .pending check as first diagnostic)
+- `specs.md` — section 8 validation checklist (added .pending instrumentation checks)
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- The abort command writes its own `.pending` (overwriting any pre-existing one from the interrupted operation) at step 5, after the confirmation gate. This means if abort itself is interrupted, doctor will report the abort's `.pending`, not the original operation's.
+- `.tickets/.pending` always lives on main, never in worktrees, since mutative commands operate on main.
 
 ## Notes
 - The `.pending` mechanism is intentionally lightweight — no locking, no process IDs. It is a best-effort crash signal.
@@ -57,3 +64,4 @@ Changes required in specs.md:
 ## Log
 - 2026-04-05 02:50:01: Ticket created as sub-ticket B of TS-012 split. Scheduled to planned (position 3).
 - 2026-04-05 04:18:13: Ticket activated. Moved to ongoing, worktree created at .worktrees/TS-028-worktree.
+- 2026-04-05 04:24:33: Implementation complete. Added .pending instrumentation to all mutative commands (schedule, plan, merge, abort) and extended doctor with .pending check as first diagnostic. Updated validation checklist.
