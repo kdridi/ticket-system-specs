@@ -1,11 +1,11 @@
 ---
 id: TS-023
 title: "Add documentation clarifications and known limitations from audit reviews"
-status: ongoing
+status: completed
 priority: P3
 type: docs
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 16:28:41
+updated: 2026-04-05 16:30:17
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -20,11 +20,11 @@ Address several small documentation gaps and ambiguities identified during audit
 Two independent audit reviews identified minor documentation gaps that individually are trivial but collectively improve the spec's precision. Rather than creating separate tickets for each one-line change, this ticket groups them.
 
 ## Acceptance Criteria
-- [ ] Section 1.2 or conventions clarifies: "One active ticket at a time" means per project (per `.tickets/` directory), not per machine or per user
-- [ ] Section 4.2 `/ticket-system-merge` includes a "Conflict resolution" subsection documenting the manual procedure: resolve conflicts, `git add`, `git commit`, then re-run merge
-- [ ] Section 2.1 or a new note documents the `context: fork` limitation: forked agents do not inherit the parent conversation context. Users should include sufficient detail in command arguments.
-- [ ] Section 1.2 or 6 (Decisions) adds a note: "This system is designed for a single-developer workflow. Multi-developer usage is not supported and may cause data inconsistencies."
-- [ ] The worktree model is briefly explained in context: "tickets/ongoing/ on main is always empty because active tickets live in worktrees. This allows planning and scheduling to continue on main while implementation runs in parallel."
+- [x] Section 1.2 or conventions clarifies: "One active ticket at a time" means per project (per `.tickets/` directory), not per machine or per user
+- [x] Section 4.2 `/ticket-system-merge` includes a "Conflict resolution" subsection documenting the manual procedure: resolve conflicts, `git add`, `git commit`, then re-run merge
+- [x] Section 2.1 or a new note documents the `context: fork` limitation: forked agents do not inherit the parent conversation context. Users should include sufficient detail in command arguments.
+- [x] Section 1.2 or 6 (Decisions) adds a note: "This system is designed for a single-developer workflow. Multi-developer usage is not supported and may cause data inconsistencies."
+- [x] The worktree model is briefly explained in context: "tickets/ongoing/ on main is always empty because active tickets live in worktrees. This allows planning and scheduling to continue on main while implementation runs in parallel."
 
 ## Technical Approach
 Add the following to specs.md:
@@ -51,3 +51,4 @@ Add the following to specs.md:
 - 2026-04-04 12:00:00: Ticket created — groups minor documentation items from audit reviews (M5, M9, M10, mono-dev clarification).
 - 2026-04-05 16:24:21: Ticket activated — moved to ongoing, worktree created.
 - 2026-04-05 16:28:41: Implementation complete — 6 documentation clarifications added across specs.md and CLAUDE.md in 6 commits.
+- 2026-04-05 16:30:17: VERDICT: PASS — Ticket completed.
