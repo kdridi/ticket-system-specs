@@ -5,7 +5,7 @@ status: ongoing
 priority: P2
 type: infrastructure
 created: 2026-04-05 04:34:19
-updated: 2026-04-05 16:03:37
+updated: 2026-04-05 16:08:08
 dependencies: [TS-005a]
 assignee: unassigned
 estimated_complexity: small
@@ -35,10 +35,13 @@ Once the scaffold from TS-005a is in place, the harness needs actual test cases.
 - TS-005a (test harness scaffold)
 
 ## Files Modified
-- `test/run-tests.sh` (extend)
+- `test/run-tests.sh` (extended with assertion helpers and command coverage tests)
+- `test/README.md` (updated with command coverage test documentation)
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Assertion helpers use sed-based frontmatter parsing (simple but documented as fragile for complex YAML).
+- Command coverage tests are gated behind MANUAL_TEST_DIR and per-command ticket ID env vars, skipping cleanly when not set.
+- All three command test functions (create, schedule, plan) added in a single implementation pass since they follow identical patterns.
 
 ## Notes
 - Coverage should include at minimum: ticket create, schedule, and plan. Implement and verify stubs can follow in a later iteration once the harness is proven stable.
@@ -46,3 +49,4 @@ Once the scaffold from TS-005a is in place, the harness needs actual test cases.
 ## Log
 - 2026-04-05 04:34:19: Ticket created as sub-ticket of TS-005 (split).
 - 2026-04-05 16:03:37: Ticket activated, moved to ongoing.
+- 2026-04-05 16:08:08: Implementation complete. Added assertion helpers (assert_file_exists, assert_file_not_exists, assert_frontmatter_field, assert_file_contains), test functions for create/schedule/plan commands, wired into main, updated README.
