@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: infrastructure
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 14:16:49
+updated: 2026-04-05 14:30:40
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -42,10 +42,14 @@ The current validation process is entirely manual. A developer must read through
 <!-- None -->
 
 ## Files Modified
-- `validate.sh` (create)
+- `validate.sh` (created) — full validation script for generated output
+- `test-validate.sh` (created) — test harness with 23 test cases
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Built validate.sh as a single cohesive script implementing all 11 plan steps, since the checks are interdependent and share the reporting framework.
+- Used pattern matching (grep) for behavioral checks since static analysis cannot verify runtime behavior.
+- Avoided non-POSIX tools entirely — no references to python, node, jq, ruby, perl, npm, pip.
+- Hook hardcoded prefix detection uses regex for specific ID patterns (e.g., TS-, PROJ-) and variable assignments containing prefix strings.
 
 ## Notes
 - The deep validation checklist (full 39 points) may be harder to automate; start with the smoke test items and expand incrementally.
@@ -56,3 +60,4 @@ The current validation process is entirely manual. A developer must read through
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-04 12:00:00: Updated scope — added conditional checks for new audit-driven features.
 - 2026-04-05 14:16:49: Ticket activated — moved to ongoing.
+- 2026-04-05 14:30:40: Implementation complete — validate.sh and test-validate.sh created, all 23 tests pass.
