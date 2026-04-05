@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 15:02:29
+updated: 2026-04-05 15:08:21
 dependencies: []
 assignee: unassigned
 estimated_complexity: medium
@@ -37,8 +37,9 @@ The constraint exists because very large skills degrade Claude Code's context ef
 - TS-002 (validate.sh)
 
 ## Files Modified
-- `specs.md` (modify sections 5 and 6)
-- `CLAUDE.md` (note the split strategy in Constraints section)
+- `specs.md` — Added D-13 decision entry (section 6), generation rule for `<!-- Lines: N/500 -->` comment (section 5.2), and two validation checklist items (section 8)
+- `validate.sh` — Added conventions skill line budget checks (line count <= 500, line-count comment present and accurate)
+- `CLAUDE.md` — Documented split strategy in Constraints section with reference to D-13
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -50,3 +51,4 @@ The constraint exists because very large skills degrade Claude Code's context ef
 ## Log
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-05 15:02:29: Ticket activated, moved to ongoing.
+- 2026-04-05 15:08:21: Implementation complete. Added D-13 decision, generation rule for line-count comment, validate.sh checks, validation checklist items, and CLAUDE.md update.
