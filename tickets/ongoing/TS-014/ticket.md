@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 14:35:08
+updated: 2026-04-05 14:38:53
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -40,7 +40,7 @@ Update specs.md:
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (sections 2.3, 3.1, 4.2, 5.4)
+- `specs.md` (sections 2.3, 3.1, 4.2, 5.4, 8)
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -52,3 +52,4 @@ Update specs.md:
 ## Log
 - 2026-04-04 12:00:00: Ticket created from external audit (M8).
 - 2026-04-05 14:35:08: Ticket activated, moved to ongoing.
+- 2026-04-05 14:38:53: Implementation complete. Updated specs.md sections 3.1 (config schema), 2.3 (verifier permissions), 4.2 (verify behavior), 5.4 (init-project.sh), and 8 (validation checklist).
