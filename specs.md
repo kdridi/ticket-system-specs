@@ -127,6 +127,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `false` | Requires completed status — safe to chain |
 | `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
+| `ticket-system-doctor` | `false` | Read-only diagnostics, zero risk |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
 
 ### 2.5 PreToolUse Hook: Worktree Path Validation
