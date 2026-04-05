@@ -88,7 +88,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure)
+- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures)
 
 ## Rules for Working on This Repo
 
