@@ -1,11 +1,11 @@
 ---
 id: TS-015
 title: "Add configuration variables system to specs.md"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 14:42:32
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -68,3 +68,4 @@ Add to the generation preamble: "Resolve all $VARIABLE references using the defa
 
 ## Log
 - 2026-04-04 12:00:00: Ticket created from audit review (W16).
+- 2026-04-05 14:42:32: Ticket activated, moved to ongoing.

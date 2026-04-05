@@ -1,9 +1,4 @@
 tickets:
-  - id: TS-015
-    title: "Add configuration variables system to specs.md"
-    priority: P1
-    dependencies: []
-
   - id: TS-016
     title: "Add /ticket-system-next command for automatic next-action detection"
     priority: P1
