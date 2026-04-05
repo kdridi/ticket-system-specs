@@ -1,3 +1,4 @@
 prefix: "TS"
 digits: 3
 tickets_dir: "tickets"
+# test_command: "npm test"  # Optional: set a custom test runner command
