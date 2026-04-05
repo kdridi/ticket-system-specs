@@ -581,8 +581,45 @@ Dependencies resolved: ordering rationale
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, abort, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, abort, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
+
+#### `/ticket-system-doctor`
+
+**Agent:** `ticket-system-reader` | **Auto-invocation:** yes | **Argument:** none
+
+**Behavior:**
+1. Read `.tickets/config.yml` (prefix, digits, tickets_dir).
+2. **Status/directory mismatch check:** Scan all ticket files across all subdirectories (`backlog/`, `planned/`, `ongoing/`, `completed/`, `rejected/`). For each ticket, read frontmatter `status` and verify it matches the parent directory name. Report mismatches.
+3. **Orphaned worktree check:** Run `git worktree list` and parse the output. For each worktree whose basename matches `*-worktree`, check that a corresponding ticket exists in `tickets/ongoing/` (either on main or inside that worktree). Report orphaned worktrees (worktree exists but no matching ongoing ticket).
+4. **Stale roadmap entries check:** Read `tickets/planned/roadmap.yml`. For each ticket ID referenced in the roadmap, verify that a corresponding ticket file exists in `tickets/planned/`. Report stale entries (referenced in roadmap but missing from `planned/`).
+5. **Multiple ongoing tickets check:** Count the number of ticket subdirectories in `tickets/ongoing/`. Report if more than 1 is found (the system enforces max 1 active ticket).
+6. **Report findings** as a structured checklist:
+
+```
+TICKET SYSTEM DIAGNOSTIC REPORT
+
+[OK]   Status/directory consistency — all N tickets match
+[ISSUE] Status/directory mismatch — PREFIX-XXX has status "planned" but is in completed/
+        Fix: Edit PREFIX-XXX frontmatter to set status: completed
+        Or:  git mv tickets/completed/PREFIX-XXX tickets/planned/PREFIX-XXX.md
+
+[OK]   No orphaned worktrees found
+[ISSUE] Orphaned worktree — .worktrees/PREFIX-YYY-worktree exists but no ticket in ongoing/
+        Fix: git worktree remove .worktrees/PREFIX-YYY-worktree
+
+[OK]   Roadmap entries are consistent
+[ISSUE] Stale roadmap entry — PREFIX-ZZZ referenced in roadmap but not in planned/
+        Fix: Remove PREFIX-ZZZ entry from tickets/planned/roadmap.yml
+
+[OK]   At most 1 ticket in ongoing/
+[ISSUE] Multiple ongoing tickets — found N tickets in ongoing/: PREFIX-AAA, PREFIX-BBB
+        Fix: Move extra tickets back to planned/ and re-add to roadmap
+
+Summary: N checks passed, M issues found
+```
+
+**The command does NOT auto-fix any issues.** It only reports findings and suggests fix commands. The user decides whether and how to act.
 
 ---
 
