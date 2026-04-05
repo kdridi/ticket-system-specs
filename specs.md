@@ -610,13 +610,14 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
 2. Detect the active ticket: scan `tickets/ongoing/` on main first. If empty, list worktrees with `git worktree list` and check each for a ticket in `tickets/ongoing/`.
 3. If no active ticket found, report "Nothing to abort" and exit.
 4. **Confirmation gate:** use `AskUserQuestion` to confirm: "This will destroy the worktree and all uncommitted changes. Abort PREFIX-XXX?" Bypassable with `yes` or `--yes` in arguments.
-5. Copy the ticket file from the worktree to `tickets/rejected/PREFIX-XXX.md` on main.
-6. Update frontmatter: `status: rejected`, `updated: <now>` (via `date` command).
-7. Add log entry: `Ticket aborted by user.`
-8. Remove worktree: `git worktree remove .worktrees/PREFIX-XXX-worktree --force`.
-9. Delete branch: `git branch -D ticket/PREFIX-XXX`.
-10. If `.tickets/.pending` exists, remove it.
+5. Write `.tickets/.pending` with `operation: abort`, `ticket: PREFIX-XXX`, `started: <now>`, `description: "Aborting ticket — removing worktree and moving to rejected"`. This overwrites any pre-existing `.pending` from the interrupted operation.
+6. Copy the ticket file from the worktree to `tickets/rejected/PREFIX-XXX.md` on main.
+7. Update frontmatter: `status: rejected`, `updated: <now>` (via `date` command).
+8. Add log entry: `Ticket aborted by user.`
+9. Remove worktree: `git worktree remove .worktrees/PREFIX-XXX-worktree --force`.
+10. Delete branch: `git branch -D ticket/PREFIX-XXX`.
 11. Commit on main: `PREFIX-XXX: Abort ticket — <title>`.
+12. Delete `.tickets/.pending`.
 
 #### `/ticket-system-help`
 
