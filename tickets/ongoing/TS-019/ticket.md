@@ -5,7 +5,7 @@ status: ongoing
 priority: P2
 type: refactor
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 15:27:39
+updated: 2026-04-05 15:32:25
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -22,12 +22,12 @@ External audit identified that some bash patterns are more permissive than inten
 Updated after TS-024: the agent landscape is simplified. `ticket-system-analyze` and `ticket-system-split` no longer exist — their functions are absorbed into the editor agent via the unified `/ticket-system-schedule`. The remaining agents to audit are: reader, editor, planner, coder, verifier, ops.
 
 ## Acceptance Criteria
-- [ ] `Bash(git commit *)` is replaced with `Bash(git commit -m *)` on agents that should only create new commits (editor, verifier)
-- [ ] `Bash(git mv *)` is replaced with `Bash(git mv tickets/*)` on the editor agent
-- [ ] The planner retains broader `git mv *` (needs to move tickets to ongoing/ subdirectories)
-- [ ] The reader agent's permissions are reviewed for its reduced scope (help, next, doctor only)
-- [ ] All changes are verified to not break any command's documented behavior
-- [ ] Updated patterns are reflected in section 2.3 agent profiles table
+- [x] `Bash(git commit *)` is replaced with `Bash(git commit -m *)` on agents that should only create new commits (editor, verifier)
+- [x] `Bash(git mv *)` is replaced with `Bash(git mv tickets/*)` on the editor agent
+- [x] The planner retains broader `git mv *` (needs to move tickets to ongoing/ subdirectories)
+- [x] The reader agent's permissions are reviewed for its reduced scope (help, next, doctor only)
+- [x] All changes are verified to not break any command's documented behavior
+- [x] Updated patterns are reflected in section 2.3 agent profiles table
 
 ## Technical Approach
 Review each agent's bash patterns against its actual usage in the post-TS-024 command set:
@@ -49,10 +49,12 @@ Reader agent additions needed for new commands:
 None. TS-024 dependency removed — TS-024's pipeline simplification was completed via TS-025/TS-026.
 
 ## Files Modified
-- `specs.md` (section 2.3)
+- `specs.md` (section 2.3 — agent profiles table, lines 122-127)
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Tightened `git commit` to `git commit -m` on editor, planner, verifier, and ops (not just editor and verifier as originally scoped -- planner and ops also only create new commits).
+- Tightened `git mv` to `git mv tickets/*` on editor, verifier, and ops. Planner retains broader `git mv *` because it moves tickets into `ongoing/PREFIX-XXX/` subdirectories.
+- Reader agent confirmed correct -- no `git commit` or `git mv` patterns present, only read-only git operations.
 
 ## Notes
 - This is defense-in-depth. The primary security boundary remains the permissionMode per agent.
@@ -64,3 +66,4 @@ None. TS-024 dependency removed — TS-024's pipeline simplification was complet
 - 2026-04-04 13:00:00: Updated — adapted to post-TS-024 agent landscape (analyze/split removed, reader scope reduced).
 - 2026-04-05 04:34:28: Removed TS-024 dependency — TS-024 was rejected; its pipeline simplification objectives were completed via TS-025/TS-026.
 - 2026-04-05 15:27:39: Ticket activated — moved to ongoing, worktree created at .worktrees/TS-019-worktree.
+- 2026-04-05 15:32:25: Implementation complete — tightened bash patterns for editor, planner, verifier, and ops agents in specs.md section 2.3. All patterns cross-validated against command behaviors in section 4.2.
