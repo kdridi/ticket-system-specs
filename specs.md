@@ -617,6 +617,7 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
    - If verification fails → report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
 4. **Step 2 — Implement:** Invoke `/ticket-system-implement <ticket-id>` via the Skill tool.
    - After return, verify success: check for implementation commits in the worktree beyond the plan commits.
+   - If the sub-skill was blocked by the retry limit (`$MAX_RETRY` consecutive failures) → report "STOPPED at implement step — retry limit reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." **STOP.**
    - If the sub-skill reported failure or no implementation commits exist → report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
 5. **Step 3 — Verify:** Invoke `/ticket-system-verify <ticket-id>` via the Skill tool.
    - After return, check for `VERDICT: PASS` in the output, or verify `tickets/completed/<ticket-id>/` exists in the worktree.
