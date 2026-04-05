@@ -1,11 +1,11 @@
 ---
 id: TS-021b
 title: "Add research implement/verify variant with findings and validation"
-status: ongoing
+status: completed
 priority: P2
 type: feature
 created: 2026-04-05 04:34:35
-updated: 2026-04-05 16:20:14
+updated: 2026-04-05 16:22:27
 dependencies:
   - TS-021a
 assignee: unassigned
@@ -69,3 +69,4 @@ Decision or next step informed by the findings.
 - 2026-04-05 04:34:35: Ticket created as sub-ticket of TS-021 (split).
 - 2026-04-05 16:12:41: Ticket activated, moved to ongoing.
 - 2026-04-05 16:20:14: Implementation complete. Added findings.md template to section 3.8, research conditionals to implement/verify/run commands in section 4.2, updated conventions skill docs in section 5.2, added validation checklist items in section 8, synced CLAUDE.md.
+- 2026-04-05 16:22:27: VERDICT: PASS — Ticket completed.
