@@ -1,11 +1,11 @@
 ---
 id: TS-028
 title: "Add .pending transaction log to all mutative commands"
-status: planned
+status: ongoing
 priority: P0
 type: feature
 created: 2026-04-05 02:50:01
-updated: 2026-04-05 02:50:01
+updated: 2026-04-05 04:18:13
 dependencies: [TS-027]
 assignee: unassigned
 estimated_complexity: small
@@ -56,3 +56,4 @@ Changes required in specs.md:
 
 ## Log
 - 2026-04-05 02:50:01: Ticket created as sub-ticket B of TS-012 split. Scheduled to planned (position 3).
+- 2026-04-05 04:18:13: Ticket activated. Moved to ongoing, worktree created at .worktrees/TS-028-worktree.

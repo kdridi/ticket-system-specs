@@ -1,8 +1,1 @@
-tickets:
-  - position: 1
-    id: TS-028
-    title: "Add .pending transaction log to all mutative commands"
-    size: small
-    priority: P0
-    dependencies: [TS-027]
-    rationale: "Extends TS-027 doctor with crash-recovery detection; must follow TS-027"
+tickets: []
