@@ -1,11 +1,11 @@
 ---
 id: TS-021b
 title: "Add research implement/verify variant with findings and validation"
-status: planned
+status: ongoing
 priority: P2
 type: feature
 created: 2026-04-05 04:34:35
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 16:12:41
 dependencies:
   - TS-021a
 assignee: unassigned
@@ -66,3 +66,4 @@ Decision or next step informed by the findings.
 
 ## Log
 - 2026-04-05 04:34:35: Ticket created as sub-ticket of TS-021 (split).
+- 2026-04-05 16:12:41: Ticket activated, moved to ongoing.
