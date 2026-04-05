@@ -5,7 +5,7 @@ status: ongoing
 priority: P2
 type: infrastructure
 created: 2026-04-05 04:34:19
-updated: 2026-04-05 15:45:24
+updated: 2026-04-05 15:50:27
 dependencies: [TS-002]
 assignee: unassigned
 estimated_complexity: small
@@ -39,11 +39,12 @@ The outer feedback loop is entirely manual. A reusable scaffold that provisions 
 - TS-002 (validate.sh, reusable check primitives)
 
 ## Files Modified
-- `test/run-tests.sh` (create)
-- `test/README.md` (create)
+- `test/run-tests.sh` (created) -- test harness with setup/teardown, validate.sh integration, structural checks
+- `test/README.md` (created) -- documents automated vs manual testing boundaries
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- init-project.sh does not exist in this repo (it is generated output), so setup_test_env only runs it when GENERATED_OUTPUT_DIR is provided.
+- Pre-existing failures in validate-spec.sh and test-validate.sh are correctly captured by the harness (not bugs in the harness).
 
 ## Notes
 - Full end-to-end testing of slash commands requires Claude Code to be running, which limits full automation. The scaffold should cover filesystem-level setup and document the AI-interaction steps separately.
@@ -51,3 +52,4 @@ The outer feedback loop is entirely manual. A reusable scaffold that provisions 
 ## Log
 - 2026-04-05 04:34:19: Ticket created as sub-ticket of TS-005 (split).
 - 2026-04-05 15:45:24: Ticket activated, moved to ongoing.
+- 2026-04-05 15:50:27: Implementation complete. Created test/run-tests.sh with setup/teardown, validate.sh/validate-spec.sh/test-validate.sh integration, init-project structural checks, and test/README.md.
