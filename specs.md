@@ -607,7 +607,7 @@ ticket-system/
 ### 5.2 File Formatting Rules
 
 **Each agent** (`agents/ticket-system-*.md`) must contain:
-- YAML frontmatter with: `name`, `description`, `model`, `permissionMode`, `tools` (with the dedicated tools and fine-grained Bash patterns from section 2.3), `skills: [ticket-system-conventions]`
+- YAML frontmatter with: `name`, `description`, `model`, `permissionMode`, `tools` (with the dedicated tools and fine-grained Bash patterns from section 2.3 — **omit the `tools` field entirely** for `ticket-system-coder` since "Unrestricted" means no tool restrictions; including an empty or placeholder `tools` list would block all tool access), `skills: [ticket-system-conventions]`
 - A system prompt in the markdown body that:
   - Describes the agent's role in one sentence.
   - Reminds it to read `.tickets/config.yml` first.
@@ -781,6 +781,7 @@ After generation, verify:
 - [ ] Every agent has `skills: [ticket-system-conventions]` in its frontmatter.
 - [ ] Every agent uses dedicated tools (`Read`, `Write`, `Edit`, `Grep`, `Glob`) for file operations — no `Bash(cat/grep/find/head/tail/wc/sed)`.
 - [ ] Every agent has restrictive Bash patterns for git/date/mkdir only (except `ticket-system-coder`).
+- [ ] `ticket-system-coder` has **no `tools` field** in its frontmatter (unrestricted access — an empty or placeholder `tools` list would block all tool access).
 - [ ] `ticket-system-conventions` has `user-invocable: false`.
 - [ ] Manual-only skills have `disable-model-invocation: true`.
 - [ ] Auto-invocable skills have `disable-model-invocation: false`.
