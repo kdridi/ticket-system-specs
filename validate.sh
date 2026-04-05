@@ -668,6 +668,41 @@ fi
 echo ""
 
 # ============================================================
+# CONVENTIONS SKILL LINE BUDGET
+# ============================================================
+
+echo "--- Conventions skill line budget ---"
+
+CONV_FILE="$OUTPUT_DIR/skills/ticket-system-conventions/SKILL.md"
+if [ -f "$CONV_FILE" ]; then
+  # Check line count does not exceed 500
+  ACTUAL_LINES=$(wc -l < "$CONV_FILE" | tr -d '[:space:]')
+  if [ "$ACTUAL_LINES" -le 500 ]; then
+    check_pass "Conventions skill is within budget ($ACTUAL_LINES/500 lines)"
+  else
+    check_fail "Conventions skill exceeds 500-line budget ($ACTUAL_LINES lines)"
+  fi
+
+  # Check for <!-- Lines: N/500 --> comment
+  LINE_COMMENT=$(grep -n '<!-- Lines: [0-9]*/500 -->' "$CONV_FILE" || true)
+  if [ -n "$LINE_COMMENT" ]; then
+    # Extract the N value from the comment
+    CLAIMED_LINES=$(echo "$LINE_COMMENT" | grep -o 'Lines: [0-9]*' | grep -o '[0-9]*')
+    if [ "$CLAIMED_LINES" = "$ACTUAL_LINES" ]; then
+      check_pass "Line-count comment matches actual count ($CLAIMED_LINES/500)"
+    else
+      check_fail "Line-count comment mismatch: claims $CLAIMED_LINES but file has $ACTUAL_LINES lines"
+    fi
+  else
+    check_fail "Conventions skill missing <!-- Lines: N/500 --> comment"
+  fi
+else
+  check_fail "Conventions skill not found — cannot check line budget"
+fi
+
+echo ""
+
+# ============================================================
 # SUMMARY
 # ============================================================
 
