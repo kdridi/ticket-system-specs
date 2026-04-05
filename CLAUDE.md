@@ -11,10 +11,11 @@ This repository contains a **specification file** (`specs.md`) that, when fed to
 ```
 ticket-system-specs/
 ├── CLAUDE.md       # This file — project guide for Claude Code sessions
+├── README.md       # Project overview for developers and users
 └── specs.md        # The self-contained generation prompt
 ```
 
-Only these two files belong in this repo. Generated output should not be committed here.
+Only these three files belong in this repo. Generated output should not be committed here.
 
 ## How to Generate the Ticket System
 
@@ -91,7 +92,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 
 ## Rules for Working on This Repo
 
-- **Only modify** `CLAUDE.md` and `specs.md` — no other files belong here.
+- **Only modify** `CLAUDE.md`, `README.md`, and `specs.md` — no other files belong here.
 - **Keep `CLAUDE.md` in sync with `specs.md`** — whenever `specs.md` is modified, review `CLAUDE.md` and update it to reflect any changes that affect project guidance, workflow descriptions, or design decisions.
 - **Keep `specs.md` self-contained** — it must work as a single prompt with no external context.
 - **Preserve the 8-section structure** of `specs.md` (Vision, Architecture, Data Model, Commands, Generation Rules, Decisions, Future, Validation).
