@@ -5,7 +5,7 @@ status: ongoing
 priority: P0
 type: feature
 created: 2026-04-05 02:50:01
-updated: 2026-04-05 03:35:53
+updated: 2026-04-05 03:41:01
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -47,10 +47,13 @@ Add to specs.md:
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (sections 2.3, 2.4, 4.2, 5.1)
+- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1, 8)
+- `CLAUDE.md` (skill count update)
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Added `Bash(git worktree list)` to the reader agent's allowed tools (needed for orphaned worktree detection).
+- Placed the doctor command spec after /ticket-system-help in section 4.2 (both are utility commands using the reader agent).
+- "doctor" verb added to help command's recognized verbs for discoverability.
 
 ## Notes
 - The reader agent already has the necessary bash permissions for read-only operations.
@@ -59,3 +62,4 @@ Add to specs.md:
 ## Log
 - 2026-04-05 02:50:01: Ticket created as sub-ticket A of TS-012 split. Scheduled to planned (position 2).
 - 2026-04-05 03:35:53: Ticket activated. Moved to ongoing.
+- 2026-04-05 03:41:01: Implementation complete. All 8 plan steps executed across 7 commits (step 8 was already covered by step 3).
