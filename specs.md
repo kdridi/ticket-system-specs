@@ -122,10 +122,10 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 |-------|---------------------------|--------|
 | `ticket-system-create` | `false` (Claude can invoke) | Low risk — creates a markdown file in backlog |
 | `ticket-system-schedule` | `false` | Safe — human gate before any mutation including splits |
-| `ticket-system-plan` | `true` | Structural action — ticket activation + deep analysis |
-| `ticket-system-implement` | `true` | Full autonomy, bypass permissions — never automatic |
+| `ticket-system-plan` | `false` | Has human gate — safe to chain |
+| `ticket-system-implement` | `false` | Runs in isolated worktree — safe to chain |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
-| `ticket-system-merge` | `true` | Irreversible merge — always explicit |
+| `ticket-system-merge` | `false` | Requires completed status — safe to chain |
 | `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
 | `ticket-system-help` | `false` (Claude can invoke) | Read-only, zero risk |
 
@@ -804,8 +804,8 @@ After generation, verify:
 - [ ] Every agent has restrictive Bash patterns for git/date/mkdir only (except `ticket-system-coder`).
 - [ ] `ticket-system-coder` has **no `tools` field** in its frontmatter (unrestricted access — an empty or placeholder `tools` list would block all tool access).
 - [ ] `ticket-system-conventions` has `user-invocable: false`.
-- [ ] Manual-only skills have `disable-model-invocation: true`.
-- [ ] Auto-invocable skills have `disable-model-invocation: false`.
+- [ ] Only `ticket-system-abort` has `disable-model-invocation: true` (destructive).
+- [ ] All other skills have `disable-model-invocation: false`.
 - [ ] No prefix is hardcoded — everything comes from `.tickets/config.yml`.
 - [ ] Read-only agent (`ticket-system-reader`) has `permissionMode: plan`.
 - [ ] All other agents (`ticket-system-editor`, `ticket-system-planner`, `ticket-system-coder`, `ticket-system-verifier`, `ticket-system-ops`) have `permissionMode: bypassPermissions`.
