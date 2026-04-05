@@ -608,25 +608,38 @@ Dependencies resolved: ordering rationale
 
 **Prerequisites to verify:**
 1. The ticket exists in `tickets/ongoing/PREFIX-XXX/` inside the worktree at `.worktrees/PREFIX-XXX-worktree`.
-2. `implementation-plan.md` exists in the ticket's directory.
+2. **Plan artifact check:** If ticket `type` is `research`, `research-plan.md` must exist in the ticket's directory. Otherwise, `implementation-plan.md` must exist.
 3. The plan has been approved (check the ticket's Log for a plan generation entry).
 4. **Retry limit check:** Count FAIL entries in the ticket's `## Log` section (entries matching "VERDICT: FAIL (attempt"). If count >= `$MAX_RETRY`, STOP and output: "Implementation blocked: `$MAX_RETRY` consecutive verification failures reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." Do NOT proceed with implementation.
 
 **Behavior:**
 1. Read `.tickets/config.yml`.
 2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
-3. Read `implementation-plan.md` from `tickets/ongoing/<ticket-id>/` in the worktree.
+3. Read the ticket's frontmatter to determine the ticket `type`.
 4. Work in the worktree directory.
-5. For each step in the plan, in order:
+
+**If `type: research` — research implementation flow:**
+1. Read `research-plan.md` from `tickets/ongoing/<ticket-id>/` in the worktree.
+2. Follow the research plan to produce `findings.md` in `tickets/ongoing/<ticket-id>/`:
+   - Answer each question listed in "Questions to Answer" with evidence.
+   - Follow the "Findings Document Structure" to organize the document.
+   - Cite sources for each finding.
+3. Update `## Files Modified` in the ticket (will include `findings.md`). Update `## Log` with a completion entry.
+4. Commit: `PREFIX-XXX: Research findings complete`
+5. Commit ticket updates.
+
+**Otherwise — standard code implementation flow:**
+1. Read `implementation-plan.md` from `tickets/ongoing/<ticket-id>/` in the worktree.
+2. For each step in the plan, in order:
    a. **Tests first**: write the TDD tests specified in the step.
    b. **Implement**: write the code to make the tests pass.
    c. **Verify**: run tests (new + existing, no regressions).
    d. **Drift check**: run `git diff --name-only` to get the list of modified files. Compare each modified file against the files listed in `implementation-plan.md` for the current step. For any file not listed in the plan, add a `[DRIFT]` log entry to the ticket's `## Log`: `[DRIFT] Modified <file> — reason: <explanation>`. Continue with the commit regardless (drift is logged, not blocked).
    e. **Commit**: `PREFIX-XXX: <step description>`
-6. After all steps: update `## Files Modified` in the ticket with the actual list of all files created or changed during implementation (comparing plan vs reality). Update `## Log` with a completion entry.
-7. Commit ticket updates.
+3. After all steps: update `## Files Modified` in the ticket with the actual list of all files created or changed during implementation (comparing plan vs reality). Update `## Log` with a completion entry.
+4. Commit ticket updates.
 
-**Error handling:** fix in-scope test failures, log and skip blocked steps, STOP if the entire plan is unworkable. On completion, suggest running `/ticket-system-verify`.
+**Error handling:** fix in-scope test failures (code flow) or incomplete findings (research flow), log and skip blocked steps, STOP if the entire plan is unworkable. On completion, suggest running `/ticket-system-verify`.
 
 #### `/ticket-system-verify`
 
