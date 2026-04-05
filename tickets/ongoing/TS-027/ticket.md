@@ -1,11 +1,11 @@
 ---
 id: TS-027
 title: "Add /ticket-system-doctor diagnostic skill (read-only checks)"
-status: planned
+status: ongoing
 priority: P0
 type: feature
 created: 2026-04-05 02:50:01
-updated: 2026-04-05 02:50:01
+updated: 2026-04-05 03:35:53
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -58,3 +58,4 @@ Add to specs.md:
 
 ## Log
 - 2026-04-05 02:50:01: Ticket created as sub-ticket A of TS-012 split. Scheduled to planned (position 2).
+- 2026-04-05 03:35:53: Ticket activated. Moved to ongoing.
