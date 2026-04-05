@@ -36,6 +36,32 @@ record_skip() {
   echo "  [SKIP] $name — $reason"
 }
 
+# --- Setup and teardown ---
+
+TEST_ENV_DIR=""
+
+setup_test_env() {
+  TEST_ENV_DIR="$(mktemp -d)"
+  echo "  Setup: created temp dir $TEST_ENV_DIR"
+  git init "$TEST_ENV_DIR" --quiet
+  # Create an initial commit so worktree operations work
+  git -C "$TEST_ENV_DIR" commit --allow-empty -m "Initial commit" --quiet
+  # Run init-project.sh if available in GENERATED_OUTPUT_DIR
+  if [ -n "${GENERATED_OUTPUT_DIR:-}" ] && [ -f "$GENERATED_OUTPUT_DIR/init-project.sh" ]; then
+    (cd "$TEST_ENV_DIR" && bash "$GENERATED_OUTPUT_DIR/init-project.sh")
+  fi
+}
+
+teardown_test_env() {
+  if [ -n "$TEST_ENV_DIR" ] && [ -d "$TEST_ENV_DIR" ]; then
+    rm -rf "$TEST_ENV_DIR"
+    echo "  Teardown: removed $TEST_ENV_DIR"
+  fi
+  TEST_ENV_DIR=""
+}
+
+trap teardown_test_env EXIT
+
 # --- Summary ---
 
 print_summary() {
