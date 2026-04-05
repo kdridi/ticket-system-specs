@@ -5,7 +5,7 @@ status: ongoing
 priority: P2
 type: feature
 created: 2026-04-05 04:34:35
-updated: 2026-04-05 16:12:41
+updated: 2026-04-05 16:20:14
 dependencies:
   - TS-021a
 assignee: unassigned
@@ -55,7 +55,8 @@ Decision or next step informed by the findings.
 - TS-021a — defines the research-plan.md and validation-criteria.md artifacts consumed by this phase
 
 ## Files Modified
-- `specs.md` (section 4.2)
+- `specs.md` — section 3.8 (added findings.md template), section 4.2 (research conditionals for implement, verify, run), section 5.2 (conventions skill research pipeline docs), section 8 (validation checklist items)
+- `CLAUDE.md` — updated Deep Validation summary with research pipeline mention
 
 ## Decisions
 <!-- To be filled during implementation. -->
@@ -67,3 +68,4 @@ Decision or next step informed by the findings.
 ## Log
 - 2026-04-05 04:34:35: Ticket created as sub-ticket of TS-021 (split).
 - 2026-04-05 16:12:41: Ticket activated, moved to ongoing.
+- 2026-04-05 16:20:14: Implementation complete. Added findings.md template to section 3.8, research conditionals to implement/verify/run commands in section 4.2, updated conventions skill docs in section 5.2, added validation checklist items in section 8, synced CLAUDE.md.
