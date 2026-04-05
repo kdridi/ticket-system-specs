@@ -1,9 +1,4 @@
 tickets:
-  - id: TS-002
-    title: "Add automated validation script for generated output"
-    priority: P1
-    dependencies: []
-
   - id: TS-014
     title: "Add configurable test_command to project configuration"
     priority: P1

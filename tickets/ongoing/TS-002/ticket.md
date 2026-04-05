@@ -1,11 +1,11 @@
 ---
 id: TS-002
 title: "Add automated validation script for generated output"
-status: planned
+status: ongoing
 priority: P1
 type: infrastructure
 created: 2026-04-03 23:41:51
-updated: 2026-04-05 04:36:22
+updated: 2026-04-05 14:16:49
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -55,3 +55,4 @@ The current validation process is entirely manual. A developer must read through
 ## Log
 - 2026-04-03 23:41:51: Ticket created.
 - 2026-04-04 12:00:00: Updated scope — added conditional checks for new audit-driven features.
+- 2026-04-05 14:16:49: Ticket activated — moved to ongoing.
