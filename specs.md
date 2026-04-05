@@ -366,7 +366,7 @@ Which testing approach (unit, integration, both).
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status.
+Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status. `/ticket-system-abort` is an escape hatch available at any point after plan (when a worktree exists) — it cleanly abandons the active ticket, moves it to `rejected/`, and removes the worktree and branch.
 
 ### 4.2 Detailed Command Specifications
 
