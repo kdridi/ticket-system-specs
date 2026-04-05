@@ -573,7 +573,13 @@ Dependencies resolved: ordering rationale
 3. Add log entry: `VERDICT: PASS — Ticket completed.`
 4. Commit: `PREFIX-XXX: Complete ticket — <title>`
 
-**On VERDICT: FAIL** — do nothing. The ticket stays in `ongoing/`.
+**On VERDICT: FAIL — record attempt and leave in `ongoing/`:**
+1. Count existing FAIL entries in the ticket's `## Log` section (entries matching "VERDICT: FAIL (attempt").
+2. Increment the count to get the current attempt number N.
+3. Append a log entry: `YYYY-MM-DD HH:MM:SS: VERDICT: FAIL (attempt N/$MAX_RETRY) — <summary of failures>`.
+4. Update frontmatter `updated` timestamp (via `date` command).
+5. Commit in the worktree: `PREFIX-XXX: Verify FAIL (attempt N/$MAX_RETRY)`.
+6. The ticket stays in `ongoing/`.
 
 **NEVER attempt to fix code.** The role is verification and ticket completion, not code modification.
 
