@@ -1100,6 +1100,13 @@ After generation, verify:
 - [ ] `/ticket-system-run` verifies filesystem state after each sub-skill invocation before proceeding.
 - [ ] `/ticket-system-run` stops and reports on failure at any step.
 - [ ] `/ticket-system-run` forwards `--yes` to the plan sub-skill when present.
+- [ ] `/ticket-system-implement` checks ticket `type` and reads `research-plan.md` for research tickets instead of `implementation-plan.md`.
+- [ ] `/ticket-system-implement` produces `findings.md` for research tickets instead of code changes.
+- [ ] `/ticket-system-verify` checks ticket `type` and reads `validation-criteria.md` for research tickets instead of `test-plan.md`.
+- [ ] `/ticket-system-verify` checks `findings.md` against `validation-criteria.md` for research tickets (completeness, evidence, format).
+- [ ] `/ticket-system-run` accepts research artifacts (`research-plan.md` + `validation-criteria.md`) as valid plan output for research tickets.
+- [ ] `/ticket-system-run` checks for `findings.md` existence (not implementation commits) for research tickets at the implement verification step.
+- [ ] The PASS/FAIL verdict and completion flow are identical for both code and research ticket types.
 - [ ] `/ticket-system-next` uses the `ticket-system-reader` agent (read-only state inspection).
 - [ ] `/ticket-system-next` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
