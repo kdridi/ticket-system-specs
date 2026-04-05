@@ -650,11 +650,22 @@ Dependencies resolved: ordering rationale
 2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
 3. Work in the worktree directory for all verification.
 4. Find the active ticket in `tickets/ongoing/<ticket-id>/`.
-5. Read `test-plan.md`.
+5. Read the ticket's frontmatter to determine the ticket `type`.
 
-**Verification checklist:** First, read `test_command` from `.tickets/config.yml`. If `test_command` is set, run the test suite via `bash -c "<test_command>"` in the worktree directory. If `test_command` is not set, fall back to auto-detection: try `npm test`, `pytest`, or `make test` based on what is available in the project. Then verify each test case in `test-plan.md` exists and passes. Check the coverage map (every criterion covered). Walk through each acceptance criterion with evidence. Check for regressions. Check for `[DRIFT]` entries in the ticket's `## Log` section. If any `[DRIFT]` entries are present, list them prominently in the verification report and flag for user attention. Drift entries do not automatically cause a FAIL verdict but must be reported.
+**If `type: research` — research verification flow:**
+1. Read `validation-criteria.md` from the ticket's directory.
+2. Read `findings.md` from the ticket's directory.
+3. **Verification checklist:** Check `findings.md` against `validation-criteria.md`:
+   - **Completeness:** all research questions answered with evidence (per Completeness Criteria).
+   - **Evidence:** sources cited for each finding (per Evidence Requirements).
+   - **Format:** findings document follows the expected structure (per Deliverable Format).
+4. Walk through each acceptance criterion with evidence from `findings.md`.
 
-**Verdict:** Either `VERDICT: PASS` (all criteria met, all tests passing, no regressions) or `VERDICT: FAIL` (list failed criteria and test failures, recommend next action).
+**Otherwise — standard code verification flow:**
+1. Read `test-plan.md`.
+2. **Verification checklist:** First, read `test_command` from `.tickets/config.yml`. If `test_command` is set, run the test suite via `bash -c "<test_command>"` in the worktree directory. If `test_command` is not set, fall back to auto-detection: try `npm test`, `pytest`, or `make test` based on what is available in the project. Then verify each test case in `test-plan.md` exists and passes. Check the coverage map (every criterion covered). Walk through each acceptance criterion with evidence. Check for regressions. Check for `[DRIFT]` entries in the ticket's `## Log` section. If any `[DRIFT]` entries are present, list them prominently in the verification report and flag for user attention. Drift entries do not automatically cause a FAIL verdict but must be reported.
+
+**Verdict:** Either `VERDICT: PASS` (all criteria met, all tests/checks passing, no regressions) or `VERDICT: FAIL` (list failed criteria and test/check failures, recommend next action).
 
 **On VERDICT: PASS — complete the ticket (in the worktree):**
 1. `git mv tickets/ongoing/PREFIX-XXX tickets/completed/PREFIX-XXX`
@@ -670,7 +681,7 @@ Dependencies resolved: ordering rationale
 5. Commit in the worktree: `PREFIX-XXX: Verify FAIL (attempt N/$MAX_RETRY)`.
 6. The ticket stays in `ongoing/`.
 
-**NEVER attempt to fix code.** The role is verification and ticket completion, not code modification.
+**NEVER attempt to fix code or modify findings.** The role is verification and ticket completion, not code/findings modification.
 
 #### `/ticket-system-merge`
 
