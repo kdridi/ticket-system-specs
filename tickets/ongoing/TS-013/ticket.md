@@ -5,7 +5,7 @@ status: ongoing
 priority: P0
 type: feature
 created: 2026-04-04 12:00:00
-updated: 2026-04-05 03:17:16
+updated: 2026-04-05 03:23:46
 dependencies: []
 assignee: unassigned
 estimated_complexity: small
@@ -49,10 +49,13 @@ Add to specs.md:
 <!-- None -->
 
 ## Files Modified
-- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1)
+- `specs.md` (sections 2.3, 2.4, 4.1, 4.2, 5.1, 8)
+- `CLAUDE.md` (expected output skill directory count)
 
 ## Decisions
-<!-- To be filled during implementation. -->
+- Added `Bash(date *)` to ops agent allowed tools since abort needs to update timestamps.
+- D-11 still says "6 commands" referring to the main pipeline; abort is orthogonal (escape hatch), not a pipeline step. Left D-11 unchanged.
+- Included `.tickets/.pending` cleanup step (step 10) to future-proof for TS-028.
 
 ## Notes
 - Uses the ops agent which already has bypassPermissions and all required git commands.
@@ -63,3 +66,4 @@ Add to specs.md:
 - 2026-04-04 12:00:00: Ticket created from audit review (W8).
 - 2026-04-05 02:50:01: Scheduled to planned (position 1).
 - 2026-04-05 03:17:16: Activated — moved to ongoing.
+- 2026-04-05 03:23:46: Implementation complete — all 8 plan steps executed, 14 test cases verified.
