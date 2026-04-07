@@ -1,1 +1,8 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-029
+    title: "Add /ticket-system-run-all command to execute all planned tickets sequentially"
+    size: medium
+    priority: P1
+    dependencies: []
+    rationale: "Adds unattended sequential execution of the full roadmap, improving developer productivity."
