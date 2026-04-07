@@ -1,11 +1,11 @@
 ---
 id: TS-029
 title: "Add /ticket-system-run-all command to execute all planned tickets sequentially"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-05 19:41:45
-updated: 2026-04-07 23:09:29
+updated: 2026-04-07 23:11:10
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -49,3 +49,4 @@ Add a new skill `ticket-system-run-all` under `skills/` with a `SKILL.md` follow
 - 2026-04-05 19:48:14: Scheduled to planned (roadmap position 1).
 - 2026-04-06 00:04:41: Aborted — moved back to backlog. Worktree and branch removed.
 - 2026-04-07 23:09:29: Scheduled to planned (roadmap position 1).
+- 2026-04-07 23:11:10: Activated — moved to ongoing, worktree created.
