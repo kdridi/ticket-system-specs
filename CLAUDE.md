@@ -28,7 +28,7 @@ Only these three files belong in this repo. Generated output should not be commi
 - `install.sh` — prompts for install directory, then copies agents/skills to `$CLAUDE_DIR`
 - `init-project.sh` — initializes a new project with ticket structure
 - 6 agent files in `agents/` (reader, editor, planner, coder, verifier, ops)
-- 12 skill directories in `skills/` (conventions + 11 slash commands), each containing `SKILL.md`
+- 13 skill directories in `skills/` (conventions + 12 slash commands), each containing `SKILL.md`
 
 ## Iterative Workflow
 
@@ -88,7 +88,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code)
+- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code, /ticket-system-run-all reads roadmap in position order and chains /ticket-system-run per ticket with stop-on-failure and summary report)
 
 ## Rules for Working on This Repo
 
