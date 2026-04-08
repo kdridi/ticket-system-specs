@@ -456,6 +456,31 @@ How the findings should inform a decision.
 Expected structure of findings.md
 ```
 
+#### Context Artifact (all ticket types)
+
+After the planner completes codebase analysis (Phase 2), it writes an optional `.context.md` file alongside the plan artifacts. This artifact is shared across all subsequent phases (implement, verify, merge) to eliminate redundant codebase exploration. If the planner's codebase analysis is minimal (very small ticket), `.context.md` may be omitted and downstream agents fall back to normal exploration.
+
+**`.context.md`:**
+```markdown
+# Context — PREFIX-XXX
+
+## Relevant Files
+- `path/to/file.ext` — brief description of what this file does and why it is relevant
+- `path/to/other.ext` — brief description
+
+## Key Patterns
+- **Test framework:** e.g., pytest with fixtures in conftest.py
+- **Error handling:** e.g., custom exception hierarchy in errors.py
+- **Code style:** e.g., snake_case, type hints throughout
+
+## Architecture Notes
+High-level observations about how the codebase is structured and how
+the ticket's changes fit into the existing architecture.
+
+## Gotchas
+- Anything surprising discovered during exploration that downstream agents should know about.
+```
+
 #### Research Output Artifact
 
 The implement phase for research tickets produces a single deliverable:
