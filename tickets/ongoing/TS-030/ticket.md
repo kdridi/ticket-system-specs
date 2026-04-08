@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-08 11:26:17
-updated: 2026-04-08 11:33:15
+updated: 2026-04-08 11:40:28
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -44,7 +44,9 @@ Currently there is no dedicated command to edit a ticket once it has been create
 <!-- None -->
 
 ## Files Modified
-<!-- Filled in during/after implementation. -->
+- `specs.md` — Added /ticket-system-edit command specification (section 4.2), updated agent table (section 2.3), auto-invocation table (section 2.4), file tree (section 5.1), and validation checklist (section 8).
+- `CLAUDE.md` — Updated skill directory count from 13 to 14.
+- `.claude/skills/ticket-system-edit/SKILL.md` — Created skill file (gitignored, local only).
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -57,3 +59,4 @@ Currently there is no dedicated command to edit a ticket once it has been create
 - 2026-04-08 11:26:17: Ticket created.
 - 2026-04-08 11:29:40: Scheduled to planned (roadmap position 1).
 - 2026-04-08 11:33:15: Activated — moved to ongoing, worktree created.
+- 2026-04-08 11:40:28: Implementation complete — specs.md updated with command specification, cross-references, and validation checklist entries; CLAUDE.md updated; skill SKILL.md created locally.
