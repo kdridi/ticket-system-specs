@@ -1,11 +1,11 @@
 ---
 id: TS-035
 title: "Add timing/stats collection to /ticket-system-run"
-status: ongoing
+status: completed
 priority: P1
 type: feature
 created: 2026-04-08 22:34:49
-updated: 2026-04-08 23:34:42
+updated: 2026-04-08 23:36:03
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -86,3 +86,4 @@ None.
 - 2026-04-08 23:21:21: Scheduled — moved to planned.
 - 2026-04-08 23:26:46: Activated — created worktree, moved to ongoing.
 - 2026-04-08 23:34:42: Implementation complete — 8 steps executed across 7 commits, no drift detected.
+- 2026-04-08 23:36:03: VERDICT: PASS — Ticket completed.
