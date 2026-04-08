@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: research
 created: 2026-04-08 21:58:18
-updated: 2026-04-08 22:02:36
+updated: 2026-04-08 22:08:31
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -41,7 +41,7 @@ Key areas to investigate:
 None.
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `tickets/ongoing/TS-034/findings.md` — research findings document
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -56,3 +56,4 @@ None.
 - 2026-04-08 21:58:18: Ticket created.
 - 2026-04-08 22:00:38: Scheduled — moved to planned.
 - 2026-04-08 22:02:36: Activated — moved to ongoing, worktree created.
+- 2026-04-08 22:08:31: Research findings complete — findings.md produced with 5 ranked root causes, 5 proposed spec changes, and a fast-path proposal for small tickets.
