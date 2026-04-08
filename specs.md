@@ -139,14 +139,14 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 | Skill | `disable-model-invocation` | Reason |
 |-------|---------------------------|--------|
 | `ticket-system-create` | `false` (Claude can invoke) | Low risk — creates a markdown file in backlog |
-| `ticket-system-schedule` | `false` | Safe — human gate before any mutation including splits |
+| `ticket-system-schedule` | `false` | Low risk — validates and moves tickets, stops on conflict |
 | `ticket-system-edit` | `false` | Low risk — modifies a backlog/planned ticket file |
-| `ticket-system-plan` | `false` | Has human gate — safe to chain |
+| `ticket-system-plan` | `false` | Safe — generates plans in worktree, stops on conflict |
 | `ticket-system-implement` | `false` | Runs in isolated worktree — safe to chain |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
 | `ticket-system-merge` | `false` | Requires completed status — safe to chain |
-| `ticket-system-run` | `false` | Chains safe-to-chain skills; plan has its own human gate |
-| `ticket-system-run-all` | `false` | Chains safe-to-chain skills; plan has its own human gate |
+| `ticket-system-run` | `false` | Chains safe-to-chain skills |
+| `ticket-system-run-all` | `false` | Chains safe-to-chain skills |
 | `ticket-system-abort` | `true` | Destructive — destroys worktree and all uncommitted work |
 | `ticket-system-doctor` | `false` | Read-only diagnostics, zero risk |
 | `ticket-system-next` | `false` | Read-only state inspection, zero risk |
