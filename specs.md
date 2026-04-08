@@ -753,15 +753,16 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 1. Read `.tickets/config.yml`.
 2. Write `.tickets/.pending` with `operation: merge`, `ticket: PREFIX-XXX`, `started: <now>`, `description: "Merging ticket branch into main and cleaning up worktree"`.
 3. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
-4. Verify the worktree is clean (no uncommitted changes).
-5. Verify the ticket is in `tickets/completed/` in the worktree (not in `ongoing/`).
-6. Switch to the main branch.
-7. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
-8. If merge conflict: report the conflict and **STOP** — let the user resolve.
+4. Read `.context.md` from the ticket's directory in the worktree if it exists. Use its contents to understand the scope of changes being merged without re-exploring. If `.context.md` does not exist, proceed normally.
+5. Verify the worktree is clean (no uncommitted changes).
+6. Verify the ticket is in `tickets/completed/` in the worktree (not in `ongoing/`).
+7. Switch to the main branch.
+8. Merge the worktree branch (`git merge ticket/PREFIX-XXX`).
+9. If merge conflict: report the conflict and **STOP** — let the user resolve.
    - **Manual conflict resolution:** The user resolves conflicts using standard git tools (`git diff`, `git add`). After resolution, the user commits the merge (`git commit`) and re-runs `/ticket-system-merge` which will detect the completed merge and proceed to worktree cleanup.
-9. Remove the worktree and delete the branch.
-10. Delete `.tickets/.pending`.
-11. Suggest checking the roadmap for the next ticket to plan.
+10. Remove the worktree and delete the branch.
+11. Delete `.tickets/.pending`.
+12. Suggest checking the roadmap for the next ticket to plan.
 
 #### `/ticket-system-run`
 
