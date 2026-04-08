@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-08 22:34:49
-updated: 2026-04-08 23:26:46
+updated: 2026-04-08 23:34:42
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -65,7 +65,8 @@ Two implementation layers:
 None.
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `specs.md` — Added stats config option (3.1), stats directory (3.2), instrumentation hooks to file tree (5.1), hook generation rules (5.7), install.sh hook registration (5.3), init-project.sh gitignore (5.4), /ticket-system-run phase timing (4.2), validation checklist items (8)
+- `CLAUDE.md` — Updated smoke test and deep validation sections to reflect instrumentation hooks and stats feature
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -84,3 +85,4 @@ None.
 - 2026-04-08 22:45:29: Edited — rewrote second acceptance criterion: hooks are always installed with the system (registered in .claude/settings.json at install time) rather than installed conditionally when stats: true is set; runtime guard (exit 0 if stats not enabled) remains in the hook scripts themselves.
 - 2026-04-08 23:21:21: Scheduled — moved to planned.
 - 2026-04-08 23:26:46: Activated — created worktree, moved to ongoing.
+- 2026-04-08 23:34:42: Implementation complete — 8 steps executed across 7 commits, no drift detected.
