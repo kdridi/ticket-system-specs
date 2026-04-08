@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-08 22:35:30
-updated: 2026-04-08 23:41:17
+updated: 2026-04-08 23:45:30
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -35,7 +35,8 @@ Add `.context.md` as a new plan artifact written by the planner after Phase 2 (c
 <!-- List ticket IDs that must be completed before this one. -->
 
 ## Files Modified
-<!-- Filled in during/after implementation. Track every file created or changed. -->
+- `specs.md` — Added .context.md artifact format (section 3.8), updated plan/implement/verify/merge command specs (section 4.2), updated conventions generation rule (section 5.2), added validation checklist items (section 8)
+- `CLAUDE.md` — Updated Deep Validation reference to mention .context.md
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -48,3 +49,4 @@ The `.context.md` file is a read-only artifact for downstream phases — only th
 - 2026-04-08 23:21:21: Scheduled — moved to planned.
 - 2026-04-08 23:39:13: Activated — moved to ongoing, worktree created.
 - 2026-04-08 23:41:17: Plan generated — implementation-plan.md and test-plan.md created.
+- 2026-04-08 23:45:30: Implementation complete — all 8 steps executed across specs.md and CLAUDE.md.
