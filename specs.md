@@ -1012,7 +1012,7 @@ ticket-system/
 **The `ticket-system-conventions` skill** (`skills/ticket-system-conventions/SKILL.md`) must contain:
 - Frontmatter with `user-invocable: false`
 - Immediately after the frontmatter closing `---`, before any markdown heading, a line-count comment: `<!-- Lines: N/500 -->` where N is the total line count of the file. This gives generators and reviewers immediate visibility into budget usage.
-- The entire data model from section 3: config, directory structure, ticket format, roadmap format, lifecycle, ID assignment, commit convention, plan artifact formats (standard and research variants), and the research output artifact (`findings.md`). The conventions skill must document the full research pipeline variant: plan produces `research-plan.md` + `validation-criteria.md`, implement produces `findings.md`, verify checks findings against validation criteria.
+- The entire data model from section 3: config, directory structure, ticket format, roadmap format, lifecycle, ID assignment, commit convention, plan artifact formats (standard and research variants), the context artifact (`.context.md`), and the research output artifact (`findings.md`). The conventions skill must document the full research pipeline variant: plan produces `research-plan.md` + `validation-criteria.md`, implement produces `findings.md`, verify checks findings against validation criteria. It must also document `.context.md` as an optional artifact written by the planner for all ticket types, with its format (relevant files, key patterns, architecture notes, gotchas).
 
 ### 5.3 Installation Script
 
