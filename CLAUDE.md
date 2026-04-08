@@ -28,7 +28,7 @@ Only these three files belong in this repo. Generated output should not be commi
 - `install.sh` — prompts for install directory, then copies agents/skills to `$CLAUDE_DIR`
 - `init-project.sh` — initializes a new project with ticket structure
 - 6 agent files in `agents/` (reader, editor, planner, coder, verifier, ops)
-- 13 skill directories in `skills/` (conventions + 12 slash commands), each containing `SKILL.md`
+- 14 skill directories in `skills/` (conventions + 13 slash commands), each containing `SKILL.md`
 
 ## Iterative Workflow
 

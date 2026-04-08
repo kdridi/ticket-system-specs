@@ -122,7 +122,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 | Agent | Model | permissionMode | Allowed Tools | Used by |
 |-------|-------|---------------|---------------|---------|
 | `ticket-system-reader` | `$WEAK_MODEL` | plan | `Read`, `Glob`, `Grep`, `Bash(git worktree list)`, `Bash(git diff *)` | `/ticket-system-help`, `/ticket-system-doctor`, `/ticket-system-next` |
-| `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv tickets/*)`, `Bash(git commit -m *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule` |
+| `ticket-system-editor` | `$MID_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git mv tickets/*)`, `Bash(git commit -m *)`, `Bash(git status)`, `Bash(git add *)`, `Bash(date *)`, `Bash(mkdir *)` | `/ticket-system-create`, `/ticket-system-schedule`, `/ticket-system-edit` |
 | `ticket-system-planner` | `$STRONG_MODEL` | bypassPermissions | `Read`, `Write`, `Edit`, `Glob`, `Grep`, `Bash(git log *)`, `Bash(git diff *)`, `Bash(git worktree *)`, `Bash(git mv *)`, `Bash(git commit -m *)`, `Bash(git add *)`, `Bash(git status)`, `Bash(mkdir *)`, `Bash(date *)` | `/ticket-system-plan` |
 | `ticket-system-coder` | `$STRONG_MODEL` | bypassPermissions | Unrestricted (the plan is already approved) | `/ticket-system-implement`, `/ticket-system-run`, `/ticket-system-run-all` |
 | `ticket-system-verifier` | `$MID_MODEL` | bypassPermissions | `Read`, `Glob`, `Grep`, `Bash(bash -c *)`, `Bash(npm test *)`, `Bash(pytest *)`, `Bash(make test *)`, `Bash(git diff *)`, `Bash(git worktree list)`, `Bash(git mv tickets/*)`, `Bash(git add *)`, `Bash(git commit -m *)`, `Bash(date *)` | `/ticket-system-verify` |
@@ -140,6 +140,7 @@ Each skill has a `disable-model-invocation` flag. Here is the strategy:
 |-------|---------------------------|--------|
 | `ticket-system-create` | `false` (Claude can invoke) | Low risk — creates a markdown file in backlog |
 | `ticket-system-schedule` | `false` | Safe — human gate before any mutation including splits |
+| `ticket-system-edit` | `false` | Low risk — modifies a backlog/planned ticket file |
 | `ticket-system-plan` | `false` | Has human gate — safe to chain |
 | `ticket-system-implement` | `false` | Runs in isolated worktree — safe to chain |
 | `ticket-system-verify` | `false` | Read-only + tests — safe |
@@ -908,6 +909,8 @@ ticket-system/
     │   └── SKILL.md
     ├── ticket-system-schedule/
     │   └── SKILL.md
+    ├── ticket-system-edit/
+    │   └── SKILL.md
     ├── ticket-system-plan/
     │   └── SKILL.md
     ├── ticket-system-implement/
@@ -1097,6 +1100,7 @@ After generation, verify:
 - [ ] `ticket-system-create/`
 - [ ] `ticket-system-help/`
 - [ ] `ticket-system-schedule/`
+- [ ] `ticket-system-edit/`
 - [ ] `ticket-system-plan/`
 - [ ] `ticket-system-implement/`
 - [ ] `ticket-system-verify/`
@@ -1127,6 +1131,12 @@ After generation, verify:
 - [ ] `init-project.sh` is executable and creates the full project structure.
 - [ ] `init-project.sh` generates `TEMPLATE.md` with pipe-separated enum options (e.g., `priority: P0 | P1 | P2`), not single default values.
 - [ ] `/ticket-system-schedule` contains a human gate (via `AskUserQuestion`) with self-evaluation inside the fork — agent stays forked through Phase 4 execution.
+- [ ] `/ticket-system-edit` rejects tickets in `ongoing/`, `completed/`, or `rejected/` status — only `backlog/` and `planned/` are editable.
+- [ ] `/ticket-system-edit` preserves `id`, `created`, and existing log entries (append-only).
+- [ ] `/ticket-system-edit` updates `updated` timestamp via `date` command.
+- [ ] `/ticket-system-edit` updates `roadmap.yml` when editing a planned ticket's title or priority.
+- [ ] `/ticket-system-edit` uses the `ticket-system-editor` agent.
+- [ ] `/ticket-system-edit` has `disable-model-invocation: false`.
 - [ ] `/ticket-system-plan` contains a human gate (via `AskUserQuestion`) with self-evaluation after plan generation — agent stays forked.
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
