@@ -1,1 +1,8 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-034
+    title: "Optimize ticket system execution speed without sacrificing output quality"
+    size: medium
+    priority: P1
+    dependencies: []
+    rationale: "Investigates the 5-7x slowdown compared to manual Claude Code sessions and proposes concrete spec changes to reduce execution time."
