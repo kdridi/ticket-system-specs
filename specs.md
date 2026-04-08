@@ -1178,6 +1178,8 @@ After generation, verify:
 
 **Hooks** (`hooks/`):
 - [ ] `validate-git-worktree.sh`
+- [ ] `instrument-pre.sh`
+- [ ] `instrument-post.sh`
 
 **Agents** (`agents/`):
 - [ ] `ticket-system-reader.md`
@@ -1284,3 +1286,26 @@ After generation, verify:
 - [ ] The hook does not hardcode any ticket prefix.
 - [ ] `install.sh` copies the hook to `$CLAUDE_DIR/hooks/` and merges PreToolUse config into `$CLAUDE_DIR/settings.json`.
 - [ ] `init-project.sh` adds `.worktrees/` to `.gitignore` only if not already present (idempotent).
+
+### Instrumentation hooks
+
+- [ ] `hooks/instrument-pre.sh` exists and is executable.
+- [ ] `hooks/instrument-post.sh` exists and is executable.
+- [ ] Both instrumentation hooks check for `stats: true` in `.tickets/config.yml` and exit 0 immediately when stats are disabled (zero overhead).
+- [ ] Both instrumentation hooks always exit 0 on all code paths (never block tool execution).
+- [ ] `instrument-pre.sh` extracts `tool_use_id`, `tool_name`, and `tool_input` summary from stdin JSON.
+- [ ] `instrument-pre.sh` writes a temp state file to `.tickets/stats/.hook-state/<tool_use_id>.tmp` with start timestamp.
+- [ ] `instrument-pre.sh` handles macOS `date` lacking `%N` (falls back to `python3` or second-level precision).
+- [ ] `instrument-post.sh` correlates with pre-hook via `tool_use_id`, computes `elapsed_ms`, and appends JSONL entry to `.tickets/stats/tool-calls.jsonl`.
+- [ ] `instrument-post.sh` handles `PostToolUseFailure` events (marks entry with `"status":"failed"`).
+- [ ] `instrument-post.sh` deletes the temp state file after logging.
+- [ ] JSONL entries include: `ts`, `tool`, `input`, `elapsed_ms`, `status`, `session`, `cwd`, `tool_use_id`.
+- [ ] Both hooks work without `jq` (fallback to `grep`/`sed` parsing).
+- [ ] Both hooks do not hardcode any ticket prefix.
+- [ ] `install.sh` copies both instrumentation hooks to `$CLAUDE_DIR/hooks/` and registers them in `$CLAUDE_DIR/settings.json` (PreToolUse with matcher `".*"`, PostToolUse with matcher `".*"`).
+- [ ] `init-project.sh` adds `.tickets/stats/` to `.gitignore` only if not already present (idempotent).
+- [ ] `/ticket-system-run` reads `stats` flag from config and records `date +%s` before/after each phase when enabled.
+- [ ] `/ticket-system-run` writes `.tickets/stats/<ticket-id>.json` with phase-level timing summary on completion.
+- [ ] Stats are written even when the run stops early due to failure (partial phase data with appropriate status).
+- [ ] The stats JSON includes: `ticket_id`, `title`, `type`, `priority`, `estimated_complexity`, `phases` array, `total_duration_sec`, `status`.
+- [ ] Hook scripts are POSIX-compatible (bash, jq with grep/sed fallback, date, standard utils only).
