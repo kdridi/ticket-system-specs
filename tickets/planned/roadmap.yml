@@ -1,1 +1,15 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-035
+    title: "Add timing/stats collection to /ticket-system-run"
+    size: medium
+    priority: P1
+    dependencies: []
+    rationale: "Provides observability infrastructure (hook-level telemetry + orchestrator phase timing) needed to identify bottlenecks and inform future optimizations."
+  - position: 2
+    id: TS-036
+    title: "Add context artifact to planning phase for cross-phase knowledge sharing"
+    size: medium
+    priority: P1
+    dependencies: []
+    rationale: "Eliminates redundant codebase re-exploration across phases by sharing planner findings via .context.md artifact, reducing per-run overhead."
