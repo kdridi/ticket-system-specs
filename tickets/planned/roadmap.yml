@@ -1,8 +1,1 @@
-tickets:
-  - position: 1
-    id: TS-036
-    title: "Add context artifact to planning phase for cross-phase knowledge sharing"
-    size: medium
-    priority: P1
-    dependencies: []
-    rationale: "Eliminates redundant codebase re-exploration across phases by sharing planner findings via .context.md artifact, reducing per-run overhead."
+tickets: []
