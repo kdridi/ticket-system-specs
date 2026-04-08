@@ -603,16 +603,24 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 - **If `type: research`:** Write `research-plan.md` and `validation-criteria.md` in the ticket directory (research artifact formats described in section 3.8).
 - **Otherwise (all other types):** Write `implementation-plan.md` and `test-plan.md` in the ticket directory (standard artifact formats described in section 3.8).
 
-**Phase 4 — Human gate.**
-- Commit: `PREFIX-XXX: Generate implementation and test plans`
-- If the user's original arguments contain `yes` or `--yes`, present a summary and end (the user will invoke `/ticket-system-implement` next).
-- Otherwise, the agent self-evaluates before engaging the user:
-  1. **Self-assessment:** Review both plans for quality — is the implementation order logical? Are edge cases covered? Does the test plan have gaps? Are there risky steps that need clarification?
-  2. **If confident:** Present both plans with key decisions and tradeoffs, then use `AskUserQuestion` to ask: "The plans look solid — approve, or would you like to adjust anything?"
-  3. **If issues detected:** The agent identifies specific concerns (e.g., "step 3 may conflict with existing module X", "test coverage is thin on error paths", "unclear whether we should use approach A or B for the parser"). It uses `AskUserQuestion` to collect the user's input on each concern, revises the plans accordingly, amends the commit, and loops back to step 1.
+**Phase 4 — Conflict check and commit (stop-on-conflict).**
+- If the plan cannot be built cleanly (empty objective, fewer than 2 acceptance criteria, unmappable scope, unresolved dependencies), **STOP** with a structured message:
+  ```
+  PLANNING BLOCKED — issue(s) found
 
-**Do not return to the main agent.** The forked agent handles the full review loop so elevated permissions remain available for plan adjustments.
+  EMPTY OBJECTIVE:
+    PREFIX-XXX has no objective defined.
+    → Fix via: /ticket-system-edit PREFIX-XXX "add objective: ..."
 
+  INSUFFICIENT CRITERIA:
+    PREFIX-XXX has only 1 acceptance criterion (minimum 2 required).
+    → Fix via: /ticket-system-edit PREFIX-XXX "add acceptance criteria: ..."
+
+  UNRESOLVED DEPENDENCIES:
+    PREFIX-XXX depends on PREFIX-YYY which is not completed.
+    → Complete PREFIX-YYY first, or: /ticket-system-edit PREFIX-XXX "remove dependency on PREFIX-YYY"
+  ```
+- On success: commit plan artifacts (`PREFIX-XXX: Generate implementation and test plans`) and end.
 - Delete `.tickets/.pending`.
 
 #### `/ticket-system-implement`
