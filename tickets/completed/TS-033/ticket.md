@@ -1,11 +1,11 @@
 ---
 id: TS-033
 title: "Remove all human gates and --yes bypass from schedule, plan, run, and run-all commands"
-status: ongoing
+status: completed
 priority: P1
 type: refactor
 created: 2026-04-08 12:51:03
-updated: 2026-04-08 13:02:52
+updated: 2026-04-08 13:05:04
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -73,3 +73,4 @@ None.
 - 2026-04-08 12:53:13: Scheduled to roadmap at position 1.
 - 2026-04-08 12:55:24: Activated — moved to ongoing, worktree created.
 - 2026-04-08 13:02:52: Implementation complete — all 11 steps executed across specs.md and CLAUDE.md. Removed human gates, --yes bypass, AskUserQuestion from schedule/plan. Replaced with stop-on-conflict model. Updated decisions D-2, D-7, D-11, D-12. Updated validation checklist. Preserved abort confirmation gate.
+- 2026-04-08 13:05:04: VERDICT: PASS — Ticket completed.
