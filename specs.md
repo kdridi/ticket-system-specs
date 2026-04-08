@@ -739,22 +739,50 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 This is an orchestration command that chains four sub-skills in sequence: plan → implement → verify → merge. It stops immediately if any step fails, letting the user inspect and either fix the issue or `/ticket-system-abort`.
 
 **Behavior:**
-1. Read `.tickets/config.yml` to get the prefix and configuration.
+1. Read `.tickets/config.yml` to get the prefix, configuration, and `stats` flag.
 2. Validate the ticket-id argument is provided. The ticket must exist in `tickets/planned/` (not yet activated) or `tickets/ongoing/` (already activated by a prior `/ticket-system-plan` that was interrupted).
-3. **Step 1 — Plan:** Invoke `/ticket-system-plan <ticket-id>` via the Skill tool.
+3. Read the ticket frontmatter to capture `title`, `type`, `priority`, and `estimated_complexity` (used in the stats summary if stats are enabled).
+4. **Step 1 — Plan:** If `stats: true`, record `plan_start` via `date +%s`. Invoke `/ticket-system-plan <ticket-id>` via the Skill tool. If `stats: true`, record `plan_end` via `date +%s`.
    - After return, verify success: check that `.worktrees/<ticket-id>-worktree` exists and contains the expected plan artifacts in `tickets/ongoing/<ticket-id>/`. Read the ticket's `type` from frontmatter: if `type: research`, check for `research-plan.md` and `validation-criteria.md`; otherwise check for `implementation-plan.md` and `test-plan.md`.
-   - If verification fails → report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
-4. **Step 2 — Implement:** Invoke `/ticket-system-implement <ticket-id>` via the Skill tool.
+   - If verification fails → if `stats: true`, write partial stats (see step 9). Report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
+5. **Step 2 — Implement:** If `stats: true`, record `implement_start` via `date +%s`. Invoke `/ticket-system-implement <ticket-id>` via the Skill tool. If `stats: true`, record `implement_end` via `date +%s`.
    - After return, verify success: for research tickets, check that `findings.md` exists in `tickets/ongoing/<ticket-id>/`; for code tickets, check for implementation commits in the worktree beyond the plan commits.
-   - If the sub-skill was blocked by the retry limit (`$MAX_RETRY` consecutive failures) → report "STOPPED at implement step — retry limit reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." **STOP.**
-   - If the sub-skill reported failure or verification fails → report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
-5. **Step 3 — Verify:** Invoke `/ticket-system-verify <ticket-id>` via the Skill tool.
+   - If the sub-skill was blocked by the retry limit (`$MAX_RETRY` consecutive failures) → if `stats: true`, write partial stats (see step 9). Report "STOPPED at implement step — retry limit reached. The plan may need revision. Run /ticket-system-plan PREFIX-XXX to regenerate the plan." **STOP.**
+   - If the sub-skill reported failure or verification fails → if `stats: true`, write partial stats (see step 9). Report "STOPPED at implement step" and suggest `/ticket-system-abort`. **STOP.**
+6. **Step 3 — Verify:** If `stats: true`, record `verify_start` via `date +%s`. Invoke `/ticket-system-verify <ticket-id>` via the Skill tool. If `stats: true`, record `verify_end` via `date +%s`.
    - After return, check for `VERDICT: PASS` in the output, or verify `tickets/completed/<ticket-id>/` exists in the worktree.
-   - If VERDICT: FAIL → report "STOPPED at verify step — VERDICT: FAIL" with failure details. Suggest re-running `/ticket-system-implement` to fix issues, then `/ticket-system-verify`, or `/ticket-system-abort` to abandon. **STOP.**
-6. **Step 4 — Merge:** Invoke `/ticket-system-merge <ticket-id>` via the Skill tool.
+   - If VERDICT: FAIL → if `stats: true`, write partial stats (see step 9). Report "STOPPED at verify step — VERDICT: FAIL" with failure details. Suggest re-running `/ticket-system-implement` to fix issues, then `/ticket-system-verify`, or `/ticket-system-abort` to abandon. **STOP.**
+7. **Step 4 — Merge:** If `stats: true`, record `merge_start` via `date +%s`. Invoke `/ticket-system-merge <ticket-id>` via the Skill tool. If `stats: true`, record `merge_end` via `date +%s`.
    - After return, verify the worktree has been removed and the branch deleted.
-   - If merge conflict → report "STOPPED at merge step — merge conflict" and let the user resolve. **STOP.**
-7. On full success, report: "Ticket <ticket-id> completed: planned, implemented, verified, and merged."
+   - If merge conflict → if `stats: true`, write partial stats (see step 9). Report "STOPPED at merge step — merge conflict" and let the user resolve. **STOP.**
+8. On full success, report: "Ticket <ticket-id> completed: planned, implemented, verified, and merged."
+9. **Stats output (if `stats: true`):** After run completion (success or failure), write `.tickets/stats/<ticket-id>.json` with:
+   ```json
+   {
+     "ticket_id": "<ticket-id>",
+     "title": "<title>",
+     "type": "<type>",
+     "priority": "<priority>",
+     "estimated_complexity": "<complexity>",
+     "phases": [
+       {
+         "name": "plan",
+         "started_at": "<ISO-8601>",
+         "ended_at": "<ISO-8601>",
+         "duration_sec": <N>,
+         "tool_calls": <count>
+       }
+     ],
+     "total_duration_sec": <N>,
+     "status": "pass|fail|stopped"
+   }
+   ```
+   - `phases` includes only phases that were actually executed (partial on early stop).
+   - `duration_sec` is `end - start` in seconds for each phase.
+   - `total_duration_sec` is the sum of all phase durations.
+   - `tool_calls` per phase: if `.tickets/stats/tool-calls.jsonl` exists, count entries whose `ts` falls within the phase's time window. If the JSONL file does not exist, omit the `tool_calls` field.
+   - `status` is `"pass"` on full success, `"fail"` on verification failure, `"stopped"` on any other early stop.
+   - Create `.tickets/stats/` directory if it does not exist (`mkdir -p`).
 
 #### `/ticket-system-run-all`
 
