@@ -1125,14 +1125,14 @@ After generation, verify:
 - [ ] `install.sh` validates user input (empty input defaults to `~/.claude/`, non-existent paths are created with confirmation, non-writable paths are rejected).
 - [ ] `init-project.sh` is executable and creates the full project structure.
 - [ ] `init-project.sh` generates `TEMPLATE.md` with pipe-separated enum options (e.g., `priority: P0 | P1 | P2`), not single default values.
-- [ ] `/ticket-system-schedule` contains a human gate (via `AskUserQuestion`) with self-evaluation inside the fork — agent stays forked through Phase 4 execution.
+- [ ] `/ticket-system-schedule` stops on conflict with a structured message directing to `/ticket-system-edit` (no `AskUserQuestion`, no `--yes` bypass).
 - [ ] `/ticket-system-edit` rejects tickets in `ongoing/`, `completed/`, or `rejected/` status — only `backlog/` and `planned/` are editable.
 - [ ] `/ticket-system-edit` preserves `id`, `created`, and existing log entries (append-only).
 - [ ] `/ticket-system-edit` updates `updated` timestamp via `date` command.
 - [ ] `/ticket-system-edit` updates `roadmap.yml` when editing a planned ticket's title or priority.
 - [ ] `/ticket-system-edit` uses the `ticket-system-editor` agent.
 - [ ] `/ticket-system-edit` has `disable-model-invocation: false`.
-- [ ] `/ticket-system-plan` contains a human gate (via `AskUserQuestion`) with self-evaluation after plan generation — agent stays forked.
+- [ ] `/ticket-system-plan` stops on conflict with a structured message directing to `/ticket-system-edit` (no `AskUserQuestion`, no `--yes` bypass).
 - [ ] `/ticket-system-verify` contains an instruction to NEVER modify code, and moves ticket to `completed/` on PASS.
 - [ ] `/ticket-system-implement` verifies prerequisites before starting.
 - [ ] `/ticket-system-implement` checks FAIL count in the ticket log against `$MAX_RETRY` before starting. If count >= `$MAX_RETRY`, refuses to run and outputs a re-plan message.
@@ -1150,13 +1150,11 @@ After generation, verify:
 - [ ] `/ticket-system-run` has `disable-model-invocation: false`.
 - [ ] `/ticket-system-run` verifies filesystem state after each sub-skill invocation before proceeding.
 - [ ] `/ticket-system-run` stops and reports on failure at any step.
-- [ ] `/ticket-system-run` forwards `--yes` to the plan sub-skill when present.
 - [ ] `/ticket-system-run-all` uses the `ticket-system-coder` agent (needs unrestricted tool access for Skill invocation).
 - [ ] `/ticket-system-run-all` has `disable-model-invocation: false`.
 - [ ] `/ticket-system-run-all` reads `tickets/planned/roadmap.yml` in position order.
 - [ ] `/ticket-system-run-all` invokes `/ticket-system-run` for each ticket and stops on first failure.
 - [ ] `/ticket-system-run-all` reports a summary (total, succeeded, failed, remaining).
-- [ ] `/ticket-system-run-all` forwards `--yes` to each `/ticket-system-run` invocation when present.
 - [ ] `/ticket-system-run-all` handles empty roadmap gracefully ("No planned tickets to run.").
 - [ ] `/ticket-system-implement` checks ticket `type` and reads `research-plan.md` for research tickets instead of `implementation-plan.md`.
 - [ ] `/ticket-system-implement` produces `findings.md` for research tickets instead of code changes.
