@@ -674,7 +674,8 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 1. Read `.tickets/config.yml`.
 2. Locate the worktree at `.worktrees/<ticket-id>-worktree` using the provided ticket ID.
 3. Read the ticket's frontmatter to determine the ticket `type`.
-4. Work in the worktree directory.
+4. Read `.context.md` from `tickets/ongoing/<ticket-id>/` in the worktree if it exists. Use its contents (relevant files, key patterns, architecture notes, gotchas) to skip redundant codebase exploration. If `.context.md` does not exist, proceed normally with standard exploration.
+5. Work in the worktree directory.
 
 **If `type: research` — research implementation flow:**
 1. Read `research-plan.md` from `tickets/ongoing/<ticket-id>/` in the worktree.
