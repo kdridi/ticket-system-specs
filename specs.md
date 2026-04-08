@@ -1294,6 +1294,12 @@ After generation, verify:
 - [ ] `/ticket-system-run` accepts research artifacts (`research-plan.md` + `validation-criteria.md`) as valid plan output for research tickets.
 - [ ] `/ticket-system-run` checks for `findings.md` existence (not implementation commits) for research tickets at the implement verification step.
 - [ ] The PASS/FAIL verdict and completion flow are identical for both code and research ticket types.
+- [ ] `/ticket-system-plan` writes `.context.md` after codebase analysis (Phase 2.5) when findings are meaningful.
+- [ ] `.context.md` is optional — downstream agents fall back to normal exploration when it is absent.
+- [ ] `/ticket-system-implement` reads `.context.md` before starting work to skip redundant codebase exploration.
+- [ ] `/ticket-system-verify` reads `.context.md` before verification to skip redundant codebase exploration.
+- [ ] `/ticket-system-merge` reads `.context.md` before merge to understand change scope without re-exploring.
+- [ ] `.context.md` format is documented in `ticket-system-conventions` as a plan artifact for all ticket types.
 - [ ] `/ticket-system-next` uses the `ticket-system-reader` agent (read-only state inspection).
 - [ ] `/ticket-system-next` has `disable-model-invocation: false` (safe, read-only).
 - [ ] `/ticket-system-doctor` uses the `ticket-system-reader` agent (read-only diagnostics).
