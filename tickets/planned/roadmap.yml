@@ -1,8 +1,1 @@
-tickets:
-  - position: 1
-    id: TS-030
-    title: "Add /ticket-system-edit command to modify tickets in backlog or planned"
-    size: medium
-    priority: P1
-    dependencies: []
-    rationale: "No dependencies; provides a missing editing workflow for backlog and planned tickets."
+tickets: []

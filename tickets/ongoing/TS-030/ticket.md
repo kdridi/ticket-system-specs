@@ -1,11 +1,11 @@
 ---
 id: TS-030
 title: "Add /ticket-system-edit command to modify tickets in backlog or planned"
-status: planned
+status: ongoing
 priority: P1
 type: feature
 created: 2026-04-08 11:26:17
-updated: 2026-04-08 11:29:40
+updated: 2026-04-08 11:33:15
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -56,3 +56,4 @@ Currently there is no dedicated command to edit a ticket once it has been create
 ## Log
 - 2026-04-08 11:26:17: Ticket created.
 - 2026-04-08 11:29:40: Scheduled to planned (roadmap position 1).
+- 2026-04-08 11:33:15: Activated — moved to ongoing, worktree created.
