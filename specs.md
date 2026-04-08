@@ -523,44 +523,35 @@ For each ticket in the batch:
 4. **Flag decision**: if any dimension is High, >3 criteria span multiple concerns, or >5 files affected, flag as "needs split."
 5. **Split proposal** (flagged tickets only): propose 2-4 sub-tickets with title, scope (from acceptance criteria), dependency chain, complexity estimate (small or medium), and rationale. Sub-tickets inherit parent priority and type.
 
-**Phase 3 — Present unified scheduling plan:**
+**Phase 3 — Conflict check (stop-on-conflict):**
+If any ticket in the batch has unresolvable issues, **STOP** with a structured message:
 ```
-SCHEDULING PLAN — N tickets evaluated
-
-READY TO SCHEDULE:
-  1. PREFIX-XXX "title" — complexity, priority, deps → roadmap position
+SCHEDULING BLOCKED — N issue(s) found
 
 NEEDS SPLIT:
-  2. PREFIX-YYY "title" — High on [dimensions]
-     Proposed sub-tickets:
-     a. PREFIX-AAA "sub-title A" — small, deps: none
-     b. PREFIX-BBB "sub-title B" — small, deps: PREFIX-AAA
-     Accept split? [accept / adjust / reject]
+  PREFIX-YYY "title" — High on [dimensions]
+  → Split this ticket manually: create sub-tickets via /ticket-system-create,
+    reject the parent, then schedule the sub-tickets.
 
-PROPOSE REJECTION:
-  3. PREFIX-ZZZ "title" — reason
+MISSING FIELDS:
+  PREFIX-ZZZ "title" — missing acceptance criteria
+  → Fix via: /ticket-system-edit PREFIX-ZZZ "add acceptance criteria: ..."
 
-Dependencies resolved: ordering rationale
+DEPENDENCY ISSUES:
+  PREFIX-AAA "title" — depends on PREFIX-BBB which is not in backlog or planned
+  → Fix via: /ticket-system-edit PREFIX-AAA "remove dependency on PREFIX-BBB"
 ```
+If all tickets pass cleanly (no splits needed, no missing fields, no dependency issues), proceed directly to Phase 4.
 
-**Human gate:** If the user's original arguments contain `yes` or `--yes`, skip this gate and proceed directly to Phase 4. Otherwise, the agent self-evaluates the plan before engaging the user:
-
-1. **Self-assessment:** The agent reviews its own scheduling plan for quality — are the evaluations well-reasoned? Are split proposals balanced? Are rejection reasons solid? Does the dependency ordering make sense?
-2. **If confident:** Present the plan and use `AskUserQuestion` to ask: "The plan looks good — approve, or would you like to adjust anything?"
-3. **If issues detected:** The agent identifies specific concerns (e.g., "TS-012's split may be too granular", "unsure if TS-015 is still relevant given recent changes"). It builds a list of targeted questions and uses `AskUserQuestion` to collect the user's input on each concern. After incorporating the answers, it revises the plan and loops back to step 1.
-
-**Do not return to the main agent.** The forked agent handles the full question-and-answer loop and the subsequent execution so that elevated permissions remain active throughout.
-
-**Phase 4 — Execute on approval:**
+**Phase 4 — Execute:**
 1. Write `.tickets/.pending` with `operation: schedule`, `ticket:` listing all ticket IDs in scope, `started: <now>`, `description: "Scheduling tickets — moving to planned and updating roadmap"`.
 2. `git mv` approved tickets from `backlog/` to `planned/`.
-3. `git mv` rejected tickets from `backlog/` to `rejected/`.
+3. `git mv` rejected tickets (proposed as obsolete in Phase 2) from `backlog/` to `rejected/`.
 4. Update frontmatter on each ticket: `status: planned` (or `rejected`), `updated: <now>`.
-5. **Execute approved splits:** assign sequential IDs to sub-tickets, create them directly in `planned/` (already evaluated). Update the original ticket: add `## Sub-tickets` listing new IDs, set `status: rejected`, add log entry, `git mv` to `rejected/`. If the user rejected the split, schedule the ticket normally (step 2).
-6. Read `roadmap.yml`, insert all scheduled tickets (including sub-tickets) at correct positions (dependency ordering, then priority P0 > P1 > P2). Re-number positions.
-7. Add log entry to each ticket.
-8. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
-9. Delete `.tickets/.pending`.
+5. Read `roadmap.yml`, insert all scheduled tickets at correct positions (dependency ordering, then priority P0 > P1 > P2). Re-number positions.
+6. Add log entry to each ticket.
+7. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
+8. Delete `.tickets/.pending`.
 
 #### `/ticket-system-edit`
 
