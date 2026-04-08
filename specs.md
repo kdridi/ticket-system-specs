@@ -894,7 +894,9 @@ ticket-system/
 ├── install.sh                     # Installation script (see 5.3)
 ├── init-project.sh                # Project initialization script (see 5.4)
 ├── hooks/
-│   └── validate-git-worktree.sh   # PreToolUse hook (see 2.5, 5.6)
+│   ├── validate-git-worktree.sh   # PreToolUse hook (see 2.5, 5.6)
+│   ├── instrument-pre.sh          # PreToolUse hook — tool-call telemetry start (see 5.7)
+│   └── instrument-post.sh         # PostToolUse hook — tool-call telemetry end (see 5.7)
 ├── agents/
 │   ├── ticket-system-reader.md
 │   ├── ticket-system-editor.md
