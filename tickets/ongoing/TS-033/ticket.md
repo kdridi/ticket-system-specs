@@ -1,11 +1,11 @@
 ---
 id: TS-033
 title: "Remove all human gates and --yes bypass from schedule, plan, run, and run-all commands"
-status: planned
+status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-08 12:51:03
-updated: 2026-04-08 12:53:13
+updated: 2026-04-08 12:55:24
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -70,3 +70,4 @@ None.
 ## Log
 - 2026-04-08 12:51:03: Ticket created. Supersedes TS-031 and TS-032.
 - 2026-04-08 12:53:13: Scheduled to roadmap at position 1.
+- 2026-04-08 12:55:24: Activated — moved to ongoing, worktree created.
