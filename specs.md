@@ -210,9 +210,12 @@ prefix: "PROJ"           # Ticket ID prefix (PROJ-001, PROJ-002, ...)
 digits: 3                # Zero-padding width
 tickets_dir: "tickets"   # Root directory for tickets
 # test_command: "npm test"  # Optional: custom test runner command
+# stats: true               # Optional: enable hook-based telemetry and phase-level timing
 ```
 
 **`test_command`** is optional. When set, the verifier uses this command instead of auto-detecting the test runner. When omitted, the verifier falls back to auto-detection (`npm test`, `pytest`, `make test`).
+
+**`stats`** is optional. When set to `true`, enables two layers of instrumentation: (A) PreToolUse/PostToolUse hooks that log every tool call with timing to `.tickets/stats/tool-calls.jsonl`, and (B) phase-level timing in `/ticket-system-run` that writes per-phase summaries to `.tickets/stats/<ticket-id>.json`. When absent or `false`, hooks exit immediately with zero overhead and no stats files are written.
 
 **Absolute rule:** all commands, templates, and scripts read this file first. No hardcoded prefixes.
 
@@ -221,7 +224,11 @@ tickets_dir: "tickets"   # Root directory for tickets
 ```
 .tickets/
 ├── config.yml         # Project configuration (prefix, digits, tickets_dir)
-└── .pending           # Transient sentinel file — present only during multi-step operations
+├── .pending           # Transient sentinel file — present only during multi-step operations
+└── stats/             # Instrumentation output (gitignored) — created when stats: true
+    ├── tool-calls.jsonl       # Per-tool-call log (JSONL, one entry per tool invocation)
+    ├── <ticket-id>.json       # Phase-level timing summary per /ticket-system-run execution
+    └── .hook-state/           # Ephemeral temp files for in-flight tool call correlation
 
 tickets/
 ├── backlog/           # Rough ideas, not yet refined
