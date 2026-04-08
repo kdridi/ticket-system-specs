@@ -479,7 +479,7 @@ Decision or next step informed by the findings.
 
 ### 4.1 Overview
 
-Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. For end-to-end execution, `/ticket-system-run <ticket-id>` chains plan → implement → verify → merge in sequence, stopping on failure at any step (the user can then `/ticket-system-abort` to clean up). For batch execution, `/ticket-system-run-all` reads the entire roadmap and runs `/ticket-system-run` for each ticket in position order, stopping on first failure. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status. `/ticket-system-next` inspects the current system state and suggests the most logical next action, reducing the cognitive load of remembering which command to run. `/ticket-system-doctor` is a read-only diagnostic tool that checks the ticket system for consistency issues (status/directory mismatches, orphaned worktrees, stale roadmap entries) and reports findings with suggested fixes. `/ticket-system-abort` is an escape hatch available at any point after plan (when a worktree exists) — it cleanly abandons the active ticket, moves it to `rejected/`, and removes the worktree and branch.
+Pipeline: **create** → **schedule** [HUMAN APPROVAL] → **plan** [HUMAN APPROVAL] → **implement** → **verify** (→ **merge** on PASS, iterate on FAIL). `/ticket-system-edit` is available at any time to modify tickets in backlog or planned status. Both approval gates use `AskUserQuestion` inside the forked agent (preserving elevated permissions) and can be bypassed with `yes` or `--yes` in the arguments. Schedule handles splitting internally when tickets are too large — no separate split step. The worktree lifecycle spans from plan through merge. For end-to-end execution, `/ticket-system-run <ticket-id>` chains plan → implement → verify → merge in sequence, stopping on failure at any step (the user can then `/ticket-system-abort` to clean up). For batch execution, `/ticket-system-run-all` reads the entire roadmap and runs `/ticket-system-run` for each ticket in position order, stopping on first failure. Additionally, `/ticket-system-help` is available at any time as a utility command for self-documentation and live status. `/ticket-system-next` inspects the current system state and suggests the most logical next action, reducing the cognitive load of remembering which command to run. `/ticket-system-doctor` is a read-only diagnostic tool that checks the ticket system for consistency issues (status/directory mismatches, orphaned worktrees, stale roadmap entries) and reports findings with suggested fixes. `/ticket-system-abort` is an escape hatch available at any point after plan (when a worktree exists) — it cleanly abandons the active ticket, moves it to `rejected/`, and removes the worktree and branch.
 
 ### 4.2 Detailed Command Specifications
 
@@ -560,6 +560,24 @@ Dependencies resolved: ordering rationale
 7. Add log entry to each ticket.
 8. Commit: `PREFIX-XXX, PREFIX-YYY: Schedule tickets` (list all scheduled ticket IDs).
 9. Delete `.tickets/.pending`.
+
+#### `/ticket-system-edit`
+
+**Agent:** `ticket-system-editor` | **Auto-invocation:** yes | **Argument:** `[ticket-id] [modification instructions]`
+
+**Behavior:**
+1. Read `.tickets/config.yml` (prefix, digits, tickets_dir).
+2. Parse the ticket ID from the argument. The remainder of the argument is the modification instructions (free-form natural language).
+3. Locate the ticket: check `tickets/backlog/PREFIX-XXX.md` then `tickets/planned/PREFIX-XXX.md`. If found in `ongoing/`, `completed/`, or `rejected/`, reject with: "Cannot edit ticket PREFIX-XXX — only tickets in backlog or planned status can be edited."
+4. If the ticket is not found anywhere, reject with: "Ticket PREFIX-XXX not found."
+5. Read the current ticket content.
+6. Apply the requested modifications from the instructions: rewrite acceptance criteria, narrow/expand scope, update description, change priority, update title, etc. The agent interprets the free-form instructions intelligently.
+7. **Preserve metadata:** the `id` and `created` fields must not change. The existing `## Log` entries must be preserved (append-only).
+8. Update `updated` timestamp to current time (via `date '+%Y-%m-%d %H:%M:%S'`).
+9. Append a log entry describing what was changed: `YYYY-MM-DD HH:MM:SS: Edited — <summary of changes>.`
+10. Write the modified ticket file back.
+11. **Roadmap sync (planned tickets only):** if the ticket is in `planned/` and the title or priority changed, update the corresponding entry in `tickets/planned/roadmap.yml` to match.
+12. Commit: `PREFIX-XXX: Edit ticket — <brief summary of changes>`
 
 #### `/ticket-system-plan`
 
