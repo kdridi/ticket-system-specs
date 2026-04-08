@@ -825,7 +825,7 @@ Next action: <exact command to run — e.g., "/ticket-system-verify PREFIX-XXX">
 4. Print a live status section showing actionable next steps ordered by urgency (e.g., ongoing ticket highlighted first, backlog items suggest scheduling).
 
 **Behavior (with verb argument):**
-1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, run, abort, next, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, options (e.g., `--yes` bypass), and format/template details.
+1. If the verb matches a known command (create, schedule, plan, implement, verify, merge, run, abort, next, doctor, help), read the corresponding `ticket-system-<verb>/SKILL.md` and print detailed documentation derived from it: what it does, which agent runs it, arguments, and format/template details.
 2. If the verb is unknown, print an error listing all available verbs.
 
 #### `/ticket-system-doctor`
