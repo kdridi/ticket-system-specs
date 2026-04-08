@@ -53,6 +53,7 @@
   - [5.4 Project Initialization Script](#54-project-initialization-script)
   - [5.5 Technical Constraints](#55-technical-constraints)
   - [5.6 Hook Script Generation Rules](#56-hook-script-generation-rules)
+  - [5.7 Instrumentation Hook Generation Rules](#57-instrumentation-hook-generation-rules)
 - [6. Decisions Already Made](#6-decisions-already-made-do-not-revisit)
 - [7. Future Extensions](#7-future-extensions-do-not-implement-now)
 - [8. Validation Checklist](#8-validation-checklist)
@@ -1041,6 +1042,60 @@ ticket-system/
 - On denial: output `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"<reason>"}}`.
 - On any internal error (parse failure, missing fields): exit 0 with no output — falls through to the normal permission system.
 - MUST NOT hardcode any ticket prefix — the hook validates structural conventions only (basename `*-worktree`).
+
+### 5.7 Instrumentation Hook Generation Rules
+
+Two hook scripts provide opt-in tool-call telemetry. Both are always installed with the system (registered in `$CLAUDE_DIR/settings.json` at install time). At runtime, each hook reads `.tickets/config.yml` and exits 0 immediately if `stats: true` is not set — zero overhead when stats are disabled.
+
+#### `hooks/instrument-pre.sh` (PreToolUse)
+
+- Start with `#!/bin/bash`.
+- Read JSON from stdin (the Claude Code hook input). Use `jq` if available on `$PATH`, otherwise fall back to `grep -o`/`sed` for extracting JSON fields.
+- **Early exit check:** Look for `.tickets/config.yml` relative to `cwd` from the input JSON. If the file does not exist or does not contain `stats: true`, exit 0 immediately (no output, no side effects).
+- Extract from the input JSON:
+  - `tool_use_id` — unique identifier for this tool invocation
+  - `tool_name` — the tool being called (Read, Write, Edit, Bash, Grep, Glob, etc.)
+  - `tool_input` summary — extract only the key identifying parameter: `file_path` for Read/Write/Edit, `command` (first 200 chars) for Bash, `pattern` for Grep/Glob. Never log full file contents.
+  - `session_id` — the session identifier
+  - `cwd` — current working directory
+- Record the start timestamp in milliseconds. Platform-aware:
+  - Try `date +%s%3N` first (works on GNU/Linux).
+  - If that fails or returns literal `%3N` (macOS), fall back to `python3 -c "import time; print(int(time.time()*1000))"`.
+  - If python3 is unavailable, fall back to `date +%s` appended with `000` (second-level precision).
+- Create `.tickets/stats/.hook-state/` directory if it does not exist (`mkdir -p`).
+- Write a temp state file at `.tickets/stats/.hook-state/<tool_use_id>.tmp` containing: `start_ms`, `tool_name`, `tool_input` summary, `session_id`, `cwd`.
+- Always exit 0 — never block tool execution.
+- On any error (parse failure, missing fields, write failure): exit 0 silently.
+
+#### `hooks/instrument-post.sh` (PostToolUse / PostToolUseFailure)
+
+- Start with `#!/bin/bash`.
+- Read JSON from stdin. Use `jq` if available, otherwise fall back to `grep -o`/`sed`.
+- **Early exit check:** Same as pre-hook — if `.tickets/config.yml` does not exist or does not contain `stats: true`, exit 0 immediately.
+- Extract `tool_use_id` from the input JSON.
+- Look up the matching temp state file at `.tickets/stats/.hook-state/<tool_use_id>.tmp`.
+  - If the file does not exist (orphaned post-hook call), exit 0 silently.
+- Read `start_ms`, `tool_name`, `tool_input` summary, `session_id`, and `cwd` from the temp file.
+- Record the end timestamp in milliseconds (same platform-aware strategy as pre-hook).
+- Compute `elapsed_ms = end_ms - start_ms`.
+- Determine the hook event name from the input JSON (`hookEventName`). If `PostToolUseFailure`, mark the entry with `"status":"failed"`. Otherwise mark as `"status":"ok"`.
+- Create `.tickets/stats/` directory if it does not exist (`mkdir -p`).
+- Append a JSONL entry to `.tickets/stats/tool-calls.jsonl`:
+  ```json
+  {"ts":"<ISO-8601>","tool":"<tool_name>","input":<tool_input_summary>,"elapsed_ms":<N>,"status":"ok|failed","session":"<session_id>","cwd":"<cwd>","tool_use_id":"<id>"}
+  ```
+  - `ts` is the current timestamp in ISO-8601 format (`date -u '+%Y-%m-%dT%H:%M:%SZ'`).
+  - `input` is a JSON object with the key parameter (e.g., `{"file_path":"src/auth.ts"}` or `{"command":"git status"}` or `{"pattern":"TODO"}`).
+- Delete the temp state file.
+- Always exit 0 — never block tool execution.
+- On any error: exit 0 silently.
+
+**Common rules for both instrumentation hooks:**
+- Both hooks must be POSIX-compatible (bash, standard utils, optional jq).
+- Hook overhead target: under 50ms per invocation. The early-exit path (stats disabled) must complete in under 10ms.
+- The `.hook-state/` directory stores ephemeral per-tool-call temp files. Stale files from interrupted sessions may accumulate; they are harmless and can be periodically cleaned.
+- The hooks must not hardcode any ticket prefix.
+- The hooks must handle concurrent tool calls safely (each tool_use_id maps to a unique temp file).
 
 ---
 
