@@ -1,1 +1,8 @@
-tickets: []
+tickets:
+  - position: 1
+    id: TS-033
+    title: "Remove all human gates and --yes bypass from schedule, plan, run, and run-all commands"
+    size: medium
+    priority: P1
+    dependencies: []
+    rationale: "Eliminates AskUserQuestion gates and --yes bypass from the ticket pipeline. Replaces interactive approval with deterministic stop-on-conflict behavior, making commands composable and non-stalling."
