@@ -78,6 +78,7 @@ When multiple spec changes are in flight simultaneously:
 - [ ] `ticket-system-conventions` has `user-invocable: false`
 - [ ] Both scripts have `#!/bin/bash` and are executable
 - [ ] `hooks/validate-git-worktree.sh` exists and is executable
+- [ ] `hooks/instrument-pre.sh` and `hooks/instrument-post.sh` exist and are executable
 - [ ] No hardcoded ticket prefixes anywhere
 - [ ] No hardcoded `~/.claude/` paths — all use `$CLAUDE_DIR`
 
@@ -87,8 +88,9 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Frontmatter correctness across all agents and skills
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
-- Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior (stop-on-conflict behavior in schedule and plan — stops with structured message directing to /ticket-system-edit, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code, /ticket-system-run-all reads roadmap in position order and chains /ticket-system-run per ticket with stop-on-failure and summary report)
+- Hook validation (worktree path validation, jq fallback, no hardcoded prefixes, instrumentation hooks with stats-disabled fast exit)
+- Instrumentation (instrument-pre.sh and instrument-post.sh hooks registered in settings.json, stats config option, JSONL tool-call logging, phase-level timing in /ticket-system-run, stats written on early failure, .tickets/stats/ gitignored by init-project.sh)
+- Command behavior (stop-on-conflict behavior in schedule and plan — stops with structured message directing to /ticket-system-edit, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure and optional phase-level stats, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code, /ticket-system-run-all reads roadmap in position order and chains /ticket-system-run per ticket with stop-on-failure and summary report)
 
 ## Rules for Working on This Repo
 
