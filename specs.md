@@ -732,8 +732,8 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
 
 **Behavior:**
 1. Read `.tickets/config.yml` to get the prefix and configuration.
-2. Validate the ticket-id argument is provided. The ticket must exist in `tickets/planned/` (not yet activated) or `tickets/ongoing/` (already activated by a prior `/ticket-system-plan` that was interrupted). If `$ARGUMENTS` contains `yes` or `--yes`, note it for forwarding to the plan step.
-3. **Step 1 — Plan:** Invoke `/ticket-system-plan <ticket-id>` via the Skill tool (forward `--yes` if present).
+2. Validate the ticket-id argument is provided. The ticket must exist in `tickets/planned/` (not yet activated) or `tickets/ongoing/` (already activated by a prior `/ticket-system-plan` that was interrupted).
+3. **Step 1 — Plan:** Invoke `/ticket-system-plan <ticket-id>` via the Skill tool.
    - After return, verify success: check that `.worktrees/<ticket-id>-worktree` exists and contains the expected plan artifacts in `tickets/ongoing/<ticket-id>/`. Read the ticket's `type` from frontmatter: if `type: research`, check for `research-plan.md` and `validation-criteria.md`; otherwise check for `implementation-plan.md` and `test-plan.md`.
    - If verification fails → report "STOPPED at plan step" with the sub-skill's output and suggest `/ticket-system-abort`. **STOP.**
 4. **Step 2 — Implement:** Invoke `/ticket-system-implement <ticket-id>` via the Skill tool.
@@ -747,8 +747,6 @@ This is an orchestration command that chains four sub-skills in sequence: plan �
    - After return, verify the worktree has been removed and the branch deleted.
    - If merge conflict → report "STOPPED at merge step — merge conflict" and let the user resolve. **STOP.**
 7. On full success, report: "Ticket <ticket-id> completed: planned, implemented, verified, and merged."
-
-**Note on human gates:** The plan sub-skill contains its own `AskUserQuestion` human gate. The user will still be prompted for plan approval unless `--yes` was forwarded. This preserves the human-in-the-loop design.
 
 #### `/ticket-system-run-all`
 
