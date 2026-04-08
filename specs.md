@@ -976,9 +976,13 @@ ticket-system/
 **Step 1 — Install hooks:**
 1. Create `$CLAUDE_DIR/hooks/` if it doesn't exist.
 2. Copy `hooks/validate-git-worktree.sh` to `$CLAUDE_DIR/hooks/`. Make it executable (`chmod +x`).
-3. If `$CLAUDE_DIR/settings.json` doesn't exist, create it with the hook configuration from section 2.5 (replacing `$CLAUDE_DIR` with the resolved path).
-4. If it exists but has no `hooks.PreToolUse` key, inject the hook configuration.
-5. If it already has `PreToolUse` entries, append the hook entry and warn the user to verify the merged result.
+3. Copy `hooks/instrument-pre.sh` to `$CLAUDE_DIR/hooks/`. Make it executable (`chmod +x`).
+4. Copy `hooks/instrument-post.sh` to `$CLAUDE_DIR/hooks/`. Make it executable (`chmod +x`).
+5. If `$CLAUDE_DIR/settings.json` doesn't exist, create it with the hook configuration (replacing `$CLAUDE_DIR` with the resolved path):
+   - `hooks.PreToolUse`: array containing (a) the worktree validation hook entry from section 2.5 (matcher `"Bash"`), and (b) the instrumentation pre-hook entry with matcher `".*"` (all tools) pointing to `$CLAUDE_DIR/hooks/instrument-pre.sh`.
+   - `hooks.PostToolUse`: array containing the instrumentation post-hook entry with matcher `".*"` (all tools) pointing to `$CLAUDE_DIR/hooks/instrument-post.sh`.
+6. If `settings.json` exists but has no `hooks.PreToolUse` key, inject both PreToolUse hook entries and the PostToolUse hook entry.
+7. If it already has `PreToolUse` entries, append the new hook entries and warn the user to verify the merged result. Similarly for `PostToolUse`.
 
 **Step 2 — Install agents and skills:**
 1. Copy `agents/*.md` to `$CLAUDE_DIR/agents/`
