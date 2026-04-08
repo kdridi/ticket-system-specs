@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: refactor
 created: 2026-04-08 12:51:03
-updated: 2026-04-08 12:55:24
+updated: 2026-04-08 13:02:52
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -56,7 +56,8 @@ Supersedes: TS-031, TS-032 (both rejected and merged here).
 None.
 
 ## Files Modified
-<!-- Filled in during/after implementation. -->
+- `specs.md` — Sections 2.3, 2.4, 4.1, 4.2 (schedule, plan, run, run-all, help), 6 (D-2, D-7, D-11, D-12), 8 (validation checklist)
+- `CLAUDE.md` — Deep Validation bullet, Key Design Decisions bullet
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -71,3 +72,4 @@ None.
 - 2026-04-08 12:51:03: Ticket created. Supersedes TS-031 and TS-032.
 - 2026-04-08 12:53:13: Scheduled to roadmap at position 1.
 - 2026-04-08 12:55:24: Activated — moved to ongoing, worktree created.
+- 2026-04-08 13:02:52: Implementation complete — all 11 steps executed across specs.md and CLAUDE.md. Removed human gates, --yes bypass, AskUserQuestion from schedule/plan. Replaced with stop-on-conflict model. Updated decisions D-2, D-7, D-11, D-12. Updated validation checklist. Preserved abort confirmation gate.
