@@ -88,7 +88,7 @@ Refer to **specs.md section 8** for the full validation checklist covering:
 - Permission model assignments (plan / bypassPermissions)
 - Script functionality (install.sh with directory prompt, hook installation, init-project.sh)
 - Hook validation (worktree path validation, jq fallback, no hardcoded prefixes)
-- Command behavior gates (AskUserQuestion human gates in schedule and plan forks with self-evaluation and --yes bypass, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code, /ticket-system-run-all reads roadmap in position order and chains /ticket-system-run per ticket with stop-on-failure and summary report)
+- Command behavior (stop-on-conflict behavior in schedule and plan — stops with structured message directing to /ticket-system-edit, NEVER modify code/findings in verify, prerequisites in implement/merge, /ticket-system-run chains plan→implement→verify→merge with post-step verification and stop-on-failure, retry counter blocks implement after $MAX_RETRY consecutive verify failures, drift detection in implement compares modified files against plan and logs [DRIFT] entries, verify reports [DRIFT] entries prominently, research tickets use research-plan.md/validation-criteria.md/findings.md instead of implementation-plan.md/test-plan.md/code, /ticket-system-run-all reads roadmap in position order and chains /ticket-system-run per ticket with stop-on-failure and summary report)
 
 ## Rules for Working on This Repo
 
@@ -107,7 +107,7 @@ These are settled (documented in specs.md section 6) and should not be revisited
 - Permission elevation via `context: fork` + agent — main session stays in default mode
 - Git worktree created inside `.worktrees/` (gitignored) at `/ticket-system-plan`, used through `/ticket-system-merge` — all ticket work isolated from main, `tickets/ongoing/` on main is always empty, worktrees inside the project so dedicated tools work without permission prompts
 - Verify completes ticket on PASS (moves to `completed/` in worktree), merge just lands the branch
-- Human approval gates at `/ticket-system-schedule` and `/ticket-system-plan` stages, using AskUserQuestion inside forked agents (elevated permissions preserved); agents self-evaluate before engaging user; bypassable with yes/--yes
+- Schedule and plan use stop-on-conflict -- clean operations proceed silently, conflicts stop with a message directing to `/ticket-system-edit`. No interactive gates or `--yes` bypass
 - Artifacts co-located with tickets in `tickets/ongoing/PREFIX-XXX/`
 - Fine-grained Bash patterns for plain git + PreToolUse hook for `git worktree`, `git -C`, and `mkdir` worktree validation
 - Single-developer workflow by design — multi-developer usage on the same repository is not supported
