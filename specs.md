@@ -996,12 +996,13 @@ ticket-system/
 `init-project.sh` must:
 1. Accept the ticket prefix as an argument (e.g., `bash init-project.sh MYPROJ`)
 2. Accept an optional digits argument (default: 3)
-3. Create `.tickets/config.yml` with the given prefix — include a commented-out `# test_command: "npm test"` line with an inline comment explaining it is optional
+3. Create `.tickets/config.yml` with the given prefix — include a commented-out `# test_command: "npm test"` line with an inline comment explaining it is optional, and a commented-out `# stats: true` line with an inline comment explaining it enables telemetry
 4. Create `.tickets/TEMPLATE.md` using the exact ticket format from section 3.3 — enum fields must show all valid options with pipe separators (e.g., `priority: P0 | P1 | P2`, not a single default value)
 5. Create `tickets/{backlog,planned,ongoing,completed,rejected}/` with `.gitkeep` files
 6. Create `tickets/planned/roadmap.yml` with `tickets: []` (an empty YAML list)
 7. Ensure `.worktrees/` is in the project's `.gitignore`: check with `grep -qx '.worktrees/' .gitignore 2>/dev/null` first — only append if not already present, create `.gitignore` if it does not exist
-8. Display a summary of what was created
+8. Ensure `.tickets/stats/` is in the project's `.gitignore`: check with `grep -qx '.tickets/stats/' .gitignore 2>/dev/null` first — only append if not already present
+9. Display a summary of what was created
 
 ### 5.5 Technical Constraints
 
