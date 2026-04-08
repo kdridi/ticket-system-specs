@@ -710,6 +710,7 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 3. Work in the worktree directory for all verification.
 4. Find the active ticket in `tickets/ongoing/<ticket-id>/`.
 5. Read the ticket's frontmatter to determine the ticket `type`.
+6. Read `.context.md` from the ticket's directory if it exists. Use its contents to understand the codebase without re-exploring files already analyzed by the planner. If `.context.md` does not exist, proceed with normal exploration.
 
 **If `type: research` — research verification flow:**
 1. Read `validation-criteria.md` from the ticket's directory.
