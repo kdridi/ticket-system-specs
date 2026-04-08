@@ -130,7 +130,7 @@ An invisible skill (`user-invocable: false`) containing all system conventions: 
 
 > **Note:** The fine-grained `Bash(git <subcommand> *)` patterns above match plain git commands. When agents use `git -C <path>` for worktree operations, these commands are validated and auto-approved by the PreToolUse hook described in section 2.5.
 >
-> **Note:** `AskUserQuestion` does not need to be listed in the `Allowed Tools` column. Unlike tools that act on the system (`Read`, `Write`, `Bash`, etc.), asking the user a question requires no permission gate — requesting permission to ask a question would be circular. Claude Code passes it through automatically for all foreground subagents (which includes `context: fork` skills). It is used by human gates in `/ticket-system-schedule` and `/ticket-system-plan` to keep the approval loop inside the forked agent context.
+> **Note:** `AskUserQuestion` does not need to be listed in the `Allowed Tools` column. Unlike tools that act on the system (`Read`, `Write`, `Bash`, etc.), asking the user a question requires no permission gate — requesting permission to ask a question would be circular. Claude Code passes it through automatically for all foreground subagents (which includes `context: fork` skills). It is used by the confirmation gate in `/ticket-system-abort` to keep the approval loop inside the forked agent context.
 
 ### 2.4 Automatic vs Manual Invocation
 
