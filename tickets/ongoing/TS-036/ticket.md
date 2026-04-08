@@ -5,7 +5,7 @@ status: ongoing
 priority: P1
 type: feature
 created: 2026-04-08 22:35:30
-updated: 2026-04-08 23:47:37
+updated: 2026-04-08 23:54:41
 dependencies: []
 assignee: ai
 estimated_complexity: medium
@@ -37,6 +37,7 @@ Add `.context.md` as a new plan artifact written by the planner after Phase 2 (c
 ## Files Modified
 - `specs.md` — Added .context.md artifact format (section 3.8), updated plan/implement/verify/merge command specs (section 4.2), updated conventions generation rule (section 5.2), added validation checklist items (section 8)
 - `CLAUDE.md` — Updated Deep Validation reference to mention .context.md
+- `.claude/skills/ticket-system-conventions/SKILL.md` — Added .context.md format documentation in Plan Artifacts section
 
 ## Decisions
 <!-- Design decisions made during this ticket. -->
@@ -51,3 +52,4 @@ The `.context.md` file is a read-only artifact for downstream phases — only th
 - 2026-04-08 23:41:17: Plan generated — implementation-plan.md and test-plan.md created.
 - 2026-04-08 23:45:30: Implementation complete — all 8 steps executed across specs.md and CLAUDE.md.
 - 2026-04-08 23:47:37: VERDICT: FAIL (attempt 1/3) — TC-6 failed: .claude/skills/ticket-system-conventions/SKILL.md does not contain .context.md documentation. Step 6 of the implementation plan updated specs.md section 5.2 (generation rule) but did not update the actual SKILL.md file. The conventions SKILL.md still shows 273/500 lines with no .context.md format section.
+- 2026-04-08 23:54:41: Implementation retry — added .context.md format documentation to .claude/skills/ticket-system-conventions/SKILL.md (297/500 lines), fixing TC-6 failure.
