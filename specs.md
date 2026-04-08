@@ -631,6 +631,10 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
 - Explore relevant source code, architecture docs, existing tests.
 - Understand patterns and conventions in the project.
 
+**Phase 2.5 — Context artifact (optional):**
+- If the codebase analysis in Phase 2 produced meaningful findings (relevant files, patterns, architecture notes, gotchas), write `.context.md` to `tickets/ongoing/PREFIX-XXX/` using the format from section 3.8.
+- If the analysis was minimal (very small ticket with few files involved), skip this step — downstream agents will fall back to normal exploration.
+
 **Phase 3 — Plan generation:**
 - Check the ticket's frontmatter `type` field.
 - **If `type: research`:** Write `research-plan.md` and `validation-criteria.md` in the ticket directory (research artifact formats described in section 3.8).
@@ -653,7 +657,7 @@ If all tickets pass cleanly (no splits needed, no missing fields, no dependency 
     PREFIX-XXX depends on PREFIX-YYY which is not completed.
     → Complete PREFIX-YYY first, or: /ticket-system-edit PREFIX-XXX "remove dependency on PREFIX-YYY"
   ```
-- On success: commit plan artifacts (`PREFIX-XXX: Generate implementation and test plans`) and end.
+- On success: commit plan artifacts including `.context.md` if generated (`PREFIX-XXX: Generate implementation and test plans`) and end.
 - Delete `.tickets/.pending`.
 
 #### `/ticket-system-implement`
