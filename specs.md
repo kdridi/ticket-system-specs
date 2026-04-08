@@ -750,7 +750,7 @@ This is an orchestration command that chains four sub-skills in sequence: plan â
 
 #### `/ticket-system-run-all`
 
-**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** none (reads from roadmap); optional `--yes` to bypass plan human gates
+**Agent:** `ticket-system-coder` | **Auto-invocation:** no (manual) | **Argument:** none (reads from roadmap)
 
 This is an orchestration command that reads all planned tickets from `tickets/planned/roadmap.yml` and executes them sequentially using `/ticket-system-run`, stopping on the first failure.
 
@@ -759,14 +759,12 @@ This is an orchestration command that reads all planned tickets from `tickets/pl
 2. Read `tickets/planned/roadmap.yml`. Parse the `tickets:` list.
 3. If the roadmap is empty (`tickets: []` or no entries), report "No planned tickets to run." and exit.
 4. Sort tickets by `position` (ascending). Build an ordered list of ticket IDs to process.
-5. Initialize counters: `total`, `succeeded`, `failed_ticket`. If `$ARGUMENTS` contains `yes` or `--yes`, note it for forwarding.
+5. Initialize counters: `total`, `succeeded`, `failed_ticket`.
 6. **For each ticket in position order:**
    a. Report: "Running ticket N of TOTAL: PREFIX-XXX â€” <title>"
-   b. Invoke `/ticket-system-run <ticket-id>` via the Skill tool (forward `--yes` if present).
+   b. Invoke `/ticket-system-run <ticket-id>` via the Skill tool.
    c. On success: increment `succeeded`, continue. On failure: set `failed_ticket`, **STOP the loop.**
 7. Report summary: total planned, succeeded, failed (if any), remaining. If a ticket failed, suggest resolving and re-running. If all succeeded, report "All planned tickets completed successfully."
-
-**Note on human gates:** Each `/ticket-system-run` invocation preserves its own `AskUserQuestion` human gate. The user will be prompted for plan approval on each ticket unless `--yes` was forwarded.
 
 #### `/ticket-system-abort`
 
